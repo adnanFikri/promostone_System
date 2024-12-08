@@ -13,18 +13,20 @@ return new class extends Migration
     {
         Schema::create('payment_statuses', function (Blueprint $table) {
             $table->id();
+            $table->string('no_bl')->nullable(); // Add BL number
             $table->string('code_client'); // Foreign key to clients
-            $table->integer('number_sales')->default(0); // Number of sales made by the client
+            $table->string('name_client')->nullable();
+            $table->date('date_bl')->nullable();
             $table->decimal('montant_total', 10, 2)->default(0); // Total amount owed (sum of all sales amounts)
-            $table->integer('number_paid')->default(0); // Number of payments made by the client
-            $table->decimal('payed_total', 10, 2)->default(0); // Total amount paid by the client
-            $table->decimal('remaining_balance', 10, 2)->default(0); // Remaining balance to be paid
+            $table->decimal('montant_payed', 10, 2)->default(0); // Total amount paid by the client
+            $table->decimal('montant_restant', 10, 2)->default(0); // Remaining balance to be paid
             $table->timestamps();
 
             // Foreign key constraint (assuming clients table has a column 'code_client')
             $table->foreign('code_client')->references('code_client')->on('clients')->onDelete('cascade');
         });
     }
+
 
     /**
      * Reverse the migrations.

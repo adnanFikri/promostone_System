@@ -160,9 +160,33 @@ class SalesController extends Controller
     return redirect()->back()->with('success', $message);
 }
 
+public function getByBl(Request $request)
+{
+    // $sales = Sale::where('no_bl', $request->no_bl)->get();
+    $sales = Sale::select([
+        'sales.id',
+        'sales.no_bl',
+        'sales.annee',
+        'sales.date',
+        'sales.code_client',
+        'sales.ref_produit',
+        'sales.produit',
+        'sales.longueur',
+        'sales.largeur',
+        'sales.nbr',
+        'sales.qte',
+        'sales.prix_unitaire',
+        'sales.montant',
+        'clients.name as client_name'
+    ])
+    ->join('clients', 'sales.code_client', '=', 'clients.code_client') // Use strict join
+    ->where('sales.no_bl', $request->no_bl)
+    ->get();
+    return response()->json(['sales' => $sales]);
+}
+
 
 // fetching all sales with his clients.
-
 public function getSalesWithClients()
 {
     $sales = DB::table('sales')

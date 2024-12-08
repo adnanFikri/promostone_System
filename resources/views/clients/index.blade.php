@@ -69,8 +69,6 @@
         }
         
         #div-actions1 :hover{
-            /* background-color: #4CAF50; */
-            /* transform: scaleY(110%); */
             transition: .3s;
             color: #45a049;
         }
@@ -95,7 +93,7 @@
                       </svg>
                 </a>
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-center mb-4 text-2xl font-bold">Les Clients</h2>
+                    <h2 class="font-serif uppercase underline text-gray-600 text-center mb-4 text-2xl font-bold">Les Clients</h2>
 
                     <table id="clients-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
@@ -158,7 +156,7 @@
                 }
             ],
             responsive: true,
-            lengthMenu: [5, 10, 25, 50],
+            lengthMenu: [10, 5, 25, 50],
             language: {
                 paginate: {
                     previous: "&laquo;",

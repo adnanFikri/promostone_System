@@ -16,7 +16,7 @@
                             {{ __('Statut paiements') }}
                         </x-nav-link>
                         <x-nav-link :href="route('reglements.index')" :active="request()->routeIs('reglements.index')">
-                            {{ __('reglements') }}
+                            {{ __('Reglements') }}
                         </x-nav-link>
                         <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
                             {{ __('Ventes') }}

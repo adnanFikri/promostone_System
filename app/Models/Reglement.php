@@ -14,10 +14,14 @@ class Reglement extends Model
 
     // Mass assignable attributes
     protected $fillable = [
+        'no_bl', 
         'code_client', 
+        'nom_client', 
         'montant', 
         'date', 
         'type_pay',
+        'reference_chq',
+        'date_chq',
     ];
 
     // Defining the relationship with the Client model (assuming a Client model exists)

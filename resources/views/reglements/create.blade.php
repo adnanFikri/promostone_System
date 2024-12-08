@@ -9,10 +9,14 @@
             /* color: red; */
         }
         #code_client{
-            width: 300px;
+            width: 500px;
             /* font-size: 20px; */
             height: 40px;
             /* padding: 5px; */
+            font-size: 20px ;
+        }
+        .dateInput{
+            width: 300px;
         }
         .selec2{
             height: 40px !important;
@@ -36,55 +40,162 @@
         .dropdown-wrapper{
             background-color: gray !important;
         }
+        #bls option{
+            height:40px; 
+            font-size:20px; 
+            padding:5px !important; 
+            background-color:rgb(235, 234, 234);
+            color:rgb(24, 23, 23);
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;
+        }
+        .div-selectBl{
+            display: flex;
+            /* justify-content: space-between; */
+            gap: 120px;
+        }
+        .div-selectBl #bls{
+            width: 550px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .div-selectBl #montant{
+            width: 500px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .div-selectBl #date_reglement{
+            width: 260px;
+            padding: 10px;
+            border-radius: 5px;
+            
+        }
+
+        /* mode payment */
+        .div-modePyamnet{
+            display: flex;
+            /* justify-content: space-between; */
+            gap: 120px;
+        }
+        .div-modePyamnet #mode_reglement{
+            width: 500px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        /* for cheque */
+        #div-chq{
+            display: flex;
+            /* background-color: #a9a8a8; */
+            gap: 20px;
+            visibility: hidden;
+        }
+        #div-chq #reference_chq{
+            width: 265px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #div-chq #date_chq{
+            width: 265px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #search_bls{
+            width: 500px;
+        }
+        .hiddena {
+            display: none;
+        }
     </style>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Create New Règlement') }}
+            {{ __('Nouveau Règlement') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-5 ">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-md sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h2 class="text-center mb-4 text-2xl font-bold">Ajouter nouveau Règlement</h2>
 
                     <form id="reglement-form">
                         @csrf
-
-                        <div class="mb-6 ">
-                            <label for="code_client" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Client</label>
-                            <select name="code_client" id="code_client" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
-                                <!-- Select2 will dynamically populate options via AJAX -->
-                            </select>
-                        </div>
-
-                        <div id="payment-status" class="mb-4 hidden">
-                            <p>Solde restant: <span id="remaining-balance"></span></p>
-                        </div>
-
+                            {{--start -=-=-= -= = -  --}}
                         <div class="mb-6">
-                            <label for="montant" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Montant</label>
-                            <input type="number" name="montant" id="montant" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                            <div class="flex gap-4">
+                                <label>
+                                    <input type="radio" name="selection_mode" value="client" checked>
+                                    Select by Client
+                                </label>
+                                <label>
+                                    <input type="radio" name="selection_mode" value="bl">
+                                    Select by BL
+                                </label>
+                            </div>
+                        </div>
+                        {{-- end -=-=-= -= = -  --}}
+
+                        <!-- New Select for BL Search -->
+                        <div id="bl-search" class="hiddena">
+                            <div class="mb-6">
+                                <label for="search_bls" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Search BL</label>
+                                <select name="search_bls" id="search_bls" required class="block w-full text-lg border rounded-lg">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="mb-6">
-                            <label for="date_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date</label>
-                            <input type="date" name="date" id="date_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                        {{-- existiiiiiiiing select --}}
+                        <div class="div-selectBl " id="ha">
+                            <div class="mb-6 ">
+                                <label for="code_client" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Client</label>
+                                <select name="code_client" id="code_client" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                    <!-- Select2 will dynamically populate options via AJAX -->
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label for="bls" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Bon de Livraison (BL)</label>
+                                <select name="no_bl" id="bls" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                                    <option value="">Select a BL</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="mb-6">
-                            <label for="mode_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Mode</label>
-                            {{-- <input type="text" name="type_pay" id="mode_reglement" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600"> --}}
-                            <select name="type_pay" id="mode_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
-                                <option value="espèce ">espèce </option>
-                                <option value="chèque">chèque</option>
-                                <option value="virement">virement</option>
-                            </select>
+                        <div class="div-selectBl">
+                            <div class="mb-6">
+                                <label for="montant" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Montant Reglment</label>
+                                <input type="number" name="montant" id="montant" placeholder="Montant" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                            </div>
+
+                            <div class="mb-6 dateInput">
+                                <label for="date_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Regelment</label>
+                                <input type="date" name="date" id="date_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                            </div>
                         </div>
 
-                        <button type="button" id="save-button" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save</button>
-                        <button type="button" id="finish-button" class="w-full mt-2 px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">Finish</button>
+                        <div class="div-modePyamnet">
+                            <div class="mb-6">
+                                <label for="mode_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Mode</label>
+                                {{-- <input type="text" name="type_pay" id="mode_reglement" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600"> --}}
+                                <select name="type_pay" id="mode_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                    <option value="Espèce ">espèce </option>
+                                    <option value="Chèque">chèque</option>
+                                    <option value="Virement">virement</option>
+                                </select>
+                            </div>
+                            <div id="div-chq">
+                                <div class="mb-6">
+                                    <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">N Reference </label>
+                                    <input type="number" name="reference_chq" id="reference_chq" placeholder="Montant" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                </div>
+                                <div class="mb-6 dateInput">
+                                    <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Expiration</label>
+                                    <input type="date" name="date_chq" id="date_chq" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="save-button" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">Save</button>
+                        <button type="button" id="finish-button" class="w-full mt-2 px-4 py-2 text-white bg-green-600 rounded hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500">Finish</button>
                     </form>
 
                     <div id="status-updated" class="mt-6 hidden bg-green-100 text-green-800 px-4 py-2 rounded">
@@ -96,102 +207,207 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            // Initialize Select2 for the 'code_client' field
-            $('#code_client').select2({
-                placeholder: "Select Client",
-                ajax: {
-                    url: '{{ route('reglements.search') }}', // Client search route
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function (data) {
-                        return {
-                            results: data.map(function (sale) {
-                                return {
-                                    id: sale.code_client,
-                                    name : sale.name,
-                                    text: sale.code_client + " - " + sale.name
-                                };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
 
-
-            // Handle payment status fetching
-            $('#code_client').on('change', function () {
-                const selectedClient = $(this).val();
-                fetch(`/payment-status/${selectedClient}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Client not found");
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Show the payment status
-                        $('#payment-status').removeClass('hidden');
-                        
-                        const remainingBalance = data.remaining_balance;
-                        const balanceElement = $('#remaining-balance');
-
-                        // Set the remaining balance text
-                        balanceElement.text(remainingBalance);
-
-                        // Change color based on the remaining balance
-                        if (remainingBalance > 100) {
-                            balanceElement.css('color', 'red');
-                        } else if (remainingBalance <= 100 && remainingBalance > 20) {
-                            balanceElement.css('color', 'orange');
-                        } else if (remainingBalance <= 20) {
-                            balanceElement.css('color', 'green');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-
-
-    
-
-            // Handle form submission for saving
-            $('#save-button').on('click', function () {
-                let formData = $('#reglement-form').serialize();
-
-                console.log(formData);
+<script>
+    $(document).ready(function () {
+    // Initialize Select2 for the 'code_client' field
+    $('#code_client').select2({
+        placeholder: "Select Client",
+        ajax: {
+            url: '{{ route('reglements.search') }}',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
                 
+                return {
+                    results: data.map(function (sale) {
+                        return {
+                            id: sale.code_client,
+                            name: sale.name,
+                            text: sale.code_client + " - " + sale.name
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    });
 
-                fetch('{{ route('reglements.store') }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-Token': '{{ csrf_token() }}',
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to save règlement.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        $('#status-updated').removeClass('hidden');
-                        $('#update-message').text(data.message);
-                        $('#updated-remaining-balance').text(data.updatedPaymentStatus.remaining_balance);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+    // Handle payment status and BL fetching when a client is selected
+    $('#code_client').on('change', function () {
+        const selectedClient = $(this).val();
+        $('#bls').html('<option>Loading...</option>');
+
+        // Fetch BLs for the selected client
+        fetch(`/client-bls/${selectedClient}`)
+            .then(response => response.json())
+            .then(data => {
+                $('#bls').empty();
+                if (!data.length) {
+                    $('#bls').append('<option disabled>No BLs available</option>');
+                    return;
+                }
+                data.forEach(bl => {
+                    $('#bls').append(
+                        `<option value="${bl.no_bl}">BL: ${bl.no_bl} --- Restant: ${bl.montant_restant} DH</option>`
+                    );
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching BLs:', error);
+                $('#bls').html('<option disabled>Error fetching BLs</option>');
             });
 
-            // Handle redirect on Finish button click
-            $('#finish-button').on('click', function () {
-                window.location.href = '{{ route('reglements.index') }}';
+        // Fetch payment status for the selected client
+        fetch(`/payment-status/${selectedClient}`)
+            .then(response => response.json())
+            .then(data => {
+                const balanceElement = $('#remaining-balance');
+                balanceElement.text(data.montant_restant || 0);
+                balanceElement.css('color', updateBalanceColor(data.montant_restant || 0));
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    // Save form data
+    $('#save-button').on('click', function (e) {
+    e.preventDefault();
+
+    const selectionMode = $('input[name="selection_mode"]:checked').val();
+    let bl, client;
+
+    if (selectionMode === 'client') {
+        client = $('#code_client').val();
+        bl = $('#bls').val();
+    } else if (selectionMode === 'bl') {
+        const selectedBL = $('#search_bls').select2('data')[0]; // Get the selected option's data
+        if (selectedBL) {
+            bl = selectedBL.id;
+            client = selectedBL.code_client; // Access code_client from the custom data
+        }
+    }
+
+    if (!bl) {
+        alert('Please select a BL.');
+        return;
+    }
+
+    const formData = {
+        no_bl: bl,
+        code_client: client,
+        montant: $('#montant').val(), // Replace with your input ID
+        date: $('#date_reglement').val(), // Replace with your input ID
+        type_pay: $('#mode_reglement').val(), // Replace with your input ID
+        reference_chq: $('#reference_chq').val(), // Replace with your input ID
+        date_chq: $('#date_chq').val(), // Replace with your input ID
+        _token: '{{ csrf_token() }}'
+    };
+
+    console.log(formData);
+
+    fetch('{{ route('reglements.store') }}', {
+        method: 'POST',
+        body: new URLSearchParams(formData),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                $('#status-updated').removeClass('hidden');
+                $('#update-message').text(data.message);
+                $('#updated-remaining-balance').text(parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2));
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+// -=-==-=-= end save data -=-=-==- 
+// 0-=-= 0=-== 0==0 
+
+    // Redirect on Finish button click
+    $('#finish-button').on('click', function () {
+        window.location.href = '{{ route('reglements.index') }}';
+    });
+
+    function updateBalanceColor(balance) {
+        if (balance > 100) return 'red';
+        if (balance <= 100 && balance > 20) return 'orange';
+        return 'green';
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const modeReglement = document.getElementById('mode_reglement');
+    const divChq = document.getElementById('div-chq');
+
+    // Initially hide the div if the default option is not "Chèque"
+    if (modeReglement.value !== 'Chèque') {
+        divChq.style.visibility = 'hidden';
+    }
+
+    // Add an event listener to handle changes to the dropdown
+    modeReglement.addEventListener('change', function () {
+        if (this.value === 'Chèque') {
+            divChq.style.visibility = 'visible'; 
+        } else {
+            divChq.style.visibility = 'hidden'; 
+        }
+    });
+});
+
+
+
+$(document).ready(function () {
+    // Toggle between modes
+    $('input[name="selection_mode"]').on('change', function () {
+        if ($(this).val() === 'client') {
+            $('#ha').removeClass('hiddena');
+            $('#bl-search').addClass('hiddena');
+        } else {
+            $('#ha').addClass('hiddena');
+            $('#bl-search').removeClass('hiddena');
+        }
+    });
+
+    // Initialize Select2 for BL Search
+    $('#search_bls').select2({
+    placeholder: "Search BL",
+    ajax: {
+        url: '/get-all-bls',
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+            return {
+                results: data.map(function (bl) {
+                    return {
+                        id: bl.no_bl,
+                        text: `${bl.no_bl} - ${bl.name_client} (${bl.code_client}) -- Rest: ${bl.montant_restant}DH`,
+                        code_client: bl.code_client // Attach code_client to the result
+                    };
+                })
+            };
+        },
+        cache: true
+    },
+    templateSelection: function (bl) {
+        if (bl.code_client) {
+            // Add the data-code-client attribute to the DOM element
+            const $option = $('<span>', {
+                text: bl.text,
+                'data-code-client': bl.code_client,
             });
-        });
-    </script>
+            return $option;
+        }
+        return bl.text;
+    }
+});
+
+   
+});
+
+</script>
 </x-app-layout>

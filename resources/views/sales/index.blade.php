@@ -86,7 +86,7 @@
                 </a>
                 
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-center mb-4 text-2xl font-bold">Les ventes</h2>
+                    <h2 class="font-serif uppercase underline text-gray-600  text-center mb-4 text-2xl font-bold">Les ventes</h2>
 
                     <table id="sales-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
@@ -136,8 +136,20 @@
                     { data: 'largeur', name: 'sales.largeur' },
                     { data: 'nbr', name: 'sales.nbr' },
                     { data: 'qte', name: 'sales.qte' },
-                    { data: 'prix_unitaire', name: 'sales.prix_unitaire' },
-                    { data: 'montant', name: 'sales.montant' },
+                    {
+                        data: 'prix_unitaire',
+                        name: 'sales.prix_unitaire',
+                        render: function (data) {
+                            return formatNumberWithSpaces(data);
+                        }
+                    },
+                    {
+                        data: 'montant',
+                        name: 'sales.montant',
+                        render: function (data) {
+                            return formatNumberWithSpaces(data);
+                        }
+                    }
                     // {
                     //     data: 'actions',
                     //     name: 'actions',
@@ -146,7 +158,7 @@
                     // }
                 ],
                 responsive: true,
-                lengthMenu: [5, 10, 25, 50],
+                lengthMenu: [10, 5, 15, 25, 50],
                 order: [[0, 'asc']], // Default sorting by 'no_bl' column
                 language: {
                     paginate: {
@@ -156,5 +168,11 @@
                 }
             });
         });
+        function formatNumberWithSpaces(number) {
+            if (number == null) return '';
+            return number
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
     </script>
 </x-app-layout>

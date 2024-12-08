@@ -14,12 +14,13 @@ class PaymentStatus extends Model
 
     // Mass assignable attributes
     protected $fillable = [
+        'no_bl',
         'code_client', 
-        'number_sales',
+        'name_client',
+        'date_bl',
         'montant_total', 
-        'number_paid', 
-        'payed_total', 
-        'remaining_balance',
+        'montant_payed', 
+        'montant_restant',
     ];
 
     // Defining the relationship with the Client model (assuming a Client model exists)

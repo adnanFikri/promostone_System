@@ -38,6 +38,7 @@
             background-color: #f17d7b;
             color: white;
             font-size: 15px;
+            text-transform: uppercase;
         }
 
         #reglements-table tbody tr:nth-child(even) {
@@ -87,17 +88,18 @@
                 </a>
                 
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-center mb-4 text-2xl font-bold">Reglements Table</h2>
+                    <h2 class="font-serif uppercase underline text-center text-gray-600  mb-12 text-2xl font-bold">Reglements Table</h2>
 
                     <table id="reglements-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                             <tr>
                                 <th scope="col" class="px-6 py-3">ID</th>
+                                <th scope="col" class="px-6 py-3">No BL</th>
                                 <th scope="col" class="px-6 py-3">Code Client</th>
-                                <th scope="col" class="px-6 py-3">Client</th>
+                                <th scope="col" class="px-6 py-3">RAISON</th>
                                 <th scope="col" class="px-6 py-3">Montant</th>
                                 <th scope="col" class="px-6 py-3">Date</th>
-                                <th scope="col" class="px-6 py-3">Type de Paiement</th>
+                                <th scope="col" class="px-6 py-3">Mode Paiement</th>
                                 <th scope="col" class="px-6 py-3">Action</th>
                             </tr>
                         </thead>
@@ -109,53 +111,24 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
-    {{-- <script>
-        $(document).ready(function() {
-            $('#reglements-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route('reglements.index') }}',
-                columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'code_client', name: 'code_client' },
-                    { data: 'name_client', name: 'name_client' },
-                    { data: 'montant', name: 'montant' },
-                    { data: 'date', name: 'date' },
-                    { data: 'type_pay', name: 'type_pay' },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    }
-                ],
-                responsive: true,
-                lengthMenu: [5, 10, 25, 50],
-                order: [[0, 'desc']], // Default sorting by the 'id' column in descending order
-                language: {
-                    paginate: {
-                        previous: "&laquo;",
-                        next: "&raquo;"
-                    }
-                }
-            });
-        });
-
-
-
-        // delete action 
-        $('.delete').on('click', function (e) {
-            e.preventDefault();
-            var form = $(this).next('form');
-            if (confirm('Are you sure you want to delete this Règlement?')) {
-                form.submit();
-            }
-        });
-
-    </script> --}}
+    <div id="chequeModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-500 bg-opacity-75">
+        <div class="bg-white p-6 rounded-lg max-w-lg">
+            <div class="flex justify-between items-center">
+                <h5 class="text-xl font-semibold mr-6">Cheque Details</h5>
+                <button type="button" class="text-gray-500 hover:text-gray-700" onclick="closeChequeModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="mt-4">
+                <p><strong>Reference:</strong> <span id="cheque-ref"></span></p>
+                <p><strong>Date:</strong> <span id="cheque-date"></span></p>
+            </div>
+        </div>
+    </div>
+    
 
     <script>
        $(document).ready(function() {
@@ -165,6 +138,7 @@
         ajax: '{{ route('reglements.index') }}',
         columns: [
             { data: 'id', name: 'id' },
+            { data: 'no_bl', name: 'no_bl' },
             { data: 'code_client', name: 'code_client' },
             { data: 'name_client', name: 'name_client' },
             { data: 'montant', name: 'montant' },
@@ -178,7 +152,7 @@
             }
         ],
         responsive: true,
-        lengthMenu: [5, 10, 25, 50],
+        lengthMenu: [10, 5, 15, 25, 50],
         order: [[0, 'desc']],
         language: {
             paginate: {
@@ -188,32 +162,86 @@
         }
     });
 
-    // Delete action with SweetAlert confirmation
-    // $(document).on('click', '.delete', function(e) {
-    //     e.preventDefault(); // Prevent default form submission
-    //     var formId = $(this).data('form-id'); // Get the form ID dynamically
-    //     var form = $('#delete-form-' + formId); // Find the form using the id
-
-    //     if(confirm("are you sure")){
-    //         form.submit();
-    //     }
-    //     // // Show SweetAlert confirmation dialog
-    //     // Swal.fire({
-    //     //     title: 'Are you sure?',
-    //     //     text: 'You won\'t be able to revert this!',
-    //     //     icon: 'warning',
-    //     //     showCancelButton: true,
-    //     //     confirmButtonText: 'Yes, delete it!',
-    //     //     cancelButtonText: 'No, cancel!',
-    //     //     reverseButtons: true
-    //     // }).then((result) => {
-    //     //     if (result.isConfirmed) {
-    //     //         form.submit(); // Submit the form if confirmed
-    //     //     }
-    //     //     // No need for else block because if canceled, nothing happens
-    //     // });
-    // });
 });
 
-    </script>
+$(document).on('click', '.view-cheque', function () {
+    const ref = $(this).data('ref');
+    const date = $(this).data('date');
+    $('#cheque-ref').text(ref || 'N/A');
+    $('#cheque-date').text(date || 'N/A');
+    $('#chequeModal').removeClass('hidden'); // Show modal
+});
+
+function closeChequeModal() {
+    $('#chequeModal').addClass('hidden'); // Hide modal
+}
+
+$(document).on('click', '.delete', function (e) {
+    e.preventDefault(); // Prevent the default link action
+
+    const reglementId = $(this).data('id'); // Get the ID of the item
+    const deleteForm = $('#delete-form-' + reglementId); // Select the corresponding form
+
+    // Show a confirmation dialog
+    if (confirm('Are you sure you want to delete this record?')) {
+        deleteForm.submit(); // Submit the form only if confirmed
+    }
+});
+
+
+
+// $(document).on('click', '.delete', function (e) {
+//     e.preventDefault(); // Prevent default form submission
+    
+//     const formId = $(this).attr('onclick').match(/delete-form-\d+/)[0]; // Extract form ID
+//     const form = $('#' + formId);
+
+//     Swal.fire({
+//         title: 'Are you sure?',
+//         text: "You won't be able to undo this action!",
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#d33',
+//         cancelButtonColor: '#3085d6',
+//         confirmButtonText: 'Yes, delete it!'
+//     }).then((result) => {
+//         e.preventDefault();
+//         // console.log(result);
+        
+//         if (result.isConfirmed) {
+//             // form.submit(); // Submit the form if confirmed
+//             console.log("if is true");
+            
+//         }
+//     });
+// });
+
+
+</script>
 </x-app-layout>
+
+{{-- // Delete action with SweetAlert confirmation
+// $(document).on('click', '.delete', function(e) {
+//     e.preventDefault(); // Prevent default form submission
+//     var formId = $(this).data('form-id'); // Get the form ID dynamically
+//     var form = $('#delete-form-' + formId); // Find the form using the id
+
+//     if(confirm("are you sure")){
+//         form.submit();
+//     }
+//     // // Show SweetAlert confirmation dialog
+//     // Swal.fire({
+//     //     title: 'Are you sure?',
+//     //     text: 'You won\'t be able to revert this!',
+//     //     icon: 'warning',
+//     //     showCancelButton: true,
+//     //     confirmButtonText: 'Yes, delete it!',
+//     //     cancelButtonText: 'No, cancel!',
+//     //     reverseButtons: true
+//     // }).then((result) => {
+//     //     if (result.isConfirmed) {
+//     //         form.submit(); // Submit the form if confirmed
+//     //     }
+//     //     // No need for else block because if canceled, nothing happens
+//     // });
+// }); --}}

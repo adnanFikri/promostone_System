@@ -8,8 +8,8 @@ use App\Http\Controllers\ReglementController;
 use App\Http\Controllers\PaymentStatusController;
 
 Route::get('/', function () {
-    return redirect()->route("dashboard");
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return redirect()->route("paymentStatus.index");
+})->middleware(['auth', 'verified'])->name('paymentStatus.index');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -27,6 +27,7 @@ require __DIR__.'/auth.php';
 Route::get('/upload', [SalesController::class, 'showUploadForm'])->name('sales.upload');
 Route::post('/import', [SalesController::class, 'import'])->name('sales.import');
 Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
+Route::get('/sales/get-by-bl', [SalesController::class, 'getByBl']);
 
 
 // -=-=-= 00 CLIENT ROUTES 00 -=-=-=-
@@ -41,6 +42,7 @@ Route::get('/populate-payment-status', [PaymentStatusController::class, 'populat
 Route::get('/populate-check', [PaymentStatusController::class, 'getSalesWithNoPaymentStatus']);
 
 
+
 // -=-=-= 00 Regelements ROUTES 00 -=-=-=-
 Route::get('/reglements', [ReglementController::class, 'index'])->name('reglements.index');
 Route::get('/reglements/create', [ReglementController::class, 'create'])->name('reglements.create');
@@ -48,3 +50,9 @@ Route::post('/reglements/store', [ReglementController::class, 'store'])->name('r
 Route::get('/reglements/search', [ReglementController::class, 'search'])->name('reglements.search');
 Route::get('/payment-status/{code_client}', [ReglementController::class, 'getPaymentStatus']);
 Route::delete('/reglements/{id}', [ReglementController::class, 'destroy'])->name('reglements.destroy');
+Route::get('/reglements/get-by-bl', [ReglementController::class, 'getReglementsByBl']);
+
+// Route::get('/client-bls/{codeClient}', [ReglementController::class, 'getBLs']);
+
+Route::get('/client-bls/{clientCode}', [ReglementController::class, 'getClientBls'])->name('client.bls');
+Route::get('/get-all-bls', [ReglementController::class, 'getAllBLs']);

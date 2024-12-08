@@ -24,7 +24,10 @@
                         <div class="mb-6">
                             <label for="code_client" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Client Code</label>
                             <select name="code_client" id="code_client" class="block w-50 text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
-                                <option value="">Select Code Client</option>
+                                {{-- <option value="">Select Code Client</option> --}}
+                                <option value="{{ $client->code_client }}"  selected >
+                                    {{ $client->code_client }}
+                                </option>
                                 @foreach ($sales as $sale)
                                     <option value="{{ $sale->code_client }}" @if($sale->code_client == $client->code_client) selected @endif>
                                         {{ $sale->code_client }}
