@@ -116,8 +116,11 @@
                     display: flex;
                     justify-content: space-between;
                 }
-                input[type=date]{
-                    width:300px;
+                #parent1 input[type=date]{
+                    /* width:300px; */
+                }
+                #parent2 input[type=date]{
+                    /* width:300px; */
                 }
 
                 #div-chq{
@@ -171,6 +174,10 @@
                     color: #06600a;
                     border-radius: 3px;
                     font-weight: 900;
+                }
+
+                #date_reglement{
+                    width: 220px;
                 }
             </style>
 
