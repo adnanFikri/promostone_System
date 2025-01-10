@@ -21,7 +21,15 @@ class PaymentStatus extends Model
         'montant_total', 
         'montant_payed', 
         'montant_restant',
+        'destination',
+        'commerçant',
+        'tel-commerçant',
+        'date-echeance',
+        'user-name',
     ];
+
+    // protected $fillable = ['no_bl', 'code_client', 'montant_payed', 'montant_restant', 'commerçant', 'tel-commerçant', 'date-echeance','user-name'];
+
 
     // Defining the relationship with the Client model (assuming a Client model exists)
     public function client()
@@ -39,4 +47,10 @@ class PaymentStatus extends Model
         $this->remaining_balance = $remainingBalance;
         $this->save();
     }
+
+    public function bonLivraison()
+{
+    return $this->belongsTo(BonLivraison::class, 'no_bl', 'no_bl');
+}
+
 }

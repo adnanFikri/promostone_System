@@ -1,0 +1,63 @@
+## sales controller :
+    index                   Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
+    create                  Route::get('/sales/create', [SalesController::class, 'create'])->name("sales.create");
+    store                   Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store');
+    showBonLivraison        Route::get('/bon-livraison/{no_bl}', [SalesController::class, 'showBonLivraison'])->name('bon_livraison');
+    showBonCoup             Route::get('/bon-coup/{no_bl}', [SalesController::class, 'showBonCoup'])->name('bon_coup');
+    showUploadForm          Route::get('/upload', [SalesController::class, 'showUploadForm'])->name('sales.upload');
+    import                  Route::post('/import', [SalesController::class, 'import'])->name('sales.import');
+    getByBl                 Route::get('/sales/get-by-bl', [SalesController::class, 'getByBl'])->name("sales.get-by-bl");
+    getSalesWithClients     
+
+## Client Controller:
+    index                   RESOURCE
+    create                  RESOURCE
+    store                   RESOURCE
+    show                    RESOURCE
+    edit                    RESOURCE
+    update                  RESOURCE
+    destroy                 RESOURCE
+    search                  Route::get('sales/search', [ClientController::class, 'search'])->name('sales.search');
+    getNextCode             Route::get('/clients/next-code', [ClientController::class, 'getNextCode']);
+    uploadForm              Route::get('/clients/upload', [ClientController::class, 'uploadForm'])->name('clients.upload');
+    import                  Route::post('/clients/import', [ClientController::class, 'import'])->name('clients.import');
+    filterPaymentStatuses   
+    getClientData           Route::get('/clientsByCode/{code_client}', [ClientController::class, 'getClientData'])->name('clients.ByCode');
+    changeType              Route::put('/clients/{client}/change-type/{type}', [ClientController::class, 'changeType'])->name('clients.changeType');
+
+## PaymentStatus Controller:
+    index                           Route::get('/payment-status', [PaymentStatusController::class, 'index'])->name('paymentStatus.index');
+    populatePaymentStatus           Route::get('/populate-payment-status', [PaymentStatusController::class, 'populatePaymentStatus']);
+    getSalesWithNoPaymentStatus     Route::get('/populate-check', [PaymentStatusController::class, 'getSalesWithNoPaymentStatus']);
+    getByClientType                 Route::get('/getByClientType', [PaymentStatusController::class, 'getByClientType'])->name('getByClientType');
+
+
+## Regelemtns Controller:
+    index                   Route::get('/reglements', [ReglementController::class, 'index'])->name('reglements.index');
+    create                  Route::get('/reglements/create', [ReglementController::class, 'create'])->name('reglements.create');
+    store                   Route::post('/reglements/store', [ReglementController::class, 'store'])->name('reglements.store');
+    destroy                 Route::delete('/reglements/{id}', [ReglementController::class, 'destroy'])->name('reglements.destroy');
+    search                  Route::get('/reglements/search', [ReglementController::class, 'search'])->name('reglements.search');
+    getPaymentStatus        Route::get('/payment-status/{code_client}', [ReglementController::class, 'getPaymentStatus']);
+    getReglementsByBl       Route::get('/reglements/get-by-bl', [ReglementController::class, 'getReglementsByBl'])->name("reglements.get-by-bl");
+    getClientBls            Route::get('/client-bls/{clientCode}', [ReglementController::class, 'getClientBls'])->name('client.bls');
+    getAllBLs               Route::get('/get-all-bls', [ReglementController::class, 'getAllBLs'])->name('reglements.get-all-bls');
+    avance                  Route::get('/avance/create/{no_bl}/{code_client}/{total_amount}', [ReglementController::class, 'avance'])->name('avance.create');
+    getBLs                  
+
+
+## Products Controller:
+    index                   RESOURCE
+    create                  RESOURCE
+    store                   RESOURCE
+    show                    RESOURCE
+    edit                    RESOURCE
+    update                  RESOURCE
+    destroy                 RESOURCE
+    generateProductCode     SELF USE
+
+
+## Profile Controller:
+    edit            Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    update          Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    destroy         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

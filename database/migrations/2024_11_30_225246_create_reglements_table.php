@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('reglements', function (Blueprint $table) {
             $table->id();
             $table->string('no_bl')->nullable();
-            $table->string('code_client'); // Foreign key to clients
-            $table->string('nom_client'); // Foreign key to clients
-            $table->decimal('montant', 10, 2); // Amount paid by the client
-            $table->date('date')->default(now()); // Payment date
-            $table->string('type_pay'); // Payment type
-            $table->string('reference_chq')->nullable(); // Payment type
-            $table->date('date_chq')->nullable(); // Payment type
+            $table->string('code_client'); 
+            $table->string('nom_client'); 
+            $table->decimal('montant', 10, 2); 
+            $table->date('date')->default(now()); 
+            $table->string('type_pay'); 
+            $table->string('reference_chq')->nullable(); 
+            $table->date('date_chq')->nullable(); 
+            $table->string('user-name')->nullable(); 
             $table->timestamps();
 
             // Foreign key constraint (assuming clients table has a column 'code_client')

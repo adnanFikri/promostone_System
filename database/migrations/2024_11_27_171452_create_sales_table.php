@@ -46,8 +46,10 @@ public function up()
         $table->decimal('largeur', 10, 3)->nullable();
         $table->decimal('nbr', 10, 3)->nullable();
         $table->decimal('qte', 10, 3)->nullable();
+        $table->string('mode')->nullable();
         $table->decimal('prix_unitaire', 10, 2)->nullable();
         $table->decimal('montant', 10, 2)->nullable();
+        $table->string('user-name')->nullable(); 
         $table->timestamps();
     
         // Define foreign key constraint

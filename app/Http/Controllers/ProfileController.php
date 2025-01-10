@@ -11,6 +11,14 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function __construct()
+{
+    $this->middleware('auth'); // Ensure auth is first
+    $this->middleware('permission:edit profile')->only(['edit']);
+    $this->middleware('permission:update profile')->only(['update']);
+    $this->middleware('permission:delete profile')->only(['destroy']);
+}
+
     /**
      * Display the user's profile form.
      */

@@ -2,15 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BonSortie;
+use App\Models\Sale;
 use App\Models\Client;
+use App\Models\BonCoupe;
 use App\Models\Reglement;
+use App\Models\BonLivraison;
 use Illuminate\Http\Request;
+
 use App\Models\PaymentStatus;
+use function Illuminate\Log\log;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+// use Illuminate\Routing\Controller;
 
 class ReglementController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        
+        $this->middleware('permission:view reglements')->only(['index']);
+        $this->middleware('permission:create reglements')->only(['create']);
+        $this->middleware('permission:store reglements')->only(['store']);
+        $this->middleware('permission:delete reglements')->only(['destroy']);
+        $this->middleware('permission:search reglements')->only(['search']);
+        $this->middleware('permission:view payment status by client')->only(['getPaymentStatus']);
+        $this->middleware('permission:view reglements by bl')->only(['getReglementsByBl']);
+        $this->middleware('permission:view client bls')->only(['getClientBls']);
+        $this->middleware('permission:view all bls')->only(['getAllBLs']);
+        $this->middleware('permission:create avance')->only(['avance']);
+    }
 
     public function index(Request $request)
     {
@@ -31,11 +54,15 @@ class ReglementController extends Controller
 
             return DataTables::of($data)
             ->addColumn('actions', function ($row) {
-                $btn = '<a style="float:right;" href="' . route('reglements.destroy', $row->id) . '" class="delete btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById(\'delete-form-' . $row->id . '\').submit();"><svg class="w-6 h-6 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
-                            </svg>
-                        </a>';
-            
+                if (auth()->user()->can('delete reglements')) {
+                    $btn = '
+                            <a style="float:right;" href="' . route('reglements.destroy', $row->id) . '" class="delete btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById(\'delete-form-' . $row->id . '\').submit();"><svg class="w-6 h-6 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                                </svg>
+                            </a>
+                        '
+                    ;
+                }
                 if ($row->type_pay === 'Chèque') {
                     $btn .= '<button style="float:left;" class="btn btn-primary btn-sm view-cheque float-left" data-id="' . $row->id . '" data-ref="' . $row->reference_chq . '" data-date="' . $row->date_chq . '">
                         <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -44,8 +71,13 @@ class ReglementController extends Controller
 
                     </button>';
                 }
-            
-                $btn .= '<form id="delete-form-' . $row->id . '" action="' . route('reglements.destroy', $row->id) . '" method="POST" style="display: none;" >' . csrf_field() . method_field('DELETE') . '</form>';
+                if (auth()->user()->can('delete reglements')) {
+                    $btn .= '
+                        <form id="delete-form-' . $row->id . '" action="' . route('reglements.destroy', $row->id) . '" method="POST" style="display: none;" >
+                            ' . csrf_field() . method_field('DELETE') . 
+                        '</form> '
+                    ;
+                }
             
                 return $btn;
             })
@@ -67,40 +99,90 @@ class ReglementController extends Controller
         try {
             $paymentStatus = PaymentStatus::where('no_bl', $request->no_bl)->first();
 
-
             if (!$paymentStatus) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No BL found for the given client and BL number.',
                 ], 404);
             }
-
-            // Check if the payment exceeds the remaining balance
-            $remainingBalance = $paymentStatus->montant_total - $paymentStatus->montant_payed;
-            if ($request->montant > $remainingBalance) {
+            // Fetch client name from `clients` table if `name_client` is missing
+            if (is_null($paymentStatus->name_client)) {
+                $client = Client::where('code_client', $request->code_client)->first();
+                if ($client) {
+                    $paymentStatus->update(['name_client' => $client->name]);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Client not found for the given client code.',
+                    ], 404);
+                }
+            }
+            // Fetch date_bl from `sales` table if missing
+        if (is_null($paymentStatus->date_bl)) {
+            $sale = Sale::where('no_bl', $request->no_bl)->first();
+            if ($sale) {
+                $paymentStatus->update(['date_bl' => $sale->date]);
+            } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'The payment amount exceeds the remaining balance for this BL.',
-                ], 400);
+                    'message' => 'Sale not found for the given BL number.',
+                ], 404);
             }
-
+        }
             // Create the Reglement entry
             $reglement = Reglement::create([
                 'no_bl' => $request->no_bl,
                 'code_client' => $request->code_client,
                 'nom_client' => $paymentStatus->name_client ,
                 'montant' => $request->montant,
-                'date' => $request->date, 
+                'date' =>  $request->has('commerçant') ? now() : $request->date, 
                 'type_pay' => $request->type_pay,
-                'reference_chq' => $request->reference_chq, // Can be null
-                'date_chq' => $request->date_chq,           // Can be null
+                'reference_chq' => $request->reference_chq, 
+                'date_chq' => $request->date_chq,           
             ]);
 
-            // Update the PaymentStatus for the selected BL
-            $paymentStatus->update([
+
+            $rest = $paymentStatus->montant_total - ($paymentStatus->montant_payed + $request->montant);
+            // Prepare data to update PaymentStatus
+            $paymentStatusData = [
                 'montant_payed' => $paymentStatus->montant_payed + $request->montant,
-                'montant_restant' => $paymentStatus->montant_total - ($paymentStatus->montant_payed + $request->montant),
-            ]);
+                'montant_restant' => $rest > 0 ? $rest : 0,
+                // 'commerçant' => 'ahmed',
+            ];
+            BonLivraison::firstOrCreate(
+                ['no_bl' => $request->no_bl]
+            );
+            BonCoupe::firstOrCreate(
+                ['no_bl' => $request->no_bl]
+            );
+            BonSortie::firstOrCreate(
+                ['no_bl' => $request->no_bl]
+            );
+
+            if ($request->has('chefAtelier') && $request->chefAtelier !== null) {
+                $paymentStatusData['chef-atelier'] = $request->chefAtelier;
+            }
+            
+            if ($request->has('destination') && $request->destination !== null) {
+                $paymentStatusData['destination'] = $request->destination;
+            }
+            
+            if ($request->has('commerçant') && $request->commerçant !== null) {
+                $paymentStatusData['commerçant'] = $request->commerçant;
+            }
+            
+            if ($request->has('tel_commerçant') && $request->tel_commerçant !== null) {
+                $paymentStatusData['tel-commerçant'] = $request->tel_commerçant;
+            }
+            
+            if ($request->has('date_echeance') && $request->date_echeance !== null) {
+                $paymentStatusData['date-echeance'] = $request->date_echeance;
+            }
+
+            $paymentStatusData['user-name'] = Auth::user()->name;
+
+            // Update the PaymentStatus
+            $paymentStatus->update($paymentStatusData);
 
             // Success response
             return response()->json([
@@ -118,76 +200,20 @@ class ReglementController extends Controller
             ], 400);
         }
     }
-
-
-//     public function store(Request $request)
-// {
-//     try {
-
-//         // Validate
-//         $request->validate([
-//             'code_client' => 'required|exists:clients,code_client',
-//             'montant' => 'required|numeric|min:0',
-//             'date' => 'required|date',
-//             'type_pay' => 'nullable|string|max:255',
-//         ]);
-
-//         // Create new reglement
-//         $reglement = Reglement::create($request->all());
-
-//         // Update payment status
-//         $paymentStatus = PaymentStatus::where('code_client', $request->code_client)->first();
-
-//         if ($paymentStatus) {
-//             $numberPaid = Reglement::where('code_client', $request->code_client)->count();
-//             $payedTotal = Reglement::where('code_client', $request->code_client)->sum('montant');
-//             $remainingBalance = $paymentStatus->montant_total - $payedTotal;
-
-//             $paymentStatus->update([
-//                 'number_paid' => $numberPaid,
-//                 'payed_total' => $payedTotal,
-//                 'remaining_balance' => $remainingBalance,
-//             ]);
-
-//         }
-
-//         $updatedPaymentStatus = PaymentStatus::where('code_client', $request->code_client)->first();
-
-//         // Set success message in session
-//         session()->flash('success', 'Règlement enregistré avec succès.');
-        
-//         return response()->json([
-//             'success' => true,
-//             'message' => 'Règlement enregistré avec succès.',
-//             'updatedPaymentStatus' => $updatedPaymentStatus,
-//         ]);
-//     } catch (\Exception $e) {
-
-//         // In case of error, set error message in session
-//         session()->flash('error', 'An error occurred while saving the règlement.');
-        
-//         return response()->json([
-//             'success' => false,
-//             'message' => 'An error occurred while saving the règlement.',
-//         ], 500);
-//     }
-// }
-
-
     public function search(Request $request)
     {
         $search = $request->input('q');
 
-        $clients = PaymentStatus::query()
-            ->select(['code_client', 'name_client'])
-            ->where('name_client', 'like', "%{$search}%")
+        $clients = Client::query()
+            ->select(['code_client', 'name'])
+            ->where('name', 'like', "%{$search}%")
             ->orWhere('code_client', 'like', "%{$search}%")
             ->distinct() // Ensure unique combinations of code_client and name_client
             ->get()
-            ->map(function ($paymentStatus) {
+            ->map(function ($client) {
                 return [
-                    'code_client' => $paymentStatus->code_client,
-                    'name' => $paymentStatus->name_client,
+                    'code_client' => $client->code_client,
+                    'name' => $client->name,
                 ];
             });
         
@@ -279,5 +305,19 @@ class ReglementController extends Controller
         // Redirect back with a success message
         return redirect()->route('reglements.index')->with('success', 'Règlement deleted successfully');
     }
+
+
+    public function avance($no_bl, $code_client, $total_amount)
+{
+    $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
+    $clientName = Client::where('code_client', $code_client)->value('name');
+
+    return view('sales.avance', [
+        'no_bl' => $no_bl,
+        'code_client' => $code_client,
+        'client_name' => $clientName,
+        'total_amount' => $total_amount,
+    ]);
+}
 
 }

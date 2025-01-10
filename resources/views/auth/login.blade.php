@@ -1,47 +1,71 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{-- <link rel="icon" type="image/png" href="./assets/img/favicon.png"> --}}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('imgs/promologo.png') }}">
+    
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="{{asset('./assets/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{asset('./assets/css/uf-style.css')}}">
+    {{-- <title>Login Form Bootstrap 1 by UIFresh</title> --}}
+    <style>
+      #logo-img{
+        filter: drop-shadow(4px 4px 6px rgba(255, 255, 255, 0.5));
+      }
+    </style>
+  </head>
+  <body >
+    {{-- <div id="night-sky" style="--number-of-stars: 20"> --}}
+
+        <div class="uf-form-signin" >
+          <div class="text-center">
+            <a href="#"><img style="margin: 20px" src="{{asset('imgs/promostoneLogo.png')}}" id="logo-img" alt="" width="90" height="85"> </a>
+            {{-- <application-logo  /> --}}
+          <h1 class="text-white h3">Connexion au compte</h1>
+          </div>
+          <form class="mt-4" method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="input-group uf-input-group input-group-lg mb-3">
+              <span class="input-group-text fa fa-user"></span>
+              <input type="text" name="email" class="form-control" placeholder="Email address" required> 
+              @error('email')
+                  <span class="text-danger">{{ $message }}</span>
+              @enderror
+            </div>
+            <div class="input-group uf-input-group input-group-lg mb-3">
+              <span class="input-group-text fa fa-lock"></span>
+              <input type="password" name="password" class="form-control" placeholder="Password" required>
+              @error('password')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+            </div>
+            <div class="d-flex mb-3 justify-content-between">
+              <div class="form-check">
+                <input type="checkbox" name="remember" class="form-check-input uf-form-check-input" id="exampleCheck1">
+                <label class="form-check-label text-white" for="exampleCheck1">Remember Me</label>
+    
+              </div>
+              {{-- <a href="#">Forgot password?</a> --}}
+            </div>
+            <div class="d-grid mb-4">
+              <button type="submit" class="btn uf-btn-primary btn-lg">Login</button>
+            </div>
+          </form>
         </div>
+    {{-- </div> --}}
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+    <!-- JavaScript -->
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            {{-- @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('register') }}">
-                    {{ __("don't have an account?") }}
-                </a>
-            @endif --}}
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    <!-- Separate Popper and Bootstrap JS -->
+    <script src="./assets/js/popper.min.js"></script>
+    <script src="./assets/js/bootstrap.min.js"></script>
+  </body>
+</html>

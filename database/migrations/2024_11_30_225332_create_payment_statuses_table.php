@@ -20,6 +20,12 @@ return new class extends Migration
             $table->decimal('montant_total', 10, 2)->default(0); // Total amount owed (sum of all sales amounts)
             $table->decimal('montant_payed', 10, 2)->default(0); // Total amount paid by the client
             $table->decimal('montant_restant', 10, 2)->default(0); // Remaining balance to be paid
+            $table->string('destination')->nullable();
+            $table->string('commerçant')->nullable();
+            $table->string('tel-commerçant')->nullable();
+            $table->date('date-echeance')->nullable();
+            $table->date('chef-atelier')->nullable();
+            $table->string('user-name')->nullable(); 
             $table->timestamps();
 
             // Foreign key constraint (assuming clients table has a column 'code_client')

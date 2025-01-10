@@ -1,5 +1,7 @@
 
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <style>
         .selec2{
             height: 40px !important;
@@ -24,15 +26,16 @@
         .dropdown-wrapper{
             background-color: gray !important;
         }
+
+        .cinpt{
+            display: flex;
+        }
     </style>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Create Client') }}
-        </h2>
-    </x-slot>
+
+    @can("create clients")
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-12">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h2 class="text-center mb-4 text-2xl font-bold">Ajouter nouveau client</h2>
@@ -47,18 +50,10 @@
                         @csrf
 
                         <div class="mb-6" >
-                            <label for="code_client" class="block text-lg font-medium text-gray-900 dark:text-white mb-2"> Code Client </label>
-                            <select name="code_client" id="code_client"  class="block w-50 text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
-                                <option value="">Select Code Client</option>
-                                @foreach ($sales as $sale)
-                                    <option value="{{ $sale->code_client }}">{{ $sale->code_client }}</option>
-                                @endforeach
-                            </select>
-                            @error('code_client')
-                                <small class="text-red-600">{{ $message }}</small>
-                            @enderror
+                            <label for="code_client" class="block text-gray-700 font-medium">Client Code</label>
+                            <input type="text" id="code_client" name="code_client"  readonly 
+                                   class="w-full border border-gray-200 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                         </div>
-
 
                         <div class="mb-6">
                             <label for="name" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Nom Client </label>
@@ -70,7 +65,7 @@
 
                         <div class="mb-6">
                             <label for="phone" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Téléphon Client </label>
-                            <input type="text" name="phone" id="phone" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg focus:outline-none bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" value="{{ old('phone') }}" required>
+                            <input type="text" name="phone" id="phone" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg focus:outline-none bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" value="{{ old('phone') }}">
                             @error('phone')
                                 <small class="text-red-600">{{ $message }}</small>
                             @enderror
@@ -79,9 +74,9 @@
                         <div class="mb-6">
                             <label for="type" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Type Client </label>
                             <select name="type" id="type" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
-                                <option value="Particulier">Particulier</option>
-                                <option value="Fiche client">Fiche client</option>
-                                <option value="Anomalie">Anomalie</option>
+                                <option value="PARTICULIER">Particulier</option>
+                                <option value="FICHE CLIENT">Fiche client</option>
+                                <option value="ANOMALIE">Anomalie</option>
                             </select>
                             @error('type')
                                 <small class="text-red-600">{{ $message }}</small>
@@ -95,28 +90,31 @@
             </div>
         </div>
     </div>
-
+    @endcan
     <script>
-        $(document).ready(function() {
-            $('#code_client').select2({
-                ajax: {
-                    url: '{{ route('sales.search') }}',
-                    dataType: 'json',
-                    processResults: function (data) {
-                        return {
-                            results: data.map(function (sale) {
-                                return {
-                                    id: sale.code_client,
-                                    text: sale.code_client
-                                };
-                            })
-                        };
-                    }
-                }
-            });
+        fetch('/clients/next-code', {
+            method: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('code_client').value = data.code_client; // Populate the input
+            document.getElementById('clientModal').classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error fetching client code:', error);
+            Swal.fire('Error!', 'Failed to fetch client code', 'error');
         });
 
 
     </script>
 
-</x-app-layout>
+@endsection

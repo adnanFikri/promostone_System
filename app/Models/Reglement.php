@@ -22,6 +22,7 @@ class Reglement extends Model
         'type_pay',
         'reference_chq',
         'date_chq',
+        'user-name',
     ];
 
     // Defining the relationship with the Client model (assuming a Client model exists)

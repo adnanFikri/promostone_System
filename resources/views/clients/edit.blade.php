@@ -1,9 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Edit Client') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
+
+@section('content')
+@can("edit clients")
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -49,7 +47,7 @@
 
                         <div class="mb-6">
                             <label for="phone" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Phone Number</label>
-                            <input type="text" name="phone" id="phone" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg focus:outline-none bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" value="{{ old('phone', $client->phone) }}" required>
+                            <input type="text" name="phone" id="phone" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg focus:outline-none bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" value="{{ old('phone', $client->phone) }}">
                             @error('phone')
                                 <small class="text-red-600">{{ $message }}</small>
                             @enderror
@@ -74,7 +72,7 @@
             </div>
         </div>
     </div>
-
+@endcan
     <script>
         $(document).ready(function() {
             $('#code_client').select2({
@@ -95,4 +93,4 @@
             });
         });
     </script>
-</x-app-layout>
+@endsection

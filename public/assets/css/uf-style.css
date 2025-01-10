@@ -1,0 +1,175 @@
+/*!
+
+ =========================================================
+ * Login Form Bootstrap 1
+ =========================================================
+
+ * Product Page: https://uifresh.net
+ * Copyright 2021 UIFresh (https://uifresh.net)
+ * Coded by UIFresh
+
+ =========================================================
+
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+ */
+html, body{
+	height: 100%;
+}
+/* body{
+	display: flex;
+	align-items: center;
+	background-image: linear-gradient( to right, #f12711, #f5af19);
+} */
+
+body {
+  display: flex;
+  align-items: center;
+  background-image: url('../img/bg-login-marbre.webp');
+  background-size: cover; /* Ensures the image covers the entire background */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  background-position: center; /* Centers the image */
+  height: 100vh; /* Ensures the body takes up the full viewport height */
+  margin: 0; /* Removes default margin */
+  font-family: 'Brush Script MT', cursive;
+}
+a{
+	color: #842029;
+	text-decoration: none;
+}
+a:hover{
+	color: #5a1118;
+}
+/* .uf-form-signin {
+    width: 100%;
+    max-width: 350px;
+    padding: 15px;
+    margin: auto;
+} */
+
+.uf-form-signin {
+  width: 100%;
+  max-width: 450px;
+  padding: 15px 25px;
+  margin: auto;
+  background-color: rgba(119, 114, 114, 0.648); /* Semi-transparent white background */
+  border-radius: 8px; /* Rounded corners for a smoother look */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  backdrop-filter: blur(5px); /* Adds a glass-like blur effect (optional) */
+  text-align: center; /* Centers the form content */
+}
+.uf-input-group .input-group-text {
+    background: #ffffff70;
+    color: #f8f9fa;
+    border: unset;
+    font-size: 18px;
+    padding: 15px;
+    width: 50px;
+}
+
+.uf-input-group .form-control {
+    border: unset;
+    border-left: 1px solid #ffffff05;
+    font-size: 16px;
+    background: #ffffff70;
+}
+
+.uf-input-group .form-control:focus {
+    box-shadow: unset;
+    background: #ffffff;
+}
+.uf-btn-primary {
+    background: #23273e;
+    color: #fff;
+}
+
+.uf-btn-primary:hover {
+    background: #030d4efe;
+    color: #fff;
+}
+
+.uf-form-check-input:checked {
+    background-color: #09198472;
+    border-color: #1b064a;
+}
+
+.uf-social-login .uf-social-ic+.uf-social-ic{
+	margin-left: 15px;
+}
+.uf-social-ic{
+	width: 40px;
+	height: 40px;
+	background: #fff;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.uf-social-ic:hover{
+	background: #09198472;
+}
+.uf-social-ic:hover i{
+	color: #fff;
+}
+
+
+
+/* background starts :  */
+
+#night-sky {
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  }
+  #night-sky .star {
+    --travel: 100vw;
+    --size: 1;
+  }
+  #night-sky .star {
+    position: relative;
+    background: linear-gradient(-45deg, lightseagreen, rgba(0, 0, 255, 0));
+    filter: drop-shadow(0 0 6px lightseagreen);
+    opacity: 1;
+    width: calc(var(--size) * 2px);
+    height: calc(var(--size) * 100px);
+    transform: rotate(-45deg);
+    animation: shooting-star ease-in-out infinite;
+    animation-duration: var(--duration);
+    animation-delay: var(--delay);
+    top: var(--top);
+    left: var(--left);
+  }
+  #night-sky .star::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: -5px;
+    width: calc(var(--size) * 7px);
+    height: calc(var(--size) * 7px);
+    border: lightseagreen 3.5px solid;
+    background-color: lightseagreen;
+    -webkit-clip-path: polygon(0% 50%, 40% 40%, 50% 0%, 60% 40%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%);
+            clip-path: polygon(0% 50%, 40% 40%, 50% 0%, 60% 40%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%);
+    transform: rotate(45deg);
+  }
+  @keyframes shooting-star {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 0;
+    }
+    100% {
+      transform: translate(var(--travel), var(--travel)) rotate(-45deg);
+    }
+  }/*# sourceMappingURL=styles.css.map */

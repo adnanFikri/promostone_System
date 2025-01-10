@@ -9,6 +9,8 @@
         </p>
     </header>
 
+    @can("update profile")
+    
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
@@ -61,4 +63,5 @@
             @endif
         </div>
     </form>
+    @endcan
 </section>
