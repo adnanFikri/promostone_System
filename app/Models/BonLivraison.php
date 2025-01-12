@@ -11,7 +11,7 @@ class BonLivraison extends Model
     use HasFactory;
 
     protected $table = 'bon_livraisons';
-    protected $fillable = ['no_bl','livree'];
+    protected $fillable = ['no_bl','livree','userName'];
 
     public function sales()
 {

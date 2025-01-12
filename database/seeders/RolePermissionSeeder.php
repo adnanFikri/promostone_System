@@ -50,6 +50,21 @@ class RolePermissionSeeder extends Seeder
                 'view users', 'create users', 'store users', 'view user details', 
                 'edit users', 'update users', 'delete users'
             ],
+            'Achat' => [
+                'view achats', 'create achat', 'store achat',  'view achats by bl'
+            ],
+            'AchatPaymentStatus' => [
+                'view achat payment statuses'
+            ],
+            'AchatReglements' => [
+                'view achat reglements', 'create achat reglements', 'store achat reglements', 'delete achat reglements', 
+                'create achat avance'
+            ],
+            'Fournisseeur' => [
+                'view fournisseurs', 'create fournisseur', 'store fournisseur', 'delete fournisseur', 
+                'create achat avance'
+            ],
+
         ];
 
         // Flatten the permissions for easier processing
@@ -76,6 +91,15 @@ class RolePermissionSeeder extends Seeder
                 'view reglements', 'create reglements', 'store reglements', 'delete reglements', 
                 'search reglements', 'view payment status by client', 'view reglements by bl', 
                 'view client bls', 'view all bls', 'create avance',
+            ],
+            'chef Atelier' => [
+                // Sales
+                 'view bon coupe',
+                // Clients
+                'view clients', 'create clients', 'store clients', 'view client details', 
+                'edit clients', 'update clients', 'delete clients', 'search sales', 
+                'generate client code', 'view client upload', 'import clients', 
+                'filter payment statuses', 'view client data by code', 'change client type',
             ],
         ];
 

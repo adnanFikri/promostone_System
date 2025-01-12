@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('sortie')->nullable()->default('Non'); 
             $table->dateTime('date_sortie')->nullable(); 
             $table->integer('print_nbr')->nullable()->default(0); 
+            $table->integer('userName')->nullable(); 
             $table->timestamps();
         });
     }

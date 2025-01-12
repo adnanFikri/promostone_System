@@ -139,7 +139,7 @@
 
          <!-- Payment Section -->
          <div class="mt-4">
-            <h3 class="text-lg font-bold">Status Paiement :</h3>
+            <h3 class="text-lg font-bold">Statut Paiement :</h3>
             <table class="min-w-96 border-collapse border border-gray-300 mt-4 ">
                 <thead class="">
                     <tr>
@@ -152,7 +152,7 @@
                     </tr>
                     <tr>
                         <th class="bg-gray-100 border border-gray-300 p-2 text-left text-gray-600">Reste à Payer</th>
-                        <td class="border border-gray-300 p-2 text-red-400">{{ $paymentStatus->montant_restant }}</td>
+                        <td class="border border-gray-300 p-2 text-red-400">{{ $paymentStatus->montant_restant > 0 ? $paymentStatus->montant_restant : 0 }}</td>
                         {{-- <th class="border border-gray-300 p-2 text-left">Date</th> --}}
                     </tr>
                 </thead>

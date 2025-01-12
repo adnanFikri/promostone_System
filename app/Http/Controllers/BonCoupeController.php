@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BonCoupe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class BonCoupeController extends Controller
 {
@@ -34,6 +35,8 @@ class BonCoupeController extends Controller
                     'no_bl' => $bon->no_bl,
                     'coupe' => $bon->coupe,
                     'print_nbr' => $bon->print_nbr,
+                    'date_coupe' => $bon->date_coupe,
+                    'userName' => $bon->userName,
                     'products' => $productsString,  // Return the products as a string
                     'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
@@ -70,10 +73,15 @@ class BonCoupeController extends Controller
             // Retrieve the BonCoupe record based on the no_bl value
             $bonCoupe = BonCoupe::where('no_bl', $no_bl)->first();
         
-            if ($bonCoupe) {
-                // Increment the print_nbr field
-                $bonCoupe->print_nbr = $bonCoupe->print_nbr + 1;
-                $bonCoupe->save();
+
+            if ($bonCoupe ) {
+                if (!auth()->user()->can('create users')) {
+                    // Increment the print_nbr field
+                    $bonCoupe->print_nbr = $bonCoupe->print_nbr + 1;
+                    $bonCoupe->date_coupe= now();
+                    $bonCoupe->userName = Auth::user()->name;
+                    $bonCoupe->save();
+                }
         
                 // Return success response
                 return response()->json(['success' => true, 'message' => 'Print number incremented successfully.']);

@@ -33,6 +33,7 @@ public function index()
                 'id' => $bon->id,
                 'no_bl' => $bon->no_bl,
                 'livree' => $bon->livree,
+                'userName' => $bon->userName,
                 'products' => $productsString,  // Return the products as a string
                 'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                 'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection

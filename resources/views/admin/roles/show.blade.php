@@ -3,10 +3,20 @@
 @section('title', 'Roles')
 
 @section('content')
+<style>
+    #container-button-back{
+        display: flex;
+        justify-content: flex-end;
+        transition: 0.3s;
+    }
+</style>
 <div class="container mx-auto px-4">
     <div class="bg-white rounded-lg shadow">
         <div class="p-6">
-            <h5 class="text-xl font-semibold mb-6">Permissions</h5>
+            <div id="container-button-back">
+                <a href="/roles" class="bg-blue-400 rounded hover:bg-blue-700 hover:text-white  p-2 text-end">Back To Roles</a>
+            </div>
+            <h5 class="text-xl font-semibold mb-6">Permissions</h5> 
             <div class="bg-gray-50 rounded-lg shadow p-6">
                 <form action="{{ route('addPermissions', $role->id) }}" method="post">
                     @csrf

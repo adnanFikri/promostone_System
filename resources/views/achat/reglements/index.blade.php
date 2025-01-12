@@ -37,7 +37,7 @@
         }
 
         #reglements-table th {
-            background-color: #f17d7b;
+            background-color: #983230;
             color: white;
             font-size: 15px;
             text-transform: uppercase;
@@ -78,16 +78,16 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
 
-                @can("create reglements")
+                {{-- @can("create reglements")
                     <a href="{{ route('reglements.create') }}" class="btnA">
                         <svg class="w-7 h-6 text-gray-200 dark:text-white " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
                         </svg>
                     </a>
-                @endcan
+                @endcan --}}
                 
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="font-serif uppercase underline text-center text-gray-600  mb-12 text-2xl font-bold">Reglements Table</h2>
+                    <h2 class="font-serif uppercase underline text-center text-gray-600  mb-12 text-2xl font-bold">Achat Reglements </h2>
 
                     <table id="reglements-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
@@ -132,37 +132,37 @@
 
     <script>
        $(document).ready(function() {
-    $('#reglements-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '{{ route('reglements.index') }}',
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'no_bl', name: 'no_bl' },
-            { data: 'code_client', name: 'code_client' },
-            { data: 'name_client', name: 'name_client' },
-            { data: 'montant', name: 'montant' },
-            { data: 'date', name: 'date' },
-            { data: 'type_pay', name: 'type_pay' },
-            {
-                data: 'actions',
-                name: 'actions',
-                orderable: false,
-                searchable: false
-            }
-        ],
-        responsive: true,
-        lengthMenu: [10, 5, 15, 25, 50],
-        order: [[0, 'desc']],
-        language: {
-            paginate: {
-                previous: "&laquo;",
-                next: "&raquo;"
-            }
-        }
-    });
+            $('#reglements-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('achat.reglements.index') }}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'no_bl', name: 'no_bl' },
+                    { data: 'id_fournisseur', name: 'id_fournisseur' },
+                    { data: 'name_fournisseur', name: 'name_fournisseur' },
+                    { data: 'montant', name: 'montant' },
+                    { data: 'date', name: 'date' },
+                    { data: 'type_pay', name: 'type_pay' },
+                    {
+                        data: 'actions',
+                        name: 'actions',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                responsive: true,
+                lengthMenu: [10, 5, 15, 25, 50],
+                order: [[0, 'desc']],
+                language: {
+                    paginate: {
+                        previous: "&laquo;",
+                        next: "&raquo;"
+                    }
+                }
+            });
 
-});
+        });
 
 $(document).on('click', '.view-cheque', function () {
     const ref = $(this).data('ref');

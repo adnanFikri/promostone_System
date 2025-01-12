@@ -60,7 +60,7 @@
     <div id="bon-de-livraison" class="borde border-gray-00 rounded-lg p-6 shado bg-white">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-9 text-center">
-            <span class="text-gray-500">Rabat le {{ $paymentStatus['date-echeance'] }} - <span class="text-gray-400 font-bold" >Impression: <span {{$print_nbr->print_nbr > 1 ? 'class=text-red-400' : ""}}>{{$print_nbr->print_nbr}}</span></span></span>
+            <span class="text-gray-500">Rabat le {{ $paymentStatus['date-echeance'] }} - <span class="text-gray-400 font-bold" >Impression: <span {{$print_nbr->print_nbr > 1 ? 'class=text-red-400' : ""}}>{{$print_nbr->print_nbr + 1}}</span></span></span>
             <h2 class="text-2xl font-bold">BON DE COUPE N° {{ $paymentStatus->no_bl }} /{{ date('Y') }}</h2>
         </div>
 

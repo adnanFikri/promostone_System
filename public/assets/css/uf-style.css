@@ -32,6 +32,7 @@ body {
   height: 100vh; /* Ensures the body takes up the full viewport height */
   margin: 0; /* Removes default margin */
   font-family: 'Brush Script MT', cursive;
+  /* filter: brightness(50%); */
 }
 a{
 	color: #842029;
@@ -48,6 +49,7 @@ a:hover{
 } */
 
 .uf-form-signin {
+  /* filter: brightness(100%); */
   width: 100%;
   max-width: 450px;
   padding: 15px 25px;

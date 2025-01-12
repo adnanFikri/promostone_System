@@ -14,6 +14,8 @@ class AchatStatusController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view achat payment statuses')->only(['index']);
+
 
     }
 public function index(Request $request)
@@ -60,15 +62,15 @@ public function index(Request $request)
 
 
 
-    public function getSalesWithNoPaymentStatus()
-    {
-        // Get all sales where code_client does not exist in PaymentStatus
-        $sales = Achat::whereNotIn('id_fournissuer', AchatStatus::pluck('id_fournissuer')->toArray())
-                      ->get();
+    // public function getSalesWithNoPaymentStatus()
+    // {
+    //     // Get all sales where code_client does not exist in PaymentStatus
+    //     $sales = Achat::whereNotIn('id_fournissuer', AchatStatus::pluck('id_fournissuer')->toArray())
+    //                   ->get();
 
-        // Return the retrieved sales
-        return response()->json($sales);
-    }
+    //     // Return the retrieved sales
+    //     return response()->json($sales);
+    // }
 
 
 //     public function getByClientType(Request $request)

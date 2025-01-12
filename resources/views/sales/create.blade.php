@@ -102,7 +102,7 @@
                                     <select name="products[0][mesures][0][mode]" id="mode" class="mode mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option value="M2">M2</option>
                                         <option value="ML">ML</option>
-                                        <option value="Unite">Unite</option>
+                                        <option value="Unité">Unité</option>
                                     </select>
                                 </div>
                                 <button type="button" onclick="removeMesure(this)" class=" -mb-6 bg-red-600 text-white  rounded-full p-1 shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
@@ -220,7 +220,7 @@
                             <select name="products[${productIndex}][mesures][0][mode]" class="mode mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 <option value="M2">M2</option>
                                 <option value="ML">ML</option>
-                                <option value="Unite">Unite</option>
+                                <option value="Unité">Unité</option>
                             </select>
                         </div>
                         <button type="button" onclick="removeMesure(this)" class=" -mb-6 bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
@@ -315,7 +315,7 @@
                         <select name="products[${productIndex}][mesures][${mesureIndex}][mode]" class="mode mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <option value="M2">M2</option>
                             <option value="ML">ML</option>
-                            <option value="Unite">Unite</option>
+                            <option value="Unité">Unité</option>
                         </select>
                     </div>
                     <button type="button" onclick="removeMesure(this)" class="-mb- bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">

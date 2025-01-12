@@ -16,7 +16,14 @@ class AchatController extends Controller
 
     public function __construct()
     {
+        // Apply the auth middleware to every action
         $this->middleware('auth');
+        
+        // Define permission-based middleware for each method
+        $this->middleware('permission:view sales')->only(['index']);
+        $this->middleware('permission:create sales')->only(['create']);
+        $this->middleware('permission:store sales')->only(['store']);
+        $this->middleware('permission:view achats by bl')->only(['getByBl']);
     }
     public function create(){
 

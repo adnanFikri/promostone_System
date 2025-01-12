@@ -38,7 +38,7 @@ public function up()
         $table->id(); // Primary key
         $table->integer('no_bl')->nullable();
         $table->integer('annee')->nullable();
-        $table->date('date')->nullable();
+        $table->dateTime('date')->nullable();
         $table->string('code_client')->nullable(); // Foreign key
         $table->string('ref_produit')->nullable();
         $table->string('produit')->nullable();

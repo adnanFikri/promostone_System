@@ -93,12 +93,12 @@
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
                             </svg>
                         </button>
-                        <button type="button" data-dropdown-toggle="notification-dropdown" class="FJRldeiG2gFGZfuKgp88 PeR2JZ9BZHYIH8Ea3F36 mveJTCIb2WII7J4sY22F ZnBoTVi7VOJdCLSSU62n _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y dMTOiA3mf3FTjlHu6DqW OPrb_iG5WDy_7F05BDOX">
+                        {{-- <button type="button" data-dropdown-toggle="notification-dropdown" class="FJRldeiG2gFGZfuKgp88 PeR2JZ9BZHYIH8Ea3F36 mveJTCIb2WII7J4sY22F ZnBoTVi7VOJdCLSSU62n _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y dMTOiA3mf3FTjlHu6DqW OPrb_iG5WDy_7F05BDOX">
                             <span class="_DVAfiyo21kM68EUVzEQ">View notifications</span>
                             <svg class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
                             </svg>
-                        </button>
+                        </button> --}}
                         <div class="_SmdlCf6eUKB_V9S5IDj wBVMFkIGfrKshbvi2gS1 bXWhrLpoBVu4aMI8XQxr Jq3rRDG6Hsr3eAZ0KJeH aJF41JQLhtfw_MCGt5Th ZhzOGpbwY0R4TKKYr5pG d3C8uAdJKNl1jzfE9ynq xdunzYpzbwcYs_0Tjgcz _Ybd3WwuTVljUT4vEaM3 Y3FxyuXtj2gecrGXvLEI Zy1Pypi71Xu6guex6urN z30cepEEBLSTPSvWeVPH cl0mFvgyErwMYM5aRkru PoeKYEQfG4WfmL9xM6vu jqg6J89cvxmDiFpnV56r" id="notification-dropdown">
                             <div class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe ijrOHNoSVGATsWYKl4Id rYHHksRBEMl_guI3q0UQ jtAJHOc7mn7b4IKRO59D jqg6J89cvxmDiFpnV56r XIIs8ZOri3wm8Wnj9N_y">Notifications
             </div>
@@ -204,12 +204,12 @@
                                 </div>
                             </a>
                         </div>
-                        <button type="button" data-dropdown-toggle="apps-dropdown" class="FJRldeiG2gFGZfuKgp88 PeR2JZ9BZHYIH8Ea3F36 mveJTCIb2WII7J4sY22F ZnBoTVi7VOJdCLSSU62n _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y dMTOiA3mf3FTjlHu6DqW OPrb_iG5WDy_7F05BDOX">
+                        {{-- <button type="button" data-dropdown-toggle="apps-dropdown" class="FJRldeiG2gFGZfuKgp88 PeR2JZ9BZHYIH8Ea3F36 mveJTCIb2WII7J4sY22F ZnBoTVi7VOJdCLSSU62n _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y dMTOiA3mf3FTjlHu6DqW OPrb_iG5WDy_7F05BDOX">
                             <span class="_DVAfiyo21kM68EUVzEQ">View notifications</span>
                             <svg class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                             </svg>
-                        </button>
+                        </button> --}}
                         <div class="_SmdlCf6eUKB_V9S5IDj wBVMFkIGfrKshbvi2gS1 bXWhrLpoBVu4aMI8XQxr Jq3rRDG6Hsr3eAZ0KJeH aJF41JQLhtfw_MCGt5Th ZhzOGpbwY0R4TKKYr5pG d3C8uAdJKNl1jzfE9ynq xdunzYpzbwcYs_0Tjgcz _Ybd3WwuTVljUT4vEaM3 Y3FxyuXtj2gecrGXvLEI Zy1Pypi71Xu6guex6urN z30cepEEBLSTPSvWeVPH cl0mFvgyErwMYM5aRkru jqg6J89cvxmDiFpnV56r PoeKYEQfG4WfmL9xM6vu" id="apps-dropdown">
                             <div class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe ijrOHNoSVGATsWYKl4Id rYHHksRBEMl_guI3q0UQ jtAJHOc7mn7b4IKRO59D jqg6J89cvxmDiFpnV56r XIIs8ZOri3wm8Wnj9N_y">Apps
             </div>
@@ -348,15 +348,15 @@
                                         </div>
                                     </form>
                                 </li> --}}
-                                <li>
-                                    {{-- <a href="#" class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 d3C8uAdJKNl1jzfE9ynq _43MO1gcdi2Y0RJW1uHL __9sbu0yrzdhGIkLWNXl mveJTCIb2WII7J4sY22F _7KA5gD55t2lxf9Jkj20 BpcA_ZTX79XDgSc71n2v duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">
+                                {{-- <li>
+                                    <a href="#" class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 d3C8uAdJKNl1jzfE9ynq _43MO1gcdi2Y0RJW1uHL __9sbu0yrzdhGIkLWNXl mveJTCIb2WII7J4sY22F _7KA5gD55t2lxf9Jkj20 BpcA_ZTX79XDgSc71n2v duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">
                                         <svg class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr PeR2JZ9BZHYIH8Ea3F36 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j _Oyukq8JlN1X9w2FmPds XIIs8ZOri3wm8Wnj9N_y Lld6j9B1iilEqA6j31e4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                             <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                         </svg>
                                         <span class="oA7zcT_42jVeFuWTXQnq" sidebar-toggle-item="">Dashboard</span>
-                                    </a> --}}
-                                </li>
+                                    </a>
+                                </li> --}}
                                 
                                 {{-- @can('view reglements')
                                     <li>
@@ -370,7 +370,7 @@
                                         </a>
                                     </li>
                                 @endcan --}}
-                                @can('view clients')
+                                @can('view payment statuses')
                                     <li>
                                         <button type="button" class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 t6gkcSf0Bt4MLItXvDJ_ d3C8uAdJKNl1jzfE9ynq _43MO1gcdi2Y0RJW1uHL __9sbu0yrzdhGIkLWNXl mveJTCIb2WII7J4sY22F bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX" aria-controls="dropdown-status" data-collapse-toggle="dropdown-status">
                                             {{-- <svg class="VQS2tmQ_zFyBOC2tkmto YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr PeR2JZ9BZHYIH8Ea3F36 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j _Oyukq8JlN1X9w2FmPds XIIs8ZOri3wm8Wnj9N_y Lld6j9B1iilEqA6j31e4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -403,9 +403,22 @@
                                                     </a>
                                                 </li>
                                             @endcan
+                                            @can('view achat payment statuses')
                                                 <li>
                                                     <a href="{{ route('achatStatus.index') }}" class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 xfuvbLgYErj_fGTMHhLc d3C8uAdJKNl1jzfE9ynq _43MO1gcdi2Y0RJW1uHL __9sbu0yrzdhGIkLWNXl mveJTCIb2WII7J4sY22F bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">  Achat Statut</a>
                                                 </li>
+                                            @endcan
+                                            @can('view reglements')
+                                                <li>
+                                                    <a href="{{ route('achat.reglements.index') }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F _7KA5gD55t2lxf9Jkj20 YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">
+                                                        {{-- <svg class="VQS2tmQ_zFyBOC2tkmto YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr PeR2JZ9BZHYIH8Ea3F36 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j _Oyukq8JlN1X9w2FmPds XIIs8ZOri3wm8Wnj9N_y Lld6j9B1iilEqA6j31e4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path>
+                                                            <path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path>
+                                                        </svg> --}}
+                                                        <span class="_74lpPUMEtHf6F0_fjLe oA7zcT_42jVeFuWTXQnq BHrWGjM1Iab_fAz0_91H" sidebar-toggle-item="">Achat Reglement </span>
+                                                    </a>
+                                                </li>
+                                            @endcan
                                         </ul>
                                     </li> 
                                 @endcan
@@ -703,7 +716,7 @@
               @yield('content')
                 <p class="_doGzYmWP2_jIjPyHtlc c8dCx6gnV43hTOLV6ks5 ijrOHNoSVGATsWYKl4Id PeR2JZ9BZHYIH8Ea3F36">
                     © 2025 <a href="#" class="oJZU4OQzzfXeLbF7UKZ_" target="_blank">Promostone</a> <br/>
-                    {{-- Developed by <a href="https://www.linkedin.com/in/adnan-fikri-8b5515265/" class="oJZU4OQzzfXeLbF7UKZ_" target="_blank">Adnan Fikri</a> --}}
+                    Developed by <a href="https://www.linkedin.com/in/adnan-fikri-8b5515265/" class="oJZU4OQzzfXeLbF7UKZ_" target="_blank">Adnan Fikri</a>
                     
 
                 </p>

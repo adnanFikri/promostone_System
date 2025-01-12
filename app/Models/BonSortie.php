@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BonSortie extends Model
 {
-    protected $fillable = ['no_bl','sortie','date_sortie','print_nbr'];
+    protected $fillable = ['no_bl','sortie','date_sortie','print_nbr','userName'];
 
     public function sales()
     {

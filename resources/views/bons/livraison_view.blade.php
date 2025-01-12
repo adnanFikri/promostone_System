@@ -12,6 +12,7 @@
             padding: 8px;
             border-radius: 5px;
             border: 1px solid #ccc;
+            margin-bottom: 3px;
         }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -106,6 +107,16 @@ select.rounded-md.w-md {
     }
 }
 
+#container-searchBL{
+    display: flex;
+    justify-content: end;
+    margin-bottom: 3px;
+}
+#container-searchBL #search-no-bl{
+    max-width: 183px;
+    height: 40px;
+    border: rgb(173, 170, 170) 1px solid;
+}
 
     </style>
   
@@ -114,6 +125,10 @@ select.rounded-md.w-md {
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="p-6 bg-white rounded-lg shadow-md">
             <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Livraison</h2>
+            
+            <div id="container-searchBL" >
+                <input type="text" id="search-no-bl" class="border px-2 py-2 rounded" placeholder="No BL">
+            </div>
             
             <!-- Bons Table -->
             <div class="overflow-x-aut">
@@ -126,6 +141,7 @@ select.rounded-md.w-md {
                             <th>date</th>
                             <th>commercant</th>
                             <th>Livrée</th>
+                            <th>Crée par</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -139,7 +155,8 @@ select.rounded-md.w-md {
 
 <script>
 
-$('#bons-table').DataTable({
+var table;
+table = $('#bons-table').DataTable({
      processing: true,
      serverSide: true,
      ajax: '{{ route("listBonLivraison.index") }}',
@@ -162,6 +179,7 @@ $('#bons-table').DataTable({
                  `;
              }
          },
+         { data: 'userName', name: 'userName' }, // Commercant column
          { 
              data: 'actions', 
              name: 'actions', 
@@ -170,15 +188,24 @@ $('#bons-table').DataTable({
              render: function(data, type, row) {
                  return `
                      <a href="{{ url('/bon-livraison/') }}/${row.no_bl}" target="_blank" class="btnA" title="Voir Bon de Livraison">
-                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                             <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm1-13h-2v6h6v-2h-4z"/>
-                         </svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
+                            <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
+                        </svg>
                      </a>
                  `;
              }
          },
      ]
  });
+
+ $('#search-no-bl').on('keyup', function () {
+        let value = this.value.trim();
+        if (value === "") {
+            table.column(0).search("").draw();
+        } else {
+            table.column(0).search("^" + value + "$", true, false).draw();
+        }
+    });
 
 function updateLivree(id, value) {
     fetch(`/bonLivraison/${id}/update-livree`, {

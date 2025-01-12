@@ -312,12 +312,12 @@
                             
                             <!-- Custom search input for No BL -->
                             <div id="searchBl" class="mb-1 bg-gray-00 text-right">
-                                <select id="clientType" name="clientType" class="rounded" onchange="fetchDataByClientType()">
+                                {{-- <select id="clientType" name="clientType" class="rounded" onchange="fetchDataByClientType()">
                                     <option value="all">All</option>
                                     <option value="fiche client">Fiche Client</option>
                                     <option value="anomalie">Anomalie</option>
                                     <option value="particulier">Particulier</option>
-                                </select>
+                                </select> --}}
                                 <label for="search-no-bl" class="mr-">Search:</label>
                                 <input type="text" id="search-no-bl" class="border px-2 py-2 rounded" placeholder="No BL">
                             </div>

@@ -18,45 +18,45 @@ class AchatreglementController extends Controller
     {
         $this->middleware('auth');
         
-        // $this->middleware('permission:view reglements')->only(['index']);
-        // $this->middleware('permission:create reglements')->only(['create']);
-        // $this->middleware('permission:store reglements')->only(['store']);
-        // $this->middleware('permission:delete reglements')->only(['destroy']);
+        $this->middleware('permission:view achat reglements')->only(['index']);
+        $this->middleware('permission:create achat reglements')->only(['create']);
+        $this->middleware('permission:store achat reglements')->only(['store']);
+        $this->middleware('permission:delete achat reglements')->only(['destroy']);
         // $this->middleware('permission:search reglements')->only(['search']);
         // $this->middleware('permission:view payment status by client')->only(['getPaymentStatus']);
         // $this->middleware('permission:view reglements by bl')->only(['getReglementsByBl']);
         // $this->middleware('permission:view client bls')->only(['getClientBls']);
         // $this->middleware('permission:view all bls')->only(['getAllBLs']);
-        // $this->middleware('permission:create avance')->only(['avance']);
+        $this->middleware('permission:create achat avance')->only(['avance']);
     }
 
     public function index(Request $request)
     {
         if ($request->ajax()) {
             $data = Achatreglement::select(
-                'reglements.id',
-                'reglements.no_bl',
-                'reglements.id_fournissuer',
-                'fournisseurs.riason as name_fournissuer',
-                'reglements.montant',
-                'reglements.date',
-                'reglements.type_pay',
-                'reglements.reference_chq', // Add reference_chq
-                'reglements.date_chq'
+                'achatreglements.id',
+                'achatreglements.no_bl',
+                'achatreglements.id_fournisseur',
+                'fournisseurs.raison as name_fournisseur',
+                'achatreglements.montant',
+                'achatreglements.date',
+                'achatreglements.type_pay',
+                'achatreglements.reference_chq', // Add reference_chq
+                'achatreglements.date_chq' 
             )
-            ->leftJoin('fournisseur', 'fournisseurs.id', '=', 'achatreglements.id_fournisseur') // LEFT JOIN with clients table
+            ->leftJoin('fournisseurs', 'fournisseurs.id', '=', 'achatreglements.id_fournisseur') // LEFT JOIN with clients table
             ->get();
 
             return DataTables::of($data)
             ->addColumn('actions', function ($row) {
-                $btn = '
-                    @can("delete reglements")
-                        <a style="float:right;" href="' . route('reglements.destroy', $row->id) . '" class="delete btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById(\'delete-form-' . $row->id . '\').submit();"><svg class="w-6 h-6 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
-                            </svg>
-                        </a>
-                    @endcan    ';
-            
+                if (auth()->user()->can('delete achat reglements')) {
+                    $btn = '
+                            <a style="float:right;" href="' . route('achat.reglements.destroy', $row->id) . '" class="hover:color-red-400 delete btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById(\'delete-form-' . $row->id . '\').submit();"><svg class="w-6 h-6 text-red-400  hover:text-red-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                                </svg>
+                            </a>
+                        ';
+                }
                 if ($row->type_pay === 'Chèque') {
                     $btn .= '<button style="float:left;" class="btn btn-primary btn-sm view-cheque float-left" data-id="' . $row->id . '" data-ref="' . $row->reference_chq . '" data-date="' . $row->date_chq . '">
                         <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -66,8 +66,10 @@ class AchatreglementController extends Controller
                     </button>';
                 }
             
-                $btn .= '@can("delete reglements")<form id="delete-form-' . $row->id . '" action="' . route('reglements.destroy', $row->id) . '" method="POST" style="display: none;" >' . csrf_field() . method_field('DELETE') . '</form> @endcan';
-            
+                if (auth()->user()->can('delete achat reglements')) {
+                    $btn .= '<form id="delete-form-' . $row->id . '" action="' . route('reglements.destroy', $row->id) . '" method="POST" style="display: none;" >' . csrf_field() . method_field('DELETE') . '</form>';
+                }
+
                 return $btn;
             })
             ->rawColumns(['actions'])

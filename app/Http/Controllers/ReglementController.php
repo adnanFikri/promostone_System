@@ -46,7 +46,7 @@ class ReglementController extends Controller
                 'reglements.montant',
                 'reglements.date',
                 'reglements.type_pay',
-                'reglements.reference_chq', // Add reference_chq
+                'reglements.reference_chq', 
                 'reglements.date_chq'
             )
             ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client') // LEFT JOIN with clients table
@@ -146,12 +146,12 @@ class ReglementController extends Controller
             // Prepare data to update PaymentStatus
             $paymentStatusData = [
                 'montant_payed' => $paymentStatus->montant_payed + $request->montant,
-                'montant_restant' => $rest > 0 ? $rest : 0,
-                // 'commerçant' => 'ahmed',
+                'montant_restant' => $rest ,
             ];
             BonLivraison::firstOrCreate(
-                ['no_bl' => $request->no_bl]
+                ['no_bl' => $request->no_bl, 'userName' => Auth::user()->name]
             );
+
             BonCoupe::firstOrCreate(
                 ['no_bl' => $request->no_bl]
             );

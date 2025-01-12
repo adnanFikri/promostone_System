@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BonSortie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BonSortieController extends Controller
 {
@@ -33,6 +34,7 @@ class BonSortieController extends Controller
                     'sortie' => $bon->sortie,
                     'print_nbr' => $bon->print_nbr,
                     'date_sortie' => $bon->date_sortie,
+                    'userName' => $bon->userName,
                     'products' => $productsString,  // Return the products as a string
                     'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
@@ -69,10 +71,13 @@ class BonSortieController extends Controller
             $bonSortie = BonSortie::where('no_bl', $no_bl)->first();
         
             if ($bonSortie) {
-                // Increment the print_nbr field
-                $bonSortie->print_nbr = $bonSortie->print_nbr + 1;
-                $bonSortie->date_sortie= now();
-                $bonSortie->save();
+                if (!auth()->user()->can('create users')) {
+                    // Increment the print_nbr field
+                    $bonSortie->print_nbr = $bonSortie->print_nbr + 1;
+                    $bonSortie->date_sortie= now();
+                    $bonSortie->userName = Auth::user()->name;
+                    $bonSortie->save();
+                }
         
                 // Return success response
                 return response()->json(['success' => true, 'message' => 'Print number incremented successfully.']);
