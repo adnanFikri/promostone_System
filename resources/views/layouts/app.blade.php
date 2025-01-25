@@ -61,7 +61,7 @@
 
        
     </head>
-    <body class="jtAJHOc7mn7b4IKRO59D _1jTZ8KXRZul60S6czNi" >
+    <body class="jtAJHOc7mn7b4IKRO59D _1jTZ8KXRZul60S6czNi">
         <x-alert.sweet />
         <nav class="_LPVUrp9Uina5fcERqWC taX5bm_AMmfFooXEd5Ny t6gkcSf0Bt4MLItXvDJ_ _Ybd3WwuTVljUT4vEaM3 EpUSgjHdM6oyMXUiK_8_ qUWbS_LTZujDB4XCd11V _1jTZ8KXRZul60S6czNi _fGhMnSfYmaGrv7DvZ00">
             <div class="i8v96MUlFwGv9qJUkAx7 _Cj_M6jt2eLjDgkBBNgI wekyMYEi8zByMSCgzHQ_ W3VHmE2jAiCd1MN9SdsH">
@@ -288,15 +288,15 @@
                             <div>
                                 <button type="button" class="YRrCJSr_j5nopfm4duUc c8dCx6gnV43hTOLV6ks5 RwT9RGumnuqUj7lx7fdb RpVwy4sO7Asb86CncKJ_ _dylIDxYTN3qgvD4U597 KLtw3_OqL54e_zEQU_yi ICV24pqO8p1LJm4GEOgS" id="user-menu-button-2" aria-expanded="false" data-dropdown-toggle="dropdown-2">
                                     <span class="_DVAfiyo21kM68EUVzEQ">Open user menu</span>
-                                    <img class="yNvZ2JlUalNo5uPPv1sf mWvJQyBFgwNGEt0h7bSP RpVwy4sO7Asb86CncKJ_" src="https://flowbite.com/application-ui/demo/images/users/neil-sims.png" alt="user photo">
+                                    <img class="yNvZ2JlUalNo5uPPv1sf mWvJQyBFgwNGEt0h7bSP RpVwy4sO7Asb86CncKJ_ " src="{{ asset('imgs/default.jpg') }}" alt="user photo">
                                 </button>
                             </div>
                             <div class="_SmdlCf6eUKB_V9S5IDj Jq3rRDG6Hsr3eAZ0KJeH aJF41JQLhtfw_MCGt5Th d3C8uAdJKNl1jzfE9ynq xdunzYpzbwcYs_0Tjgcz _Ybd3WwuTVljUT4vEaM3 Y3FxyuXtj2gecrGXvLEI Zy1Pypi71Xu6guex6urN z30cepEEBLSTPSvWeVPH mngKhi_Rv06PF57lblDI jqg6J89cvxmDiFpnV56r PoeKYEQfG4WfmL9xM6vu" id="dropdown-2">
                                 <div class="i8v96MUlFwGv9qJUkAx7 RZmKBZs1E1eXw8vkE6jY" role="none">
                                     <p class="c8dCx6gnV43hTOLV6ks5 __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE" role="none">{{ auth()->user()->name ?? 'Guest' }}
-                </p>
+                                    </p>
                                     <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt EJIoL6514Ry8r7nh011L" role="none">{{ auth()->user()->email ?? 'guest@example.com' }}
-                </p>
+                                    </p>
                                 </div>
                                 <ul class="_bVaO2NfVVP88LtHWYlv" role="none">
                                     <li>
@@ -408,7 +408,7 @@
                                                     <a href="{{ route('achatStatus.index') }}" class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 xfuvbLgYErj_fGTMHhLc d3C8uAdJKNl1jzfE9ynq _43MO1gcdi2Y0RJW1uHL __9sbu0yrzdhGIkLWNXl mveJTCIb2WII7J4sY22F bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">  Achat Statut</a>
                                                 </li>
                                             @endcan
-                                            @can('view reglements')
+                                            @can('view achat reglements')
                                                 <li>
                                                     <a href="{{ route('achat.reglements.index') }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F _7KA5gD55t2lxf9Jkj20 YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">
                                                         {{-- <svg class="VQS2tmQ_zFyBOC2tkmto YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr PeR2JZ9BZHYIH8Ea3F36 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j _Oyukq8JlN1X9w2FmPds XIIs8ZOri3wm8Wnj9N_y Lld6j9B1iilEqA6j31e4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -477,19 +477,19 @@
                                                 </li>
                                             @endcan
                                             @can('view bon livraison')
-                                            <li>
-                                                <a href="{{ route("listBonLivraison.index") }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j xfuvbLgYErj_fGTMHhLc duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">Bon de Livraison</a>
-                                            </li>
+                                                <li>
+                                                    <a href="{{ route("listBonLivraison.index") }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j xfuvbLgYErj_fGTMHhLc duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">Bon de Livraison</a>
+                                                </li>
                                             @endcan
                                             @can('view bon coup')
-                                            <li>
-                                                <a href="{{ route("listBonCoupe.index") }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j xfuvbLgYErj_fGTMHhLc duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">Bon de Coupe</a>
-                                            </li>
+                                                <li>
+                                                    <a href="{{ route("listBonCoupe.index") }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j xfuvbLgYErj_fGTMHhLc duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">Bon de Coupe</a>
+                                                </li>
                                             @endcan
                                             @can('view bon sortie')
-                                            <li>
-                                                <a href="{{ route("listBonSortie.index") }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j xfuvbLgYErj_fGTMHhLc duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">Bon de Sortie</a>
-                                            </li>
+                                                <li>
+                                                    <a href="{{ route("listBonSortie.index") }}" class="d3C8uAdJKNl1jzfE9ynq __9sbu0yrzdhGIkLWNXl _43MO1gcdi2Y0RJW1uHL mveJTCIb2WII7J4sY22F YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 BpcA_ZTX79XDgSc71n2v _7KA5gD55t2lxf9Jkj20 bcsWqjK52oeyT6oeC2Az gZ3KuFw1JESHhOJhjT8j xfuvbLgYErj_fGTMHhLc duXR6Hcu_44X_243WcOl OPrb_iG5WDy_7F05BDOX">Bon de Sortie</a>
+                                                </li>
                                             @endcan
 
                                             {{-- <li>

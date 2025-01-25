@@ -18,10 +18,11 @@ class AdminSeeder extends Seeder
         $superAdminUser = User::updateOrCreate(
             ['email' => 'sa@admin.ma'], 
             [
-                'name' => 'SuperAdmin',
+                'name' => 'Adnan',
                 'email' => 'sa@admin.ma',
                 'password' => Hash::make('SuperMario02'),
                 'role' => 'SAdmin',
+                'phone' => '00 00 00 00 01',
             ]
         );
 
@@ -36,6 +37,7 @@ class AdminSeeder extends Seeder
                 'email' => 'admin@admin.ma',
                 'password' => Hash::make('12121212'),
                 'role' => 'Admin',
+                'phone' => '00 00 00 00 01',
             ]
         );
 

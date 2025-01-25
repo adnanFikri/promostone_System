@@ -92,7 +92,7 @@
                     <table id="reglements-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                             <tr>
-                                <th scope="col" class="px-6 py-3">ID</th>
+                                {{-- <th scope="col" class="px-6 py-3">ID</th> --}}
                                 <th scope="col" class="px-6 py-3">No BL</th>
                                 <th scope="col" class="px-6 py-3">Code Client</th>
                                 <th scope="col" class="px-6 py-3">RAISON</th>
@@ -137,7 +137,7 @@
         serverSide: true,
         ajax: '{{ route('reglements.index') }}',
         columns: [
-            { data: 'id', name: 'id' },
+            // { data: 'id', name: 'id' },
             { data: 'no_bl', name: 'no_bl' },
             { data: 'code_client', name: 'code_client' },
             { data: 'name_client', name: 'name_client' },

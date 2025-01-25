@@ -121,8 +121,8 @@
                                 <th>Prix Unitaire</th>
                                 <th>Quantité</th>
                                 <th>Couleur</th>
-                                <th>Date d'Inventaire</th>
-                                <th>Date Mise à Jour</th>
+                                {{-- <th>Date d'Inventaire</th>
+                                <th>Date Mise à Jour</th> --}}
                                 <th>Image</th>
                                 <th>Actions</th>
                             </tr>
@@ -164,6 +164,7 @@
                         <option value="FINITION">FINITION</option>
                         <option value="GRANIT">GRANIT</option>
                         <option value="PIERRE">PIERRE</option>
+                        <option value="MARBRE">MARBRE</option>
                         <option value="TRAVERTAIN">TRAVERTAIN</option>
                         <option value="ASCALE">ASCALE</option>
                         <option value="NEW CREMA">NEW CREMA</option>
@@ -181,17 +182,19 @@
                 <div>
                     <label for="edit-color" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
                     <select id="edit-color" name="color" class="w-full mt-1 px-3 py-2 border rounded-md dark:bg-gray-900 dark:border-gray-600">
-                        <option value="" disabled selected>Select a color</option>
-                        <option value="red" style="background-color: red; color: white;">Red</option>
-                        <option value="blue" style="background-color: blue; color: white;">Blue</option>
-                        <option value="green" style="background-color: green; color: white;">Green</option>
-                        <option value="yellow" style="background-color: yellow; color: black;">Yellow</option>
-                        <option value="black" style="background-color: black; color: white;">Black</option>
-                        <option value="white" style="background-color: white; color: black;">White</option>
-                        <option value="orange" style="background-color: orange; color: black;">Orange</option>
-                        <option value="purple" style="background-color: purple; color: white;">Purple</option>
-                        <option value="pink" style="background-color: pink; color: black;">Pink</option>
-                        <option value="gray" style="background-color: gray; color: white;">Gray</option>
+                        <option value="" disabled selected>Choisissez une couleur</option>
+                        <option value="Rouge" style="background-color: red; color: white;">Rouge</option>
+                        <option value="Bleu" style="background-color: blue; color: white;">Bleu</option>
+                        <option value="Vert" style="background-color: green; color: white;">Vert</option>
+                        <option value="Jaune" style="background-color: yellow; color: black;">Jaune</option>
+                        <option value="Beige" style="background-color: beige; color: black;">Beige</option>
+                        <option value="Noir" style="background-color: black; color: white;">Noir</option>
+                        <option value="Marron" style="background-color: brown; color: white;">Marron</option>
+                        <option value="Blanc" id="blnc" style="background-color: white; color: black;">Blanc</option>
+                        <option value="Orange" style="background-color: orange; color: black;">Orange</option>
+                        <option value="Violet" style="background-color: purple; color: white;">Violet</option>
+                        <option value="Rose" style="background-color: pink; color: black;">Rose</option>
+                        <option value="Gris" style="background-color: gray; color: white;">Gris</option>
                     </select>
                 </div>
                 <div>
@@ -234,8 +237,8 @@
                     { data: 'unit_price', name: 'unit_price' },
                     { data: 'quantity', name: 'quantity' },
                     { data: 'color', name: 'color' },
-                    { data: 'inventory_date', name: 'inventory_date' },
-                    { data: 'update_date', name: 'update_date' },
+                    // { data: 'inventory_date', name: 'inventory_date' },
+                    // { data: 'update_date', name: 'update_date' },
                     { data: 'image_path', name: 'image_path', orderable: false, searchable: false },
                     // { data: 'actions', name: 'actions', orderable: false, searchable: false },
                     { 
@@ -256,13 +259,17 @@
                                         data-color="${row.color}" 
                                         data-inventory-date="${row.inventory_date}" 
                                         data-update-date="${row.update_date}">
-                                        Edit
+                                        <svg class="w-6 h-6 text-blue-800 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                        </svg>
                                     </button>
                                 @endcan
                                 @can("delete products")
                                     <button class="delete-btn text-red-600 hover:underline ml-2" 
                                         data-id="${row.id}">
-                                        Delete
+                                        <svg class="w-6 h-6 text-red-400 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                                        </svg>
                                     </button>
                                 @endcan
                             `;
@@ -289,19 +296,46 @@
             $('#edit-id').val(id);
             $('#edit-name').val($(this).data('name'));
             $('#edit-type').val($(this).data('type'));
-            $('#edit-category').val($(this).data('category'));
+
+            // Set the category
+            const category = $(this).data('category');
+            $('#edit-category').val(category);
+
+            // Set the color
+            const colorMap = {
+                Noir: 'Noir',
+                Beige: 'Beige',
+                Rouge: 'Rouge',
+                Bleu: 'Bleu',
+                Vert: 'Vert',
+                Jaune: 'Jaune',
+                Marron: 'Marron',
+                Blanc: 'Blanc',
+                Orange: 'Orange',
+                Violet: 'Violet',
+                Rose: 'Rose',
+                Gris: 'Gris'
+            };
+
+            const color = $(this).data('color');
+            const mappedColor = colorMap[color]; // Get the corresponding English value
+            $('#edit-color').val(mappedColor); // Set the dropdown value
+            console.log(mappedColor); // Check the mapped value in the console
+            
             $('#edit-unit-price').val($(this).data('unit-price'));
             $('#edit-quantity').val($(this).data('quantity'));
-            $('#edit-color').val($(this).data('color'));
             $('#edit-inventory-date').val($(this).data('inventory-date'));
             $('#edit-update-date').val($(this).data('update-date'));
+
             $('#editModal').removeClass('hidden');
         });
 
+        // Close modal
         $('#closeModal, #cancelEdit').on('click', function() {
             $('#editModal').addClass('hidden');
         });
 
+        // Form submission
         $('#editForm').on('submit', function(e) {
             e.preventDefault();
             const id = $('#edit-id').val();
@@ -322,6 +356,7 @@
                 }
             });
         });
+
 
     // button delete product 
     // $(document).on('click', '.delete-btn', function() {

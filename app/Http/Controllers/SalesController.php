@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BonCoupe;
-use App\Models\BonLivraison;
-use App\Models\BonSortie;
-use App\Models\Reglement;
 use App\Models\Sale;
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\BonCoupe;
+use App\Models\BonSortie;
+use App\Models\Reglement;
+use App\Models\SaleCheck;
 use App\Imports\SalesImport;
+use App\Models\BonLivraison;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 // use Illuminate\Routing\Controller;
@@ -165,7 +167,7 @@ class SalesController extends Controller
                     $montant = $sale->longueur * $sale->largeur * $sale->nbr * $sale->prix_unitaire;
                 } elseif ($mode === "ML") {
                     $montant = ($sale->longueur + $sale->largeur) * $sale->nbr * $sale->prix_unitaire;
-                } elseif ($mode === "Unite") {
+                } elseif ($mode === "Unité") {
                     $montant = $sale->nbr * $sale->prix_unitaire;
                     $sale->longueur = null;
                     $sale->largeur = null;
@@ -222,109 +224,148 @@ class SalesController extends Controller
         ]);
     }
 
-    public function showBonLivraison($no_bl)
+
+    public function edit($no_bl)
     {
-        // Retrieve the payment status details
-        $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
-
-        if (!$paymentStatus) {
-            return redirect()->back()->with('error', 'Bon de Livraison not found.');
-        }
-
-        // Retrieve the sales details for the specific Bon de Livraison
-        $sales = Sale::where('no_bl', $no_bl)->get();
-
-        // Retrieve payment details (e.g., advance payments)
-        $reglements  =  Reglement::where('no_bl', $no_bl)->get();
-        $client  =  Client::where('code_client', $paymentStatus->code_client)->first();
-
-        // Group sales data by product name
-        $groupedSales = $sales->groupBy('produit');
-
-        BonLivraison::firstOrCreate(
-            ['no_bl' => $no_bl]
-        );
-
-        // Prepare data for the view
-        $data = [
-            'paymentStatus' => $paymentStatus,
-            'groupedSales' => $groupedSales,
-            'reglements' => $reglements,
-            'client' => $client,
-        ];
-
-        return view('sales.bonL', $data);
-    }
-    public function showBonCoup($no_bl)
-    {
-        // Retrieve the payment status details
-        $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
-
-        if (!$paymentStatus) {
-            return redirect()->back()->with('error', 'Bon de Livraison not found.');
-        }
-
-        // Retrieve the sales details for the specific Bon de Livraison
-        $sales = Sale::where('no_bl', $no_bl)->get();
-
-        // Retrieve payment details (e.g., advance payments)
-        $reglements  =  Reglement::where('no_bl', $no_bl)->get();
-        $client  =  Client::where('code_client', $paymentStatus->code_client)->first();
-        $print_nbr  =  BonCoupe::where('no_bl', $paymentStatus->no_bl)->first();
-
-        // Group sales data by product name
-        $groupedSales = $sales->groupBy('produit');
-
-        BonCoupe::firstOrCreate(
-            ['no_bl' => $no_bl]
-        );
-        
-        // Prepare data for the view
-        $data = [
-            'paymentStatus' => $paymentStatus,
-            'groupedSales' => $groupedSales,
-            'reglements' => $reglements,
-            'client' => $client,
-            'print_nbr' => $print_nbr,
-        ];
-
-        return view('sales.bonC', $data);
+        $saleLines = Sale::where('no_bl', $no_bl)->get();
+        $products = Product::all(); // Fetch available products
+        $clients = Client::all(); // Fetch available products
+        $client = Client::where('code_client', $saleLines[0]->code_client)->first(); // Fetch available products
+    
+        return view('sales.edit', compact('saleLines', 'products', 'clients', 'client'));
     }
 
-    public function showBonSortie($no_bl)
-    {
-        // Retrieve the payment status details
-        $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
+    // Update the sale
+    public function update(Request $request, $saleId)
+{
+    // Validate input data
+    $validatedData = $request->validate([
+        'products' => 'required|array',
+        'products.*.produit' => 'required|string',
+        'products.*.prix_unitaire' => 'required|numeric',
+        'products.*.longueur' => 'nullable|numeric',
+        'products.*.largeur' => 'nullable|numeric',
+        'products.*.quantite' => 'required|numeric',
+        'products.*.mode' => 'required|string',
+        'services' => 'nullable|array',
+        'services.*.type' => 'required|string',
+        'services.*.quantite' => 'required|numeric',
+        'services.*.montant' => 'required|numeric',
+    ]);
 
-        if (!$paymentStatus) {
-            return redirect()->back()->with('error', 'Bon de Livraison not found.');
+    // Retrieve the existing sale
+    $sale = Sale::findOrFail($saleId);
+
+    // Keep the same no_bl and code_client
+    $no_bl = $sale->no_bl;
+    $code_client = $sale->code_client;
+
+    // save the current data 
+    // Fetch sales data
+    $salesOLD = Sale::where('no_bl', $no_bl)->get()->toArray();
+
+    // Fetch reglement data
+    $reglementsOLD = Reglement::where('no_bl', $no_bl)->get()->toArray();
+
+    // Fetch payment status data
+    $paymentStatusOLD = PaymentStatus::where('no_bl', $no_bl)->first();
+
+    $salesCheck = SaleCheck::create(
+['no_bl' => $no_bl, 'code_client'=>$code_client, 'user_name' => Auth::user()->name, 'changeDate' => now(),
+            'sales_data' => $salesOLD,
+            'reglements_data' => $reglementsOLD,
+            'payment_status_data' => $paymentStatusOLD->toArray(),
+        ]
+    );
+
+    // Delete old sales details
+    Sale::where('no_bl', $no_bl)->delete();
+
+    // Insert new sales data
+    foreach ($validatedData['products'] as $product) {
+        $longueur = $product['longueur'] ?? 0;
+        $largeur = $product['largeur'] ?? 0;
+        $quantite = $product['quantite'];
+        $mode = $product['mode'];
+        $prix_unitaire = $product['prix_unitaire'];
+
+        $sale = new Sale();
+        $sale->no_bl = $no_bl;
+        $sale->annee = now()->year;
+        $sale->date = now();
+        $sale->code_client = $code_client;
+        $sale->produit = $product['produit'];
+        $sale->longueur = $longueur;
+        $sale->largeur = $largeur;
+        $sale->nbr = $quantite;
+        $sale->qte = ($longueur * $largeur * $quantite);
+        $sale->mode = $mode;
+        $sale->prix_unitaire = $prix_unitaire;
+
+        // Generate ref_produit
+        $sale->ref_produit = strtoupper(collect(explode(' ', $product['produit']))->map(fn($word) => $word[0])->join(''));
+
+        // Calculate montant based on mode
+        $sale->montant = match ($mode) {
+            'M2' => $longueur * $largeur * $quantite * $prix_unitaire,
+            'ML' => ($longueur + $largeur) * $quantite * $prix_unitaire,
+            'Unité' => $quantite * $prix_unitaire,
+            default => 0,
+        };
+
+        if ($mode === 'Unité') {
+            $sale->longueur = null;
+            $sale->largeur = null;
+            $sale->qte = null;
         }
 
-        // Retrieve the sales details for the specific Bon de Livraison
-        $sales = Sale::where('no_bl', $no_bl)->get();
-
-        // Retrieve payment details (e.g., advance payments)
-        $reglements  =  Reglement::where('no_bl', $no_bl)->get();
-        $client  =  Client::where('code_client', $paymentStatus->code_client)->first();
-        $print_nbr  =  BonSortie::where('no_bl', $paymentStatus->no_bl)->first();
-
-
-        // Group sales data by product name
-        $groupedSales = $sales->groupBy('produit');
-
-        // Prepare data for the view
-        $data = [
-            'paymentStatus' => $paymentStatus,
-            'groupedSales' => $groupedSales,
-            'reglements' => $reglements,
-            'client' => $client,
-            'print_nbr' => $print_nbr,
-        ];
-
-        return view('sales.bonS', $data);
+        $sale->save();
     }
 
-     
+    // Insert new services data
+    if (isset($validatedData['services'])) {
+        foreach ($validatedData['services'] as $service) {
+            $sale = new Sale();
+            $sale->no_bl = $no_bl;
+            $sale->annee = now()->year;
+            $sale->date = now();
+            $sale->code_client = $code_client;
+            $sale->produit = $service['type'];
+            $sale->longueur = null;
+            $sale->largeur = null;
+            $sale->qte = null;
+            $sale->nbr = $service['quantite'];
+            $sale->mode = 'service';
+            $sale->prix_unitaire = $service['montant'];
+            $sale->montant = $service['montant'] * $service['quantite'];
+            $sale->ref_produit = strtoupper(substr($service['type'], 0, 3));
+            $sale->save();
+        }
+    }
+
+    // Update PaymentStatus
+    $total_amount = Sale::where('no_bl', $no_bl)->sum('montant');
+    $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
+
+    PaymentStatus::where('no_bl', $no_bl)->update([
+        'changeCount' => $paymentStatus->changeCount + 1,
+        'montant_total' => $total_amount,
+        // 'montant_payed' => 0,
+        'montant_restant' => $total_amount - $paymentStatus->montant_payed, // Adjust if payments are tracked
+    ]);
+
+    return redirect()->route('avance.edit', [
+        'no_bl' => $no_bl, 
+        'code_client' => $code_client,
+        'total_amount' => $total_amount,
+        'oldPayedAmount' => $paymentStatus->montant_payed
+    ]);
+
+    // return redirect()->route('sales.index')->with('success', 'Vente mise à jour avec succès!');
+    }
+    
+
+    
      
     public function showUploadForm()
     {
@@ -381,35 +422,6 @@ class SalesController extends Controller
         ->get();
         return response()->json(['sales' => $sales]);
     }
-
-
-    // // fetching all sales with his clients.
-    // public function getSalesWithClients()
-    // {
-    //     $sales = DB::table('sales')
-    //         ->join('clients', 'sales.code_client', '=', 'clients.code_client') // Join the tables
-    //         ->select(
-    //             'sales.no_bl',
-    //             'sales.annee',
-    //             'sales.date as date_bl',
-    //             'sales.code_client',
-    //             'clients.name as client', 
-    //             'sales.ref_produit',
-    //             'sales.produit',
-    //             'sales.longueur as long',
-    //             'sales.largeur as larg',
-    //             'sales.nbr',
-    //             'sales.qte',
-    //             'sales.prix_unitaire as prix_u',
-    //             'sales.montant as bl_mont'
-    //         )
-    //         ->get();
-
-    //     return response()->json($sales);
-    // }
-
-
-
 
 
 }

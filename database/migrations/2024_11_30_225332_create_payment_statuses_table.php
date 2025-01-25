@@ -24,8 +24,9 @@ return new class extends Migration
             $table->string('commerçant')->nullable();
             $table->string('tel-commerçant')->nullable();
             $table->date('date-echeance')->nullable();
-            $table->date('chef-atelier')->nullable();
+            $table->string('chef-atelier')->nullable();
             $table->string('user-name')->nullable(); 
+            $table->integer('changeCount')->default(0); 
             $table->timestamps();
 
             // Foreign key constraint (assuming clients table has a column 'code_client')

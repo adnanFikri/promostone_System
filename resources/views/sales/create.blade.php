@@ -45,6 +45,10 @@
         color: #4B5563; /* Custom color for legend text */
     }
     #el03 {background:url(/i/icon-info.gif) no-repeat 100% 50%}
+
+    
+    
+    
 </style>
 
 @can("create sales")
@@ -266,7 +270,7 @@
                     mesureTotal = longueur * largeur * quantite * prixUnitaire;
                 } else if (mode === "ML") {
                     mesureTotal = (longueur + largeur) * quantite * prixUnitaire;
-                } else if (mode === "Unite") {
+                } else if (mode === "Unité") {
                     mesureTotal = quantite * prixUnitaire;
                 }
 

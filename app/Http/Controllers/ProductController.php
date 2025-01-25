@@ -39,8 +39,8 @@ class ProductController extends Controller
                 'unit_price',
                 'quantity',
                 'color',
-                'inventory_date',
-                'update_date',
+                // 'inventory_date',
+                // 'update_date',
                 'product_code',
                 'image_path'
             ]);
@@ -104,46 +104,46 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // dd($request->all());
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'unit_price' => 'required|numeric',
-            'quantity' => 'required|integer',
-            'color' => 'required|string|max:50',
-            'inventory_date' => 'required|date',
-            'update_date' => 'required|date',
-            'product_code' => 'required|string|unique:products',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'type' => 'required|string|max:255',
+        'category' => 'required|string|max:255',
+        'unit_price' => 'required|numeric',
+        'quantity' => 'required|integer',
+        'color' => 'required|string|max:50',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+    ]);
 
-    
-    
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        }
+    // Generate the product code
+    $category = $request->category;
+    $categoryInitial = strtoupper(substr($category, 0, 1)); // First letter of the category
 
-        // dd($imagePath);
-    
-        Product::create([
-            'name' => $request->name,
-            'type' => $request->type,
-            'category' => $request->category,
-            'unit_price' => $request->unit_price,
-            'quantity' => $request->quantity,
-            'color' => $request->color,
-            'inventory_date' => $request->inventory_date,
-            'update_date' => $request->update_date,
-            'product_code' => $request->product_code,
-            'image_path' => $imagePath,
-        ]);
-    
-        return redirect()->route('products.index')->with('success', 'Produit créé avec succès !');
-    
+    // Count existing products with the same category initial
+    $count = Product::where('category', $category)->count();
+
+    // Generate the product code (e.g., M001, M002, ...)
+    $productCode = $categoryInitial . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('products', 'public');
     }
+
+    Product::create([
+        'name' => $request->name,
+        'type' => $request->type,
+        'category' => $request->category,
+        'unit_price' => $request->unit_price,
+        'quantity' => $request->quantity,
+        'color' => $request->color,
+        'product_code' => $productCode, // Use the generated product code
+        'image_path' => $imagePath,
+    ]);
+
+    return redirect()->route('products.index')->with('success', 'Produit créé avec succès !');
+}
+
 
     /**
      * Display the specified resource.
@@ -174,8 +174,8 @@ class ProductController extends Controller
             'unit_price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'color' => 'nullable|string|max:255',
-            'inventory_date' => 'required|date',
-            'update_date' => 'required|date',
+            // 'inventory_date' => 'required|date',
+            // 'update_date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image upload
         ]);
 
@@ -189,8 +189,8 @@ class ProductController extends Controller
         $product->unit_price = $request->unit_price;
         $product->quantity = $request->quantity;
         $product->color = $request->color;
-        $product->inventory_date = $request->inventory_date;
-        $product->update_date = $request->update_date;
+        // $product->inventory_date = $request->inventory_date;
+        // $product->update_date = $request->update_date;
 
         // Handle image upload if provided
         if ($request->hasFile('image')) {

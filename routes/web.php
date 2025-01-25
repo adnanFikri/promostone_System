@@ -18,14 +18,15 @@ use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\Achat\AchatController;
 use App\Http\Controllers\Achat\AchatreglementController;
+use App\Http\Controllers\SaleCheckController;
 
 Route::get('/', function () {
     return view('welcome');
 })->middleware(['auth', 'verified']);
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/welcome', function () {
     return view('welcome'); // Create the `welcome.blade.php` view in the `resources/views` directory
@@ -56,9 +57,10 @@ Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
 Route::get('/sales/get-by-bl', [SalesController::class, 'getByBl'])->name("sales.get-by-bl");
 Route::get('/sales/create', [SalesController::class, 'create'])->name("sales.create");
 Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store');
-Route::get('/bon-livraison/{no_bl}', [SalesController::class, 'showBonLivraison'])->name('bon_livraison');
-Route::get('/bon-coup/{no_bl}', [SalesController::class, 'showBonCoup'])->name('bon_coup');
-Route::get('/bon-sortie/{no_bl}', [SalesController::class, 'showBonSortie'])->name('bon_sortie');
+// Route for editing a sale
+// web.php (Route definition)
+Route::get('/sales/edit/{no_bl}', [SalesController::class, 'edit'])->name('sales.edit');
+Route::put('/sales/{id}', [SalesController::class, 'update'])->name('sales.update');
 
 
 // -=-=-= 00 CLIENT ROUTES 00 -=-=-=-
@@ -93,6 +95,8 @@ Route::get('/client-bls/{clientCode}', [ReglementController::class, 'getClientBl
 Route::get('/get-all-bls', [ReglementController::class, 'getAllBLs'])->name('reglements.get-all-bls');
 
 Route::get('/avance/create/{no_bl}/{code_client}/{total_amount}', [ReglementController::class, 'avance'])->name('avance.create');
+Route::get('/avance/edit/{no_bl}/{code_client}/{total_amount}/{oldPayedAmount}', [ReglementController::class, 'editAvance'])->name('avance.edit');
+Route::post('/avance/update', [ReglementController::class, 'updateAvance'])->name('avance.update');
 
 
 
@@ -104,29 +108,31 @@ Route::resource('users', UserController::class);
 
 
 
+
+Route::get('/sale-check/{id}', [SaleCheckController::class, 'showSaleCheck'])->name('saleCheck.show');
+
+
 // -=-=-= 00 BON DE LIVRAISON ROUTES 00 -=-=-=-
 Route::get('/listBonLivraison', [BonLivraisonController::class, 'index'])->name('listBonLivraison.index'); // DataTable
+Route::get('/bon-livraison/{no_bl}', [BonLivraisonController::class, 'showBonLivraison'])->name('bon_livraison');
 Route::post('/bonLivraison/{id}/update-livree', [BonLivraisonController::class, 'updateLivree']);
-
 
 // -=-=-= 00 BON DE COUPE ROUTES 00 -=-=-=-
 Route::get('/listBonCoupe', [BonCoupeController::class, 'index'])->name('listBonCoupe.index'); // DataTable
+Route::get('/bon-coup/{no_bl}', [BonCoupeController::class, 'showBonCoup'])->name('bon_coup');
 Route::post('/bonCoupe/{id}/update-coupe', [BonCoupeController::class, 'updateCoupe']);
 Route::post('/bonCoupe/increment-print/{id}', [BonCoupeController::class, 'incrementPrintNbr'])->name('bon_coupe.increment_print');
 
-
 // -=-=-= 00 BON DE SORTIE ROUTES 00 -=-=-=-
 Route::get('/listBonSortie', [BonSortieController::class, 'index'])->name('listBonSortie.index'); // DataTable
+Route::get('/bon-sortie/{no_bl}', [BonSortieController::class, 'showBonSortie'])->name('bon_sortie');
 Route::post('/bonSortie/{id}/update-sortie', [BonSortieController::class, 'updateSortie']);
 Route::post('/bonSortie/increment-print/{id}', [BonSortieController::class, 'incrementPrintNbr'])->name('bon_coupe.increment_print');
 
 
-
-
 // =============================================================================================================================
 // =============================================================================================================================
 // =============================================================================================================================
-
 
 
 
@@ -145,7 +151,6 @@ Route::get('/achat/get-by-bl', [AchatController::class, 'getByBl'])->name("achat
 Route::get('/achat/create', [AchatController::class, 'create'])->name("achat.create");
 Route::post('/achat/store', [AchatController::class, 'store'])->name('achat.store');
 Route::get('/achat/get-by-bl', [AchatController::class, 'getByBl'])->name("achat.get-by-bl");
-
 
 
 // 0000000000000 00 ACHAT STATUS Controller ROUTES 00 0000000000000
@@ -175,6 +180,10 @@ Route::view('/logn','auth.loginn');
 
 
 
+
+Route::get('/maintenanceNow', function () {
+    return view('maintenance');
+});
 
 
 

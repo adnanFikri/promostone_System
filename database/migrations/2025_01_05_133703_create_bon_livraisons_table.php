@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('no_bl')->nullable(); // Add BL number
             $table->string('livree')->nullable()->default('Non'); // Add BL number
-            $table->integer('userName')->nullable(); 
+            $table->string('userName')->nullable(); 
             $table->timestamps();
         });
     }

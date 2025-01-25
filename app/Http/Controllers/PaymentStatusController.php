@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use App\Models\Client;
+use App\Models\SaleCheck;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 // use Illuminate\Routing\Controller;
 
@@ -19,55 +21,84 @@ class PaymentStatusController extends Controller
         $this->middleware('permission:populate payment statuses')->only(['populatePaymentStatus']);
         $this->middleware('permission:view sales with no payment status')->only(['getSalesWithNoPaymentStatus']);
         $this->middleware('permission:filter payment statuses by client type')->only(['getByClientType']);
-    }
-public function index(Request $request)
-{
-    if ($request->ajax()) {
-        $query = PaymentStatus::select(
-            'payment_statuses.id',
-            'payment_statuses.no_bl',       
-            'payment_statuses.code_client',
-            'payment_statuses.name_client',
-            'payment_statuses.date_bl', 
-            'payment_statuses.montant_total',
-            'payment_statuses.montant_payed',
-            'payment_statuses.montant_restant',
-            'clients.type as client_type' // Include client type in the selection
-        )
-        ->join('clients', 'payment_statuses.code_client', '=', 'clients.code_client'); // Join with clients table
+        }
+    public function index(Request $request)
+    {
+        $lastSaleCheck = SaleCheck::select('no_bl', DB::raw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+00:00'), '%Y-%m-%d %H:%i:%s') as created_at"))
+        ->orderBy('created_at', 'desc')
+        ->first();
 
-        // Apply date range filter if both dates are provided
-        if ($request->filled('date_from') && $request->filled('date_to')) {
-            $query->whereBetween('payment_statuses.date_bl', [$request->date_from, $request->date_to]);
-        } 
-        // Apply filter if only date_from is provided
-        elseif ($request->filled('date_from')) {
-            $query->whereDate('payment_statuses.date_bl', '>=', $request->date_from);
-        } 
-        // Apply filter if only date_to is provided
-        elseif ($request->filled('date_to')) {
-            $query->whereDate('payment_statuses.date_bl', '<=', $request->date_to);
+        $saleChecks = SaleCheck::orderBy('created_at', 'desc')->get();
+
+        if ($request->ajax()) {
+            $query = PaymentStatus::select(
+                'payment_statuses.id',
+                'payment_statuses.no_bl',       
+                'payment_statuses.code_client',
+                'payment_statuses.name_client',
+                'payment_statuses.date_bl', 
+                'payment_statuses.changeCount',  
+                'payment_statuses.montant_total',
+                'payment_statuses.montant_payed',
+                'payment_statuses.montant_restant',
+                'clients.type as client_type' 
+            )
+            ->join('clients', 'payment_statuses.code_client', '=', 'clients.code_client'); // Join with clients table
+
+            // Apply date range filter if both dates are provided
+            if ($request->filled('date_from') && $request->filled('date_to')) {
+                $query->whereBetween('payment_statuses.date_bl', [$request->date_from, $request->date_to]);
+            } 
+            // Apply filter if only date_from is provided
+            elseif ($request->filled('date_from')) {
+                $query->whereDate('payment_statuses.date_bl', '>=', $request->date_from);
+            } 
+            // Apply filter if only date_to is provided
+            elseif ($request->filled('date_to')) {
+                $query->whereDate('payment_statuses.date_bl', '<=', $request->date_to);
+            }
+
+            // Apply client type filter if provided
+            if ($request->filled('client_type') && $request->client_type === 'modifs') {
+                // Filter by changeCount > 0
+                $query->where('payment_statuses.changeCount', '>', 0);
+            } elseif ($request->filled('client_type') && $request->client_type !== 'all') {
+                // Filter by client type
+                $query->where('clients.type', $request->client_type);
+            }
+            // if ($request->filled('client_type') && $request->client_type !== 'all') {
+            //     $query->where('clients.type', $request->client_type);
+            // }
+
+            $data = $query->get();
+
+            $data->each(function ($item) {
+                if ($item->changeCount > 0) {
+                    $item->saleChecks = SaleCheck::select(
+                        'id',
+                        DB::raw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+01:00'), '%Y-%m-%d %H:%i:%s') as created_at")
+                    )
+                    
+                    ->where('no_bl', $item->no_bl)
+                    ->orderBy('created_at', 'desc') // Sort by latest date
+                    ->get();
+                } else {
+                    $item->saleChecks = [];
+                }
+            });
+
+            return DataTables::of($data)
+                ->addColumn('actions', function ($row) {
+                    $btn = '<a href="' . route('paymentStatus.index', $row->id) . '" class="edit btn btn-primary btn-sm">Edit</a>';
+                    $btn .= ' <a href="' . route('paymentStatus.index', $row->id) . '" class="delete btn btn-danger btn-sm">Delete</a>';
+                    return $btn;
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
         }
 
-        // Apply client type filter if provided
-        if ($request->filled('client_type') && $request->client_type !== 'all') {
-            $query->where('clients.type', $request->client_type);
-        }
-
-        $data = $query->get();
-
-        return DataTables::of($data)
-            ->addColumn('actions', function ($row) {
-                $btn = '<a href="' . route('paymentStatus.index', $row->id) . '" class="edit btn btn-primary btn-sm">Edit</a>';
-                $btn .= ' <a href="' . route('paymentStatus.index', $row->id) . '" class="delete btn btn-danger btn-sm">Delete</a>';
-                return $btn;
-            })
-            ->rawColumns(['actions'])
-            ->make(true);
+        return view('paymentStatus.index',compact('lastSaleCheck', 'saleChecks'));
     }
-
-    return view('paymentStatus.index');
-}
 
     // 0000- new populate -00000
 

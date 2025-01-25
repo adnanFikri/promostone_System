@@ -59,17 +59,18 @@
     <!-- Bon de Livraison Card -->
     <div id="bon-de-livraison" class="borde border-gray-00 rounded-lg p-6 shado bg-white">
         <!-- Header Section -->
-        <div class="flex justify-between items-center mb-9 text-center">
-            <span class="text-gray-500">Rabat le {{ $paymentStatus['date-echeance'] }} - <span class="text-gray-400 font-bold" >Impression: <span {{$print_nbr->print_nbr > 1 ? 'class=text-red-400' : ""}}>{{$print_nbr->print_nbr + 1}}</span></span></span>
-            <h2 class="text-2xl font-bold">BON DE COUPE N° {{ $paymentStatus->no_bl }} /{{ date('Y') }}</h2>
+        <div class="flex justify-between items-center mb-4 text-center ">
+            <span class="text-gray-500">{{ $paymentStatus['destination'] }} le {{ $paymentStatus['date-echeance'] }} - <span class="text-gray-400 font-bold" >Impression N° <span {{$print_nbr->print_nbr > 1 ? 'class=text-red-400' : ""}}>{{$print_nbr->print_nbr + 1}}</span></span> </span>
+            <div class="border border-gray-400 rounded-lg p-2 bg-gray-200  text-center min-w-72">
+                <p class="font-bold text-orange-500 text-lg">{{ $paymentStatus->name_client }}</p>
+                <p><strong>Code Client:</strong> {{ $paymentStatus->code_client }}</p>
+                <p><strong>Téléphone:</strong> {{ $client->phone }}</p>
+            </div>
         </div>
 
-        <!-- Client Info -->
-        <div class="border border-gray-400 rounded-lg p-4 bg-gray-200 m-auto mt-6 mb-12 text-center w-96">
-            <p class="font-bold text-orange-500 text-lg">{{ $paymentStatus->name_client }}</p>
-            <p><strong>Code Client:</strong> {{ $paymentStatus->code_client }}</p>
-            <p><strong>Téléphone:</strong> {{ $client->phone }}</p>
-        </div>
+        <!-- Client BON -->
+        <h2 class="text-2xl mb-4 text-3xl font-bold text-center text-gray-600">BON DE COUPE N° <span class="text-black border bg-gray-200 px-1 shadow ">{{ $paymentStatus->no_bl }}</span> / {{ date('Y') }}</h2>
+        
 
         <!-- Agent Info -->
         <p class="mb-4 border p-4 border-gray-300 rounded-md"><strong>Agent:</strong> {{ $paymentStatus->commerçant }} {{ $paymentStatus['tel-commerçant'] ? '- '. $paymentStatus['tel-commerçant'] .' ' : ''}}</p>

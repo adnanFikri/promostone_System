@@ -15,8 +15,13 @@ class RolePermissionSeeder extends Seeder
     {
         $permissions = [
             'Sales' => [
-                'view sales', 'create sales', 'store sales', 'view bon livraison', 
-                'view bon coup', 'view bon sortie', 'view sales upload', 'import sales', 'view sales by bl'
+                'view sales', 'create sales', 'store sales', 
+                 'view bon sortie', 'import sales', 'view sales by bl'
+            ],
+            'bons' => [
+                'index bon livraison', 'view bon livraison', 'update livree bon livraison',
+                'index bon coup', 'view bon coup', 'update coupe bon coup',
+                'index bon sortie', 'view bon sortie', 'update sortie bon sortie',
             ],
             'Clients' => [
                 'view clients', 'create clients', 'store clients', 'view client details', 

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('coupe')->nullable()->default('Non'); 
             $table->dateTime('date_coupe')->nullable(); 
             $table->integer('print_nbr')->nullable()->default(0); 
-            $table->integer('userName')->nullable(); 
+            $table->dateTime('print_date')->nullable(); 
+            $table->string('userName')->nullable(); 
             $table->timestamps(); 
         });
     }

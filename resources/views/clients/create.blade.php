@@ -56,6 +56,20 @@
                         </div>
 
                         <div class="mb-6">
+                            <label for="category" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Categorie Client </label>
+                            <select name="category" id="category" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
+                                <option value="MONSIEUR">MONSIEUR</option>
+                                <option value="MADAME">MADAME</option>
+                                <option value="SOCIÉTÉ">SOCIÉTÉ</option>
+                                <option value="POSSEUR">POSSEUR</option>
+                                <option value="REVENDEUR">REVENDEUR</option>
+                            </select>
+                            @error('category')
+                                <small class="text-red-600">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-6">
                             <label for="name" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Nom Client </label>
                             <input type="text" name="name" id="name" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg focus:outline-none bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" value="{{ old('name') }}" required>
                             @error('name')
@@ -71,6 +85,7 @@
                             @enderror
                         </div>
 
+
                         <div class="mb-6">
                             <label for="type" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Type Client </label>
                             <select name="type" id="type" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
@@ -82,6 +97,8 @@
                                 <small class="text-red-600">{{ $message }}</small>
                             @enderror
                         </div>
+
+                        <input type="text" hidden name="user-name" value="{{ auth()->user()->name }}">
 
                         <button type="submit" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Enregistrer le client</button>
                         <button onclick="window.location='{{ route('clients.index') }}';" class="w-full mt-2 px-4 py-2 text-white bg-blue-400 rounded hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">Annuler</button>
@@ -111,9 +128,16 @@
         })
         .catch(error => {
             console.error('Error fetching client code:', error);
-            Swal.fire('Error!', 'Failed to fetch client code', 'error');
+            // Swal.fire('Error!', 'Failed to fetch client code', 'error');
         });
 
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const nameInput = document.getElementById('name');
+            nameInput.addEventListener('input', function () {
+                this.value = this.value.toUpperCase();
+            });
+        });
 
     </script>
 

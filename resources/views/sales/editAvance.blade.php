@@ -124,13 +124,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="mb-4">
                             <label for="montant" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Montant d'Avance</label>
-                            <input type="number" name="montant" id="montant" placeholder="Entrez le montant de l'avance" required
+                            <input type="number" name="montant" id="montant" value="{{ old('montant', $oldPayedAmount ?? '') }}" placeholder="Entrez le montant de l'avance" required
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                         </div>
                 
                         <div class="mb-4">
                             <label for="destination" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Destination</label>
-                            <input type="text" name="destination" id="destination" placeholder="Destination" required
+                            <input type="text" name="destination" id="destination" value="{{ old('montant', $paymentStatus->destination ?? '') }}" placeholder="Destination" required
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                         </div>
                     </div>
@@ -139,18 +139,24 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="mb-4">
                             <label for="mode_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Mode de Paiement</label>
-                            <select name="type_pay" id="mode_reglement" required
+                            {{-- <select name="type_pay" id="mode_reglement" required
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                                 <option value="Chèque">Chèque</option>
                                 <option value="Espèce">Espèce</option>
                                 <option value="Virement">Virement</option>
+                            </select> --}}
+                            <select name="type_pay" id="mode_reglement" required
+                                class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                                <option value="Chèque" {{ old('type_pay', $regelement->type_pay ?? '') == 'Chèque' ? 'selected' : '' }}>Chèque</option>
+                                <option value="Espèce" {{ old('type_pay', $regelement->type_pay ?? '') == 'Espèce' ? 'selected' : '' }}>Espèce</option>
+                                <option value="Virement" {{ old('type_pay', $regelement->type_pay ?? '') == 'Virement' ? 'selected' : '' }}>Virement</option>
                             </select>
                         </div>
                     
                         <div id="cheque_fields" class="grid grid-cols-2 gap-6">
                             <div class="mb-4">
                                 <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">N Référence</label>
-                                <input type="number" name="reference_chq" id="reference_chq" placeholder="Référence du chèque" required
+                                <input type="number" name="reference_chq" id="reference_chq"  placeholder="Référence du chèque" required
                                     class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                             </div>
                             <div class="mb-4">
@@ -165,15 +171,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="mb-4">
                             <label for="chef-atelier" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Chef d'Atelier</label>
-                            <select name="chefAtelier" id="chef-atelier" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                            <select name="chefAtelier" id="chef-atelier" value="{{ old('montant', $paymentStatus->chefAtelier ?? '') }}" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                                 <option value="Mounir">Mounir</option>
                             </select>
                         </div>
                 
                         <div class="mb-4">
-                            <label for="date-echeance" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date De chargement</label>
+                            <label for="date-echeance" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date de Chargement</label>
                             <input type="date" name="date-echeance" id="date-echeance" required
-                                class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
+                            value="{{ old('date-echeance', isset($paymentStatus['date-echeance']) ? \Carbon\Carbon::parse($paymentStatus['date-echeance'])->format('Y-m-d') : '') }}"
+                            class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
+                        
                         </div>
                     </div>
                 
@@ -224,6 +232,8 @@ $('#save-button').on('click', function (e) {
         _token: '{{ csrf_token() }}'
     };
 
+    console.log(formData);
+    
     let hasError = false;
     let errorMessage = "Veuillez remplir tous les champs obligatoires :";
 
@@ -254,7 +264,7 @@ $('#save-button').on('click', function (e) {
         return; 
     }
 
-    fetch('{{ route('reglements.store') }}', {
+    fetch('{{ route('avance.update') }}', {
         method: 'POST',
         body: new URLSearchParams(formData),
         headers: {

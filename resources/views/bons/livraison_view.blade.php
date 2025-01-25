@@ -137,11 +137,13 @@ select.rounded-md.w-md {
                         <tr>
                             {{-- <th>ID</th> --}}
                             <th>No BL</th>
+                            {{-- <th>idclient</th> --}}
+                            <th>Raison</th>
                             <th>Produits</th>
                             <th>date</th>
                             <th>commercant</th>
                             <th>Livrée</th>
-                            <th>Crée par</th>
+                            {{-- <th>Crée par</th> --}}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -161,9 +163,12 @@ table = $('#bons-table').DataTable({
      serverSide: true,
      ajax: '{{ route("listBonLivraison.index") }}',
      responsive: true,  // Add this line to enable responsive table
+     order: [[0, 'desc']],
      columns: [
         //  { data: 'id', name: 'id' }, 
          { data: 'no_bl', name: 'no_bl' },
+         { data: 'client', name: 'client' },
+        //  { data: 'name_client', name: 'name_client' },
          { data: 'products', name: 'products' }, // This column corresponds to products
          { data: 'date', name: 'date' }, // Sale date column
          { data: 'commercant', name: 'commercant' }, // Commercant column
@@ -179,7 +184,7 @@ table = $('#bons-table').DataTable({
                  `;
              }
          },
-         { data: 'userName', name: 'userName' }, // Commercant column
+        //  { data: 'userName', name: 'userName' }, // Commercant column
          { 
              data: 'actions', 
              name: 'actions', 
@@ -187,11 +192,22 @@ table = $('#bons-table').DataTable({
              searchable: false,
              render: function(data, type, row) {
                  return `
+                 
                      <a href="{{ url('/bon-livraison/') }}/${row.no_bl}" target="_blank" class="btnA" title="Voir Bon de Livraison">
                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
                             <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
                         </svg>
                      </a>
+
+                     
+                    @can('update livree bon livraison')
+                        <a href="/sales/edit/${row.no_bl}" class="btn btn-primary" title="Edit Bon">
+                            <svg class="w-9 h-9 text-blue-800 dark:text-white mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                            </svg>
+                        </a>
+                    @endcan
+                     
                  `;
              }
          },
@@ -227,6 +243,7 @@ function updateLivree(id, value) {
                 background: '#f8f9fa',
                 iconColor: '#4BB543',
             });
+            $('#bons-table').DataTable().ajax.reload();
         } else {
             // Error alert in French
             Swal.fire({
@@ -238,6 +255,7 @@ function updateLivree(id, value) {
                 background: '#f8f9fa',
                 iconColor: '#FF5733',
             });
+            $('#bons-table').DataTable().ajax.reload();
         }
     }).catch(error => {
         // If there's a network error or other issue with the fetch request
@@ -250,6 +268,7 @@ function updateLivree(id, value) {
             background: '#f8f9fa',
             iconColor: '#FF5733',
         });
+        $('#bons-table').DataTable().ajax.reload();
     });
 }
 

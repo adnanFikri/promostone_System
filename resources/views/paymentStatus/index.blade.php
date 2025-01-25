@@ -170,8 +170,8 @@
         padding: 2px 5px;
         width: fit-content;
         position: absolute;
-        top: 120px;
-        left: 540px;
+        top: 160px;
+        left: 560px;
         background: #e7e1e1ac;
         color: #600f06;
         border-radius: 3px;
@@ -182,8 +182,8 @@
         padding: 2px 5px;
         width: fit-content;
         position: absolute;
-        top: 155px;
-        left: 540px;
+        top: 195px;
+        left: 560px;
         background: #e7e1e1ac;
         color: #06600a;
         border-radius: 3px;
@@ -194,8 +194,8 @@
         padding: 2px 5px;
         width: fit-content;
         position: absolute;
-        top: 190px;
-        left: 540px;
+        top: 230px;
+        left: 560px;
         background: #e7e1e1ac;
         color: #080660;
         border-radius: 3px;
@@ -257,7 +257,11 @@
         margin-left: 10px !important;
     }
 
-    /* button bon  */
+
+    #modalSaleCheck {
+    position: fixed;  /* Ensure the modal is positioned relative to the viewport */
+    z-index: 9999;    /* Ensure it’s on top */
+}
     
 </style>
 
@@ -274,10 +278,91 @@
     
         <div class="py-2 px-9">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8">
+
+                @can('create users')
+                    @if($lastSaleCheck)
+                        {{-- <div class="bg-gray-100 border border-gray-300 text-gray-800 px-4 py-2 rounded mb-4 inline-block font-bold" role="alert"> --}}
+                        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4 inline-block " role="alert">
+                        {{-- <div class="text-gray-500 font-bold mb-2"> --}}
+                            <b>Dernière modif, BL:</b> {{ $lastSaleCheck->no_bl }} => {{ $lastSaleCheck->created_at }}
+                        </div>
+                    @endif
+
+                    <div class="relative inline-block text-left">
+                        <!-- Dropdown Menu -->
+                        <button type="button" 
+                            class=" text-white px-2 py-2 " 
+                            id="openModalSaleCheck">
+                            <svg class="w-7 h-7  text-blue-800 dark:text-white hover:text-blue-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm0 6h16v6H4v-6Z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M5 14a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Zm5 0a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2h-5a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    
+                    </div>
+
+                    <div id="modalSaleCheck" 
+                        class="fixed inset-0 flex items-center z-100 justify-center bg-black bg-opacity-50 hidden">
+                        <div class="bg-white rounded-lg shadow-lg w-96 max-h-[80vh] overflow-y-auto">
+                            <!-- Modal Header -->
+                            <div class="flex justify-between items-center p-4 border-b">
+                                <h2 class="text-lg font-semibold">Tout BL's Modified</h2>
+                                <button id="closeModalSaleCheck" class="text-gray-500 hover:text-red-500">&times;</button>
+                            </div>
+                            <!-- Modal Body -->
+                            <div class="p-4">
+                                <button type="button" id="toggleFilterButton" class="bg-gray-500 text-white px-4 mb-4 py-2 rounded shadow hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300">
+                                    Filtrage
+                                </button>
+                                
+                                
+                                <!-- Date Filter -->
+                                <form id="filterFormSaleCheck"  class="mb-4 hidden">
+                                    <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date:</label>
+                                    <input type="date" id="startDate" name="startDate" 
+                                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 mb-2">
+
+                                    <label for="endDate" class="block text-sm font-medium text-gray-700">End Date:</label>
+                                    <input type="date" id="endDate" name="endDate" 
+                                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 mb-4">
+
+                                    <button type="submit" 
+                                        class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                                        Filter
+                                    </button>
+                                    <button type="button" id="refreshButton" class="bg-orange-400 text-white px-4 py-2 rounded shadow hover:bg-orange-600 focus:outline-none focus:ring focus:ring-blue-300">
+                                        Reset
+                                    </button>
+
+                                </form>
+
+                                <!-- Sale Checks List -->
+                                <ul id="saleChecksList">
+                                    @foreach ($saleChecks as $saleCheck)
+                                        <li class="mb-4">
+                                            <p><strong>No BL:</strong> {{ $saleCheck->no_bl }}</p>
+                                            <p><strong>Date:</strong> {{ $saleCheck->created_at }}</p>
+                                            <hr class="mt-2">
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <!-- Modal Footer -->
+                            <div class="p-4 border-t flex justify-end">
+                                <button id="closeModalSaleCheckFooter" 
+                                    class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                @endcan
+                
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 pt-4 text-gray-900 dark:text-gray-100 ">
-                        <h2 class="font-serif text-center rounded-lg text-gray-600 bg-gray-10 p-2 underline mb-2 text-2xl font-bold ">VENTE STATUS PAIEMENT</h2>
-    
+                        <h2 class="font-serif text-center rounded-lg text-gray-600 bg-gray-10 p-2 underline mb-12 text-2xl font-bold ">VENTE STATUS PAIEMENT</h2>
+                     
                         {{-- <div class="dateInputsSearch">
                             
                             
@@ -313,6 +398,9 @@
                             <div id="searchBl" class="mb-1 bg-gray-00 text-right">
                                 <select id="clientType" name="clientType" class="rounded" onchange="fetchDataByClientType()">
                                     <option value="all">All</option>
+                                    @can('create users')
+                                        <option value="modifs">modifs</option>
+                                    @endcan
                                     <option value="fiche client">Fiche Client</option>
                                     <option value="anomalie">Anomalie</option>
                                     <option value="particulier">Particulier</option>
@@ -527,7 +615,154 @@
     
     @endcan
     
-        <script>
+
+    <script>
+        
+// 00000000000000000000000000000000000000000000000000000000
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterFormSaleCheck = document.getElementById('filterFormSaleCheck');
+        const saleChecksList = document.getElementById('saleChecksList');
+        const modalSaleCheck = document.getElementById('modalSaleCheck');
+        const openModalSaleCheck = document.getElementById('openModalSaleCheck');
+        const closeModalSaleCheck = document.getElementById('closeModalSaleCheck');
+        const closeModalSaleCheckFooter = document.getElementById('closeModalSaleCheckFooter');
+        const refreshButton = document.getElementById('refreshButton');
+        const toggleFilterButton = document.getElementById('toggleFilterButton'); // Button to toggle the filter form visibility
+
+        // Pass the sale checks data as JSON
+        const allSaleChecks = @json($saleChecks);
+
+        // Modal show/hide functionality
+        openModalSaleCheck.addEventListener('click', () => {
+            modalSaleCheck.classList.remove('hidden');
+        });
+
+        closeModalSaleCheck.addEventListener('click', () => {
+            modalSaleCheck.classList.add('hidden');
+        });
+
+        closeModalSaleCheckFooter.addEventListener('click', () => {
+            modalSaleCheck.classList.add('hidden');
+        });
+
+        // Close the modal if the user clicks outside of the modal content
+        modalSaleCheck.addEventListener('click', (event) => {
+            // Check if the click was outside the modal content (the modal background)
+            if (event.target === modalSaleCheck) {
+                modalSaleCheck.classList.add('hidden');
+            }
+        });
+
+        // Function to format the date to "YYYY-MM-DD HH:mm:ss"
+        const formatDate = (isoDate) => {
+            const date = new Date(isoDate);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        };
+
+        // Function to display all sale checks
+        const displayAllSaleChecks = () => {
+            saleChecksList.innerHTML = ''; // Clear current list
+
+            allSaleChecks.forEach(saleCheck => {
+                const listItem = document.createElement('li');
+                listItem.className = 'mb-4';
+                listItem.innerHTML = `
+                    <p><strong>No BL:</strong> ${saleCheck.no_bl}</p>
+                    <p><strong>Date:</strong> ${formatDate(saleCheck.created_at)}</p>
+                    <hr class="mt-2">
+                `;
+                saleChecksList.appendChild(listItem);
+            });
+        };
+
+        // Initial display of all sale checks
+        displayAllSaleChecks();
+
+        // Filter logic
+        filterFormSaleCheck.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent page reload
+
+            const startDate = new Date(document.getElementById('startDate').value);
+            let endDate = new Date(document.getElementById('endDate').value);
+
+            console.log('Start Date:', startDate);
+            console.log('End Date:', endDate);
+
+            // Ensure the endDate includes the full day by setting time to 23:59:59.999
+            endDate.setHours(23, 59, 59, 999);
+
+            // Clear existing list
+            saleChecksList.innerHTML = '';
+
+            // Filter sale checks based on date range
+            const filteredSaleChecks = allSaleChecks.filter(saleCheck => {
+                const saleCheckDate = new Date(saleCheck.created_at);
+                return saleCheckDate >= startDate && saleCheckDate <= endDate;
+            });
+
+            // Display filtered sale checks
+            if (filteredSaleChecks.length > 0) {
+                filteredSaleChecks.forEach(saleCheck => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'mb-4';
+                    listItem.innerHTML = `
+                        <p><strong>No BL:</strong> ${saleCheck.no_bl}</p>
+                        <p><strong>Date:</strong> ${formatDate(saleCheck.created_at)}</p>
+                        <hr class="mt-2">
+                    `;
+                    saleChecksList.appendChild(listItem);
+                });
+            } else {
+                saleChecksList.innerHTML = '<p>No sale checks found for the selected date range.</p>';
+            }
+        });
+
+        // Refresh button logic to reset and show all sale checks
+        refreshButton.addEventListener('click', () => {
+            // Clear date filters
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+
+            // Display all sale checks again
+            displayAllSaleChecks();
+        });
+
+        // Toggle filter form visibility
+        toggleFilterButton.addEventListener('click', () => {
+            // Toggle the "hidden" class to show or hide the filter form
+            filterFormSaleCheck.classList.toggle('hidden');
+        });
+    });
+
+    
+    </script>
+    
+    
+<script>
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+
+        const options = { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: false, // Optional: use 24-hour format
+            timeZone: 'UTC' // Interpret the date in UTC
+        };
+        return date.toLocaleString('en-GB', options); // You can change 'en-GB' to any locale you prefer
+    }
+
+
+    var canCreateUsers = @json(auth()->user()->can('create users'));
     var table;
     $(document).ready(function () {
         var table = $('#payment-status-table').DataTable({
@@ -599,6 +834,39 @@
                         // const bonLivraisonUrl = bonLivraisonRoute.replace(':no_bl', row.no_bl);
                         const bonLivraisonUrl = `{{ route('bon_livraison', ['no_bl' => ':no_bl']) }}`.replace(':no_bl', row.no_bl);
                         const bonCoupUrl = `{{ route('bon_coup', ['no_bl' => ':no_bl']) }}`.replace(':no_bl', row.no_bl);
+
+                        // drop down for sale check update 
+                        let dropdown = '';
+                        if (row.changeCount ) {
+                            const saleCheckLinks = row.saleChecks.map(saleCheck => {
+                                const saleCheckUrl = `{{ route('saleCheck.show', ['id' => ':id']) }}`.replace(':id', saleCheck.id);
+                                const formattedDate = formatDate(saleCheck.created_at); // Use the formatDate function
+ 
+                                return `<a href="${saleCheckUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" target="_blank">
+                                            ${formattedDate} <!-- Use the formatted date here -->
+                                        </a>`;
+                            }).join('');
+                            
+                            dropdown = `
+                            @can('view users')
+                            <div class="relative inline-block text-left">
+                                <button 
+                                    type="button" 
+                                    onclick="toggleDropdown(this)" 
+                                    class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                    Modifs (${row.changeCount})
+                                    <svg class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div class="hidden dropdown-menu mt-2 w-44 rounded-md bg-white shadow-lg">
+                                    ${saleCheckLinks}
+                                </div>
+                            </div>
+                            @endcan`;
+                        } 
+
+                        
                         return `
                         @can('create reglements')
                             <button class="reglement-btn bg-orange-400 text-white px-2 py-2  rounded  hover:bg-orange-600" 
@@ -637,16 +905,18 @@
                             >
                                 @can('view bon livraison')
                                     <div class="py-1">
-                                        <a href="${bonLivraisonUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Bon de Livraison</a>
+                                        <a href="${bonLivraisonUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" target="_blank">Bon de Livraison</a>
                                     </div>
                                 @endcan
                                 @can('view bon coup')
                                     <div class="py-1">
-                                        <a href="${bonCoupUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Bon de Coup</a>
+                                        <a href="${bonCoupUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" target="_blank">Bon de Coup</a>
                                     </div>
                                 @endcan
                             </div>
                         </div>
+
+                        ${dropdown}
                         `;
                     }
                 }
@@ -665,6 +935,12 @@
                 // Update the sum whenever the table is redrawn
                 updateSum();
             },
+            createdRow: function (row, data, dataIndex) {
+            // Check if ChangeCount > 0 and add a red background
+            if (canCreateUsers && data.changeCount > 0) {
+                $('td', row).eq(0).css('background-color', '#ffd0d0'); // Change the background of the specific cell (index 7)
+            }
+        },
             dom: '<"row mb-3"<"col-md-6"l><"col-md-6 text-end"B>>' +
             '<"row mb-3"<"col-md-6"f>>' +
                  '<"row"<"col-md-12"tr>>' +
@@ -1202,7 +1478,22 @@
         $('#client-modal').addClass('hidden');
     }
     
+    const dropdownButton = document.getElementById('dropdownButtonChange');
+    const dropdownMenu = document.getElementById('dropdownMenuChange');
+
+    dropdownButton.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    // Optional: Close dropdown if clicked outside
+    document.addEventListener('click', (event) => {
+        if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
     
+
+
     
         </script>
         

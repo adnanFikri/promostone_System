@@ -2,12 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sale;
+use App\Models\Client;
 use App\Models\BonSortie;
+use App\Models\Reglement;
 use Illuminate\Http\Request;
+use App\Models\PaymentStatus;
 use Illuminate\Support\Facades\Auth;
 
 class BonSortieController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth'); // Ensure the user is authenticated
+        
+        // Define permission-based middleware for each method
+        $this->middleware('permission:index bon sortie')->only(['index']);
+        $this->middleware('permission:view bon sortie')->only(['showBonSortie']);
+        $this->middleware('permission:update sortie bon sortie')->only(['updateSortie']);
+    }
     public function index()
     {
         if (request()->ajax()) {
@@ -55,35 +68,72 @@ class BonSortieController extends Controller
         return view('bons.sortie_view');
     }
     
-    
-        public function updateSortie(Request $request, $id)
-        {
-            $bon = BonSortie::findOrFail($id);
-            $bon->sortie = $request->input('sortie');
-            $bon->save();
-        
-            return response()->json(['message' => 'L\'état de sortie a été mis à jour avec succès.']);
+    public function showBonSortie($no_bl)
+    {
+        // Retrieve the payment status details
+        $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
+
+        if (!$paymentStatus) {
+            return redirect()->back()->with('error', 'Bon de Livraison not found.');
         }
 
-        public function incrementPrintNbr($no_bl)
-        {
-            // Retrieve the BonCoupe record based on the no_bl value
-            $bonSortie = BonSortie::where('no_bl', $no_bl)->first();
-        
-            if ($bonSortie) {
-                if (!auth()->user()->can('create users')) {
-                    // Increment the print_nbr field
-                    $bonSortie->print_nbr = $bonSortie->print_nbr + 1;
-                    $bonSortie->date_sortie= now();
-                    $bonSortie->userName = Auth::user()->name;
-                    $bonSortie->save();
-                }
-        
-                // Return success response
-                return response()->json(['success' => true, 'message' => 'Print number incremented successfully.']);
-            }
-        
-            // Return error response if BonCoupe is not found
-            return response()->json(['success' => false, 'message' => 'Bon Coupe not found.'], 404);
+        // Retrieve the sales details for the specific Bon de Livraison
+        $sales = Sale::where('no_bl', $no_bl)->get();
+
+        // Retrieve payment details (e.g., advance payments)
+        $reglements  =  Reglement::where('no_bl', $no_bl)->get();
+        $client  =  Client::where('code_client', $paymentStatus->code_client)->first();
+        $print_nbr  =  BonSortie::where('no_bl', $paymentStatus->no_bl)->first();
+
+
+        // Group sales data by product name
+        $groupedSales = $sales->groupBy('produit');
+
+        // Prepare data for the view
+        $data = [
+            'paymentStatus' => $paymentStatus,
+            'groupedSales' => $groupedSales,
+            'reglements' => $reglements,
+            'client' => $client,
+            'print_nbr' => $print_nbr,
+        ];
+
+        return view('sales.bonS', $data);
+    }
+    
+    public function updateSortie(Request $request, $id)
+    {
+        $bon = BonSortie::findOrFail($id);
+        $bon->sortie = $request->input('sortie');
+        if($request->input('sortie') == "Oui"){
+            $bon->date_sortie= now();
+            $bon->userName = Auth::user()->name;
+        }else{
+            $bon->date_sortie= null;
+            $bon->userName = null;
         }
+        $bon->save();
+    
+        return response()->json(['message' => 'L\'état de sortie a été mis à jour avec succès.']);
+    }
+
+    public function incrementPrintNbr($no_bl)
+    {
+        // Retrieve the BonCoupe record based on the no_bl value
+        $bonSortie = BonSortie::where('no_bl', $no_bl)->first();
+    
+        if ($bonSortie) {
+            // if (!auth()->user()->can('create users')) {
+                // Increment the print_nbr field
+                $bonSortie->print_nbr = $bonSortie->print_nbr + 1;
+                $bonSortie->save();
+            // }
+    
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'Print number incremented successfully.']);
+        }
+    
+        // Return error response if BonCoupe is not found
+        return response()->json(['success' => false, 'message' => 'Bon Coupe not found.'], 404);
+    }
 }

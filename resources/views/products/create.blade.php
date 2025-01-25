@@ -124,32 +124,14 @@ select {
             </div>
         </div>
 
-        <div class="flex flex-wrap -mx-3 mb-6">
-            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                <label for="inventory_date" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                    Date et heure d'inventaire
-                </label>
-                <input type="datetime-local" id="inventory_date" name="inventory_date" 
-                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-300 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-                    required>
-            </div>
-            <div class="w-full md:w-1/2 px-3">
-                <label for="update_date" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                    Date et heure de mise à jour
-                </label>
-                <input type="datetime-local" id="update_date" name="update_date" 
-                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-300 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-                    required>
-            </div>
-        </div>
-
+       
         <!-- Product Code -->
-        <div class="mb-6">
+        {{-- <div class="mb-6">
             <label for="product_code" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Code du produit</label>
             <input type="text" id="product_code" name="product_code" 
                 class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-300 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" 
                 value="{{ old('product_code', $newProductCode) }}" readonly>
-        </div>
+        </div> --}}
 
         <!-- Image -->
         <div class="mb-6">
@@ -190,6 +172,16 @@ select {
         }else{
             select.style.textShadow = '';
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputs = document.querySelectorAll('#name, #type'); // Select inputs by ID
+
+        inputs.forEach(input => {
+            input.addEventListener('input', function () {
+                this.value = this.value.toUpperCase(); // Convert value to uppercase
+            });
+        });
     });
 </script>
 @endsection

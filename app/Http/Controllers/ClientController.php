@@ -40,7 +40,7 @@ class ClientController extends Controller
     public function index(Request $request)
     {
             if ($request->ajax()) {
-                $clients = Client::select(['id', 'code_client', 'name', 'phone', 'type']);
+                $clients = Client::select(['id', 'code_client', 'name', 'category', 'phone', 'type', 'user-name']);
                 return DataTables::of($clients)
                     ->addColumn('actions', function ($client) {
                         $actions = '<div id="div-actions1" class="bg-gray-100" style="background-color:transparent;display:flex;">';
@@ -139,7 +139,12 @@ class ClientController extends Controller
     //     'type.required' => 'Client type is required.',
     // ]);
 
-    Client::create($request->all());
+    // Transform the 'name' attribute to uppercase
+    $data = $request->all();
+    $data['name'] = strtoupper($request->input('name'));
+
+    // Create the client
+    Client::create($data);
     
     if ($request->ajax()) {
         return response()->json(['message' => 'Client créé avec succès!']);
@@ -165,21 +170,39 @@ class ClientController extends Controller
         
     // }
     public function getNextCode()
-{
-    // Get the last client with code_client starting with '25s', ordering numerically on the part after '25s'
-    $lastClientCode = Client::where('code_client', 'like', '25s%')
-        ->selectRaw("CAST(SUBSTRING(code_client, 4) AS UNSIGNED) as code_number, code_client")
-        ->orderBy('code_number', 'desc')
+    {
+        // Get the last client code, ordering alphabetically by prefix and numerically by the number part
+        $lastClientCode = Client::selectRaw("
+            LEFT(code_client, 1) as prefix, 
+            CAST(SUBSTRING(code_client, 2) AS UNSIGNED) as code_number, 
+            code_client
+        ")
+        ->orderBy('prefix', 'desc') // Order by the letter prefix
+        ->orderBy('code_number', 'desc') // Then order numerically by the number part
         ->value('code_client'); // Retrieve only the 'code_client' value
 
-    // If the last client exists, increment its number; otherwise, start at 1
-    $nextClientNumber = $lastClientCode ? intval(substr($lastClientCode, 3)) + 1 : 1;
-    
-    // Generate the new client code
-    $newClientCode = '25s' . $nextClientNumber;
+        if ($lastClientCode) {
+            // Extract the letter prefix and number from the last code
+            $lastPrefix = substr($lastClientCode, 0, 1);
+            $lastNumber = intval(substr($lastClientCode, 1));
 
-    return response()->json(['code_client' => $newClientCode]);
-}
+            if ($lastNumber < 999) {
+                // Increment the number if it's less than 999
+                $nextNumber = $lastNumber + 1;
+                $newClientCode = $lastPrefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+            } else {
+                // Move to the next letter and reset the number to 1 if 999 is reached
+                $nextPrefix = chr(ord($lastPrefix) + 1);
+                $newClientCode = $nextPrefix . '001';
+            }
+        } else {
+            // If no clients exist, start with A001
+            $newClientCode = 'A001';
+        }
+
+        return response()->json(['code_client' => $newClientCode]);
+    }
+   
 
     public function search(Request $request)
 {
@@ -214,6 +237,8 @@ class ClientController extends Controller
                 'phone' => 'nullable|string',
                 'type' => 'required|string',
             ]);
+
+            $validated['name'] = strtoupper($validated['name']);
 
             // Update the client
             $client->update($validated);

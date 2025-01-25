@@ -41,6 +41,7 @@
         #clients-table th {
             background-color: #4CAF50;
             color: white;
+            text-transform: uppercase;
         }
 
         #clients-table tbody tr:nth-child(even) {
@@ -76,12 +77,23 @@
             transition: .3s;
             color: #45a049;
         }
+
+        #category{
+            padding: 7px;
+        }
+        #type{
+            padding: 7px;
+        }
+
+        #updateType{
+            padding: 7px;
+        }
     </style>
   
   @can('view clients')
 
     <div class="py-5">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-8 lg:px-8">
             
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 @can('create clients')
@@ -104,11 +116,13 @@
                     <table id="clients-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                             <tr>
-                                <th scope="col" class="px-6 py-3">ID</th>
+                                {{-- <th scope="col" class="px-6 py-3">ID</th> --}}
                                 <th scope="col" class="px-6 py-3">Client Code</th>
+                                <th scope="col" class="px-6 py-3">Categorie</th>
                                 <th scope="col" class="px-6 py-3">Nom</th>
                                 <th scope="col" class="px-6 py-3">Téléphone</th>
                                 <th scope="col" class="px-6 py-3">Type</th>
+                                <th scope="col" class="px-6 py-3">creé par</th>
                                 <th scope="col" class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
@@ -133,6 +147,21 @@
                     <input type="text" id="code_client" name="code_client"  readonly 
                            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                 </div>
+
+                <div class="mb-6">
+                    <label for="category" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Categorie Client </label>
+                    <select name="category" id="category" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
+                        <option value="MONSIEUR">MONSIEUR</option>
+                        <option value="MADAME">MADAME</option>
+                        <option value="SOCIÉTÉ">SOCIÉTÉ</option>
+                        <option value="POSSEUR">POSSEUR</option>
+                        <option value="REVENDEUR">REVENDEUR</option>
+                    </select>
+                    @error('category')
+                        <small class="text-red-600">{{ $message }}</small>
+                    @enderror
+                </div>
+                
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700 font-medium">Name</label>
                     <input type="text" id="name" name="name" 
@@ -152,6 +181,9 @@
                         <option value="ANOMALIE">Anomalie</option>
                     </select>
                 </div>
+
+                <input type="text" hidden name="user-name" value="{{ auth()->user()->name }}">
+                
                 <div class="flex justify-end">
                     <button type="button" onclick="closeModal()" 
                             class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 mr-2">Cancel</button>
@@ -176,6 +208,20 @@
                     <input type="text" id="updateCodeClient" name="code_client" class="w-full mt-1 p-2 border border-gray-300 rounded" readonly>
                 </div>
 
+                <div class="mb-6">
+                    <label for="category" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Categorie Client </label>
+                    <select name="category" id="category" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
+                        <option value="MONSIEUR">MONSIEUR</option>
+                        <option value="MADAME">MADAME</option>
+                        <option value="SOCIÉTÉ">SOCIÉTÉ</option>
+                        <option value="POSSEUR">POSSEUR</option>
+                        <option value="REVENDEUR">REVENDEUR</option>
+                    </select>
+                    @error('category')
+                        <small class="text-red-600">{{ $message }}</small>
+                    @enderror
+                </div>
+                
                 <div class="mb-4">
                     <label for="updateName" class="block text-sm font-medium text-gray-700">Client Name</label>
                     <input type="text" id="updateName" name="name" class="w-full mt-1 p-2 border border-gray-300 rounded">
@@ -203,6 +249,9 @@
                     @enderror
                 </div>
 
+                <input type="text" hidden name="user-name" value="{{ auth()->user()->name }}">
+
+                
                 <div class="flex justify-end">
                     <button type="button" class="mr-2 bg-gray-500 text-white px-4 py-2 rounded" onclick="closeUpdateModal()">Cancel</button>
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
@@ -220,11 +269,13 @@
         serverSide: true,
         ajax: '{{ route('clients.index') }}',
         columns: [
-            { data: 'id', name: 'id' },
+            // { data: 'id', name: 'id' },
             { data: 'code_client', name: 'code_client' },
+            { data: 'category', name: 'category' },
             { data: 'name', name: 'name' },
             { data: 'phone', name: 'phone' },
             { data: 'type', name: 'type' },
+            { data: 'user-name', name: 'user-name' },
             {
                 data: 'actions',
                 name: 'actions',

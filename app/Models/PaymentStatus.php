@@ -25,7 +25,9 @@ class PaymentStatus extends Model
         'commerçant',
         'tel-commerçant',
         'date-echeance',
+        'chef-atelier',
         'user-name',
+        'changeCount'
     ];
 
     // protected $fillable = ['no_bl', 'code_client', 'montant_payed', 'montant_restant', 'commerçant', 'tel-commerçant', 'date-echeance','user-name'];

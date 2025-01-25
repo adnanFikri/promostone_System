@@ -140,10 +140,10 @@ select.rounded-md.w-md {
                             <th>Produits</th>
                             <th>date</th>
                             <th>commercant</th>
-                            <th>print_nbr</th>
+                            <th>Sortie</th>
                             <th>Date Sortie</th>
                             <th>Sortie Par</th>
-                            <th>Sortie</th>
+                            <th>print_nbr</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -161,23 +161,15 @@ var table;
 table = $('#bons-table').DataTable({
      processing: true,
      serverSide: true,
+     order: [[0, 'desc']],
      ajax: '{{ route("listBonSortie.index") }}',
      responsive: true,  // Add this line to enable responsive table
      columns: [
         //  { data: 'id', name: 'id' }, 
          { data: 'no_bl', name: 'no_bl' },
-         { data: 'products', name: 'products' }, // This column corresponds to products
-         { data: 'date', name: 'date' }, // Sale date column
-         { data: 'commercant', name: 'commercant' }, // Commercant column
-         { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
-         { 
-            data: 'date_sortie', 
-            name: 'date_sortie',
-            render: function(data, type, row) {
-                return data ? data : 'pas encore';
-            }
-        },
-         { data: 'userName', name: 'userName' }, // Commercant column
+         { data: 'products', name: 'products' }, 
+         { data: 'date', name: 'date' }, 
+         { data: 'commercant', name: 'commercant' }, 
          { 
              data: 'sortie', 
              name: 'sortie', 
@@ -190,6 +182,16 @@ table = $('#bons-table').DataTable({
                  `;
              }
          },
+         { 
+            data: 'date_sortie', 
+            name: 'date_sortie',
+            render: function(data, type, row) {
+                return data ? data : 'pas encore';
+            }
+        },
+         { data: 'userName', name: 'userName' }, 
+         
+         { data: 'print_nbr', name: 'print_nbr' }, 
          { 
              data: 'actions', 
              name: 'actions', 
@@ -247,6 +249,7 @@ table = $('#bons-table').DataTable({
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#3085d6',
                     });
+                    $('#bons-table').DataTable().ajax.reload();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -255,6 +258,7 @@ table = $('#bons-table').DataTable({
                         confirmButtonText: 'Réessayer',
                         confirmButtonColor: '#d33',
                     });
+                    $('#bons-table').DataTable().ajax.reload();
                 }
             }).catch(error => {
                 Swal.fire({
@@ -264,6 +268,7 @@ table = $('#bons-table').DataTable({
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#d33',
                 });
+                $('#bons-table').DataTable().ajax.reload();
             });
         } else {
             // User canceled, no action needed

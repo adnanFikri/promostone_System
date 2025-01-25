@@ -14,6 +14,7 @@ return new class extends Migration
     Schema::create('clients', function (Blueprint $table) {
         $table->id(); // Primary key
         $table->string('code_client')->nullable()->index(); // Add an index to code_client
+        $table->string('category')->nullable();
         $table->string('name')->nullable();
         $table->string('phone')->nullable();
         $table->string('type')->nullable();

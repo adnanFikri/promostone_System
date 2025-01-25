@@ -135,10 +135,11 @@ class ReglementController extends Controller
                 'code_client' => $request->code_client,
                 'nom_client' => $paymentStatus->name_client ,
                 'montant' => $request->montant,
-                'date' =>  $request->has('commerçant') ? now() : $request->date, 
+                'date' =>  $request->has('destination') ? now() : $request->date, 
                 'type_pay' => $request->type_pay,
                 'reference_chq' => $request->reference_chq, 
-                'date_chq' => $request->date_chq,           
+                'date_chq' => $request->date_chq,          
+                'user-name' => Auth::user()->name
             ]);
 
 
@@ -159,21 +160,25 @@ class ReglementController extends Controller
                 ['no_bl' => $request->no_bl]
             );
 
+
             if ($request->has('chefAtelier') && $request->chefAtelier !== null) {
                 $paymentStatusData['chef-atelier'] = $request->chefAtelier;
+                
             }
             
             if ($request->has('destination') && $request->destination !== null) {
                 $paymentStatusData['destination'] = $request->destination;
+                $paymentStatusData['commerçant'] = Auth::user()->name;
+                // $paymentStatusData['chef-atelier'] = $request->chefAtelier;
             }
             
-            if ($request->has('commerçant') && $request->commerçant !== null) {
-                $paymentStatusData['commerçant'] = $request->commerçant;
-            }
+            // if ($request->has('commerçant') && $request->commerçant !== null) {
+            //     $paymentStatusData['commerçant'] = Auth::user()->name;
+            // }
             
-            if ($request->has('tel_commerçant') && $request->tel_commerçant !== null) {
-                $paymentStatusData['tel-commerçant'] = $request->tel_commerçant;
-            }
+            // if ($request->has('tel_commerçant') && $request->tel_commerçant !== null) {
+            //     $paymentStatusData['tel-commerçant'] = $request->tel_commerçant;
+            // }
             
             if ($request->has('date_echeance') && $request->date_echeance !== null) {
                 $paymentStatusData['date-echeance'] = $request->date_echeance;
@@ -318,6 +323,136 @@ class ReglementController extends Controller
         'client_name' => $clientName,
         'total_amount' => $total_amount,
     ]);
+}
+
+    public function editAvance($no_bl, $code_client, $total_amount, $oldPayedAmount)
+{
+    $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
+    $clientName = Client::where('code_client', $code_client)->value('name');
+    $regelement = Reglement::where('no_bl', $no_bl)->first();
+
+    return view('sales.editAvance', [
+        'no_bl' => $no_bl,
+        'code_client' => $code_client,
+        'client_name' => $clientName,
+        'total_amount' => $total_amount,
+        'oldPayedAmount' => $oldPayedAmount,
+        'paymentStatus' => $paymentStatus,
+        'regelement' => $regelement
+    ]);
+}
+
+    public function updateAvance(Request $request)
+{
+    try {
+        $reglement = Reglement::where('no_bl', $request->no_bl)->first();
+    
+        if (!$reglement) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Reglement not found.',
+            ], 404);
+        }
+
+        // Fetch the corresponding PaymentStatus entry
+        $paymentStatus = PaymentStatus::where('no_bl', $reglement->no_bl)->first();
+
+        if (!$paymentStatus) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No BL found for the given Reglement.',
+            ], 404);
+        }
+
+        // Update PaymentStatus name_client if null
+        if (is_null($paymentStatus->name_client)) {
+            $client = Client::where('code_client', $request->code_client)->first();
+            if ($client) {
+                $paymentStatus->update(['name_client' => $client->name]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Client not found for the given client code.',
+                ], 404);
+            }
+        }
+
+        // Update date_bl in PaymentStatus if null
+        if (is_null($paymentStatus->date_bl)) {
+            $sale = Sale::where('no_bl', $paymentStatus->no_bl)->first();
+            if ($sale) {
+                $paymentStatus->update(['date_bl' => $sale->date]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sale not found for the given BL number.',
+                ], 404);
+            }
+        }
+        $difference = $request->montant - $reglement->montant;
+
+        // Create the Reglement entry
+        $reglement->update([
+            'montant' => $request->montant,
+            'date' => $request->has('destination') ? now() : $request->date,
+            'type_pay' => $request->type_pay,
+            'reference_chq' => $request->reference_chq,
+            'date_chq' => $request->date_chq,
+            'user-name' => Auth::user()->name,
+        ]);
+
+
+        // Check if the difference is negative and disallow it if not allowed
+        // if ($difference < 0) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Le montant mis à jour ne peut pas être inférieur au montant initial.',
+        //     ], 400);
+        // }
+
+        // $rest = $paymentStatus->montant_total - ($paymentStatus->montant_payed + $request->montant);
+        // Prepare data to update PaymentStatus
+        $paymentStatusData = [
+            'montant_payed' => $paymentStatus->montant_payed + $difference,
+            'montant_restant' => $paymentStatus->montant_restant - $difference,
+        ];
+        
+        
+
+        if ($request->has('chefAtelier') && $request->chefAtelier !== null) {
+            $paymentStatusData['chef-atelier'] = $request->chefAtelier;
+        }
+        
+        if ($request->has('destination') && $request->destination !== null) {
+            $paymentStatusData['destination'] = $request->destination;
+            $paymentStatusData['commerçant'] = Auth::user()->name;
+            // $paymentStatusData['chef-atelier'] = $request->chefAtelier;
+        }
+        
+        if ($request->has('date_echeance') && $request->date_echeance !== null) {
+            $paymentStatusData['date-echeance'] = $request->date_echeance;
+        }
+
+        $paymentStatusData['user-name'] = Auth::user()->name;
+
+        // Update the PaymentStatus
+        $paymentStatus->update($paymentStatusData);
+
+        // Success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Règlement enregistré avec succès.',
+            'reglement' => $reglement,
+            'updatedPaymentStatus' => $paymentStatus,
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation failed.',
+            'errors' => $e->errors(),
+        ], 400);
+    }
 }
 
 }

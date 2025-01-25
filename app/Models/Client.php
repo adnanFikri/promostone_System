@@ -14,6 +14,7 @@ class Client extends Model
         'phone',
         'type',
         'user-name',
+        'category',
     ];
 
     public function sales()

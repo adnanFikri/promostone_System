@@ -19,8 +19,6 @@ return new class extends Migration
             $table->decimal('unit_price', 10, 2); 
             $table->integer('quantity'); 
             $table->string('color'); 
-            $table->datetime('inventory_date'); 
-            $table->datetime('update_date'); 
             $table->string('product_code')->unique(); 
             $table->string('image_path')->nullable(); 
             $table->string('user-name')->nullable(); 

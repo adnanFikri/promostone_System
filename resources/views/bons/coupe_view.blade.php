@@ -122,7 +122,7 @@ select.rounded-md.w-md {
   
   {{-- @can('view bons_livraison') --}}
 <div class="py-5">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
         <div class="p-6 bg-white rounded-lg shadow-md">
             <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Coupe</h2>
             
@@ -130,8 +130,8 @@ select.rounded-md.w-md {
             <div id="container-searchBL" >
                 <input type="text" id="search-no-bl" class="border px-2 py-2 rounded" placeholder="No BL">
             </div>
-            <div class="overflow-x-aut">
-                <table id="bons-table" class="w-full text-sm">
+            <div class="overflow-x-aut ">
+                <table id="bons-table" class=" min-w-full text-sm">
                     <thead>
                         <tr>
                             {{-- <th>ID</th> --}}
@@ -139,10 +139,11 @@ select.rounded-md.w-md {
                             <th>Produits</th>
                             <th>date</th>
                             <th>commercant</th>
-                            <th>print_nbr</th>
+                            <th>Coupe</th>
                             <th>Date Coupe</th>
                             <th>Coupe Par</th>
-                            <th>Coupe</th>
+                            <th>print_nbr</th>
+                            <th>print date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -161,22 +162,13 @@ table = $('#bons-table').DataTable({
      serverSide: true,
      ajax: '{{ route("listBonCoupe.index") }}',
      responsive: true,  // Add this line to enable responsive table
+     order: [[0, 'desc']],
      columns: [
         //  { data: 'id', name: 'id' }, 
          { data: 'no_bl', name: 'no_bl' },
          { data: 'products', name: 'products' }, // This column corresponds to products
          { data: 'date', name: 'date' }, // Sale date column
          { data: 'commercant', name: 'commercant' }, // Commercant column
-         { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
-         { 
-            data: 'date_coupe', 
-            name: 'date_coupe',
-            render: function(data, type, row) {
-                return data ? data : 'pas encore';
-            }
-        },
-         { data: 'userName', name: 'userName' }, // Commercant column
-        
          { 
              data: 'coupe', 
              name: 'coupe', 
@@ -189,6 +181,18 @@ table = $('#bons-table').DataTable({
                  `;
              }
          },
+         { 
+            data: 'date_coupe', 
+            name: 'date_coupe',
+            render: function(data, type, row) {
+                return data ? data : 'pas encore';
+            }
+        },
+         { data: 'userName', name: 'userName' }, // Commercant column
+        
+         
+         { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
+         { data: 'print_date', name: 'print_date' }, // Commercant column
          { 
              data: 'actions', 
              name: 'actions', 
@@ -255,6 +259,7 @@ table = $('#bons-table').DataTable({
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#3085d6',
                     });
+                    $('#bons-table').DataTable().ajax.reload();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -263,6 +268,7 @@ table = $('#bons-table').DataTable({
                         confirmButtonText: 'Réessayer',
                         confirmButtonColor: '#d33',
                     });
+                    $('#bons-table').DataTable().ajax.reload();
                 }
             }).catch(error => {
                 Swal.fire({
@@ -272,6 +278,7 @@ table = $('#bons-table').DataTable({
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#d33',
                 });
+                $('#bons-table').DataTable().ajax.reload();
             });
         } else {
             // User canceled, no action needed
