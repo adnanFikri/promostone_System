@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Achat\AchatStatusController;
 use App\Models\Sale;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SalesController;
@@ -10,15 +9,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BonCoupeController;
 use App\Http\Controllers\BonSortieController;
 use App\Http\Controllers\ReglementController;
+use App\Http\Controllers\SaleCheckController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\Achat\AchatController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\BonLivraisonController;
 use App\Http\Controllers\PaymentStatusController;
+use App\Http\Controllers\JournaleCaisseController;
 use App\Http\Controllers\admin\PermissionController;
-use App\Http\Controllers\Achat\AchatController;
+use App\Http\Controllers\Achat\AchatStatusController;
 use App\Http\Controllers\Achat\AchatreglementController;
-use App\Http\Controllers\SaleCheckController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -192,6 +193,8 @@ Route::get('/maintenanceNow', function () {
 
 
 
+Route::get('/journal-caisse', [JournaleCaisseController::class, 'journalCaisse'])->name('journal.caisse');
+Route::post('/journal-caisse/filter', [JournaleCaisseController::class, 'filterJournalCaisse'])->name('journal.caisse.filter');
 
 
 

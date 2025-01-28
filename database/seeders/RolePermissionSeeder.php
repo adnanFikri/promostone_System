@@ -15,8 +15,7 @@ class RolePermissionSeeder extends Seeder
     {
         $permissions = [
             'Sales' => [
-                'view sales', 'create sales', 'store sales', 
-                 'view bon sortie', 'import sales', 'view sales by bl'
+                'view sales', 'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales'
             ],
             'bons' => [
                 'index bon livraison', 'view bon livraison', 'update livree bon livraison',
@@ -68,6 +67,9 @@ class RolePermissionSeeder extends Seeder
             'Fournisseeur' => [
                 'view fournisseurs', 'create fournisseur', 'store fournisseur', 'delete fournisseur', 
                 'create achat avance'
+            ],
+            'JournaleCaisse' => [
+                'view journaleCaisse'
             ],
 
         ];

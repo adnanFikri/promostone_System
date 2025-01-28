@@ -31,9 +31,9 @@ class SalesController extends Controller
         $this->middleware('permission:view sales')->only(['index']);
         $this->middleware('permission:create sales')->only(['create']);
         $this->middleware('permission:store sales')->only(['store']);
-        $this->middleware('permission:view bon livraison')->only(['showBonLivraison']);
-        $this->middleware('permission:view bon coup')->only(['showBonCoup']);
-        $this->middleware('permission:view bon sortie')->only(['showBonSortie']);
+        // $this->middleware('permission:view bon livraison')->only(['showBonLivraison']);
+        // $this->middleware('permission:view bon coup')->only(['showBonCoup']);
+        // $this->middleware('permission:view bon sortie')->only(['showBonSortie']);
         $this->middleware('permission:view sales upload')->only(['showUploadForm']);
         $this->middleware('permission:import sales')->only(['import']);
         $this->middleware('permission:view sales by bl')->only(['getByBl']);
@@ -111,7 +111,17 @@ class SalesController extends Controller
             'services.*.montant' => 'required|numeric',
         ]);
 
-        $no_bl = Sale::max('no_bl') + 1; // Auto-generate no_bl
+        $no_bl = Sale::max('no_bl') + 1; // Start with the next no_bl
+
+        // Keep incrementing until we find a unique no_bl
+        while (
+            DB::table('payment_statuses')->where('no_bl', $no_bl)->exists() ||
+            DB::table('reglements')->where('no_bl', $no_bl)->exists()
+        ) {
+            $no_bl++; // Increment and check again
+        }
+
+        
 
         // dd($request);
 
@@ -291,8 +301,8 @@ class SalesController extends Controller
 
         $sale = new Sale();
         $sale->no_bl = $no_bl;
-        $sale->annee = now()->year;
-        $sale->date = now();
+        $sale->annee = 2025;
+        $sale->date = $paymentStatusOLD->date_bl;
         $sale->code_client = $code_client;
         $sale->produit = $product['produit'];
         $sale->longueur = $longueur;
@@ -327,8 +337,8 @@ class SalesController extends Controller
         foreach ($validatedData['services'] as $service) {
             $sale = new Sale();
             $sale->no_bl = $no_bl;
-            $sale->annee = now()->year;
-            $sale->date = now();
+            $sale->annee = 2025;
+            $sale->date = $paymentStatusOLD->date_bl;
             $sale->code_client = $code_client;
             $sale->produit = $service['type'];
             $sale->longueur = null;

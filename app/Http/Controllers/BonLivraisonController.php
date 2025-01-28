@@ -105,8 +105,6 @@ class BonLivraisonController extends Controller
             'client' => $client,
         ];
 
-        // dd($data);
-
         return view('sales.bonL', $data);
     }
 

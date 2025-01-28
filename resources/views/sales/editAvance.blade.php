@@ -155,14 +155,16 @@
                     
                         <div id="cheque_fields" class="grid grid-cols-2 gap-6">
                             <div class="mb-4">
-                                <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">N Référence</label>
-                                <input type="number" name="reference_chq" id="reference_chq"  placeholder="Référence du chèque" required
+                                <label for="reference_chq"  class="block text-lg font-medium text-gray-900 dark:text-white mb-2">N Référence</label>
+                                <input type="number" name="reference_chq" id="reference_chq" value="{{ old('montant', $regelement->reference_chq ?? '') }}"  placeholder="Référence du chèque" required
                                     class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                             </div>
                             <div class="mb-4">
                                 <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Expiration</label>
                                 <input type="date" name="date_chq" id="date_chq" required
-                                    class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
+                                    class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" 
+                                    value="{{ old('date-echeance', isset($regelement['date_chq']) ? \Carbon\Carbon::parse($regelement['date_chq'])->format('Y-m-d') : '') }}"
+                                    />
                             </div>
                         </div>
                     </div>

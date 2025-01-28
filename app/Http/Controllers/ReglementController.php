@@ -394,7 +394,7 @@ class ReglementController extends Controller
         // Create the Reglement entry
         $reglement->update([
             'montant' => $request->montant,
-            'date' => $request->has('destination') ? now() : $request->date,
+            // 'date' => $request->has('destination') ? now() : $request->date,
             'type_pay' => $request->type_pay,
             'reference_chq' => $request->reference_chq,
             'date_chq' => $request->date_chq,

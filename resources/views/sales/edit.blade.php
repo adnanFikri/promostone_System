@@ -166,6 +166,9 @@
             <button type="submit" class="block w-full text-center bg-green-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                 Valider
             </button>
+            <button type="button" onclick="window.history.back()" class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Annuler
+            </button>
         </form>
     </div>
 </div>

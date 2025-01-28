@@ -27,8 +27,6 @@
         .bg-blue-500 {
             background-color: rgb(59, 130, 246) !important; /* Ensure background for button in print */
         }
-        
-        
     }
     #main-content{
         background-color: white
