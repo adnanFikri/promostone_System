@@ -68,13 +68,17 @@ public function journalCaisse()
     ->groupBy('no_bl') // Group by no_bl
     ->map(fn($reglements) => $reglements->first());
 
+    dd($filteredReglements);
+
     $totalReglementEspece = $filteredReglements->where('type_pay', 'Espèce')->sum('montant');
     $totalReglementCheque = $filteredReglements->where('type_pay', 'Chèque')->sum('montant');
     $totalReglementVirement = $filteredReglements->where('type_pay', 'Virement')->sum('montant');
 
     $filteredPayments = PaymentStatus::whereIn('no_bl', $salesNoBL)->get();
-    $totalSalesMontantRestant = $filteredPayments->sum('montant_restant');
+    // $totalSalesMontantRestant = $filteredPayments->where('montant_restant', '>=', 0)->sum('montant_restant');
+    $totalreglement = $totalReglementEspece + $totalReglementCheque + $totalReglementVirement;
     $totalChiffreAffaire = $filteredPayments->sum('montant_total');
+    $totalSalesMontantRestant = $totalChiffreAffaire - $totalreglement;
 
 
     // Group sales by product name

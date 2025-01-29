@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-9">
-    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Journal de Caisse</h2>
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800 text-center uppercase">Journal de Caisse</h2>
 
      <!-- Filter Form -->
      <form method="POST" action="{{ route('journal.caisse.filter') }}" class="mb-6 bg-gray-100 p-4 rounded-lg shadow-md">
@@ -29,7 +29,7 @@
     </tr>
 @else
 
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto ">
         <table class="min-w-full border border-gray-300 rounded-lg shadow-md ">
             <thead class="bg-gray-600 text-gray-100">
                 <tr>
@@ -99,7 +99,7 @@
                                         {{ number_format($reglements->montant ?? 0, 2) }}
                                     </td>
                                     <td class="border border-gray-300 p-2 text-center align-middle font-semibold text-red-600" rowspan="{{ $totalBlRows }}">
-                                        {{ number_format($paymentStatus->montant_restant ?? 0, 2) }}
+                                        {{ number_format($paymentStatus->montant_total - $reglements->montant ?? 0, 2) }}
                                     </td>
                                     @php $firstRowBl = false; @endphp
                                 @endif

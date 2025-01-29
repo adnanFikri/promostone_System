@@ -31,9 +31,6 @@ class SalesController extends Controller
         $this->middleware('permission:view sales')->only(['index']);
         $this->middleware('permission:create sales')->only(['create']);
         $this->middleware('permission:store sales')->only(['store']);
-        // $this->middleware('permission:view bon livraison')->only(['showBonLivraison']);
-        // $this->middleware('permission:view bon coup')->only(['showBonCoup']);
-        // $this->middleware('permission:view bon sortie')->only(['showBonSortie']);
         $this->middleware('permission:view sales upload')->only(['showUploadForm']);
         $this->middleware('permission:import sales')->only(['import']);
         $this->middleware('permission:view sales by bl')->only(['getByBl']);
