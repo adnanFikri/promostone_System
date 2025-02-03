@@ -9,7 +9,7 @@
     #mesure{
         /* border: 1px solid gray; */
     }
-    #code_client{
+    #id_fournisseur{
         width: 500px;
         /* font-size: 20px; */
         /* padding: 5px; */
@@ -67,12 +67,15 @@
                     <div class="product-item relative overflow-hidden bg-gray-100 flex flex-wrap gap-4 items-center border border-gray-300 p-4 rounded-md">
                         <div class="w-full md:w-3/4">
                             <label for="produit" class="block text-sm font-medium text-gray-700">Produit</label>
-                            <select name="products[0][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            <select name="products[0][produit]" id="product_select" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                                <!-- Options will be loaded dynamically -->
+                            </select>
+                            {{-- <select name="products[0][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
                                 <option value="" disabled selected>~~ choisir le produit ~~</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->name }}"  data-unit-price="{{ $product->unit_price }}" >{{ $product->name }} -- {{$product->quantity}} Disponible ({{ $product->unit_price }})</option>
                                 @endforeach
-                            </select>
+                            </select> --}}
                         </div>
                         <div class="w-full md:w-1/5 ">
                             <label for="prix_unitaire" class="block text-sm font-medium text-gray-700">Prix Unitaire</label>
@@ -155,6 +158,55 @@
     </div>
 @endcan
     <script>
+        // search products select 
+        $(document).ready(function () {
+            $('#product_select').select2({
+                placeholder: "~~ choisir le produit ~~",
+                width: '100%',
+                ajax: {
+                    url: '{{ route('products.search') }}', // Adjust this route
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: data.map(function (product) {
+                                return {
+                                    id: product.name,
+                                    text: product.name + " -- " + product.quantity + " Disponible (" + product.unit_price + " MAD)",
+                                    unit_price: product.unit_price // Include unit price in the response
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                templateResult: function (product) {
+                    if (!product.id) {
+                        return product.text;
+                    }
+                    return $('<option>', {
+                        value: product.id,
+                        text: product.text,
+                        'data-unit-price': product.unit_price // Set data attribute
+                    });
+                }
+            });
+
+            // Handle selection and set data-unit-price
+            $('#product_select').on('select2:select', function (e) {
+                const selectedOption = e.params.data;
+                const productItem = $(this).closest('.product-item');
+                const unitPriceInput = productItem.find('.prix-unitaire');
+
+                if (unitPriceInput.length) {
+                    unitPriceInput.val(selectedOption.unit_price || '');
+                }
+
+                calculateTotal();
+            });
+        });
+        
+        
         // search client select 
         $(document).ready(function () {
         $('#id_fournisseur').select2({
@@ -182,67 +234,122 @@
 
         
         
+
     let productIndex = 1;
-
     function addProduct() {
-        const container = document.getElementById('products-container');
+    const container = document.getElementById('products-container');
 
-        const newProduct = `
-            <div class="product-item relative overflow-hidden bg-gray-100 flex flex-wrap gap-4 items-center border border-gray-300 p-4 rounded-md">
-                <div class="w-full md:w-3/4">
-                    <label for="produit" class="block text-sm font-medium text-gray-700">Produit</label>
-                    <select name="products[${productIndex}][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                        <option>~~ choisir le produit ~~</option>
-                        @foreach($products as $product)
-                            <option value="{{ $product->name }}" data-unit-price="{{ $product->unit_price }}" >{{ $product->name }} -- {{$product->quantity}} Disponible ({{ $product->unit_price }})</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="w-full md:w-1/5 ">
-                    <label for="prix_unitaire" class="block text-sm font-medium text-gray-700">Prix Unitaire</label>
-                    <input type="number" step="0.01" name="products[${productIndex}][prix_unitaire]" class="prix-unitaire mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                </div>
-                <div id="mesures-container-${productIndex}" class="w-full w-4/4 flex flex-wrap gap-4 items-center">
-                    <div id="mesure-item" class="mesure-item w-full w-4/4 flex flex-wrap gap-4 items-center">
-                        <div class="w-full md:w-1/5">
-                            <label for="longueur" class="block text-sm font-medium text-gray-700">Longueur</label>
-                            <input type="number" step="0.001" name="products[${productIndex}][mesures][0][longueur]" class="longueur mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                        </div>
-                        <div class="w-full md:w-1/5">
-                            <label for="largeur" class="block text-sm font-medium text-gray-700">Largeur</label>
-                            <input type="number" step="0.001" name="products[${productIndex}][mesures][0][largeur]" class="largeur mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                        </div>
-                        <div class="w-full md:w-1/5">
-                            <label for="quantite" class="block text-sm font-medium text-gray-700">Quantité</label>
-                            <input type="number" step="0.001" name="products[${productIndex}][mesures][0][quantite]" class="quantite mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                        </div>
-                        <div class="w-full md:w-1/5">
-                            <label for="mode" class="block text-sm font-medium text-gray-700">Mode</label>
-                            <select name="products[${productIndex}][mesures][0][mode]" class="mode mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <option value="M2">M2</option>
-                                <option value="ML">ML</option>
-                                <option value="Unite">Unite</option>
-                            </select>
-                        </div>
-                        <button type="button" onclick="removeMesure(this)" class=" -mb-6 bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
-                            </svg>
-                        </button>
+    const newProduct = `
+        <div class="product-item relative overflow-hidden bg-gray-100 flex flex-wrap gap-4 items-center border border-gray-300 p-4 rounded-md">
+            <div class="w-full md:w-3/4">
+                <label for="produit" class="block text-sm font-medium text-gray-700">Produit</label>
+                <select id="product_select_${productIndex}" name="products[${productIndex}][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    <!-- Options will be loaded dynamically -->
+                </select>
+            </div>
+            <div class="w-full md:w-1/5 ">
+                <label for="prix_unitaire" class="block text-sm font-medium text-gray-700">Prix Unitaire</label>
+                <input type="number" step="0.01" name="products[${productIndex}][prix_unitaire]" class="prix-unitaire mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+            </div>
+            <div id="mesures-container-${productIndex}" class="w-full w-4/4 flex flex-wrap gap-4 items-center">
+                <div id="mesure-item" class="mesure-item w-full w-4/4 flex flex-wrap gap-4 items-center">
+                    <div class="w-full md:w-1/5">
+                        <label for="longueur" class="block text-sm font-medium text-gray-700">Longueur</label>
+                        <input type="number" step="0.001" name="products[${productIndex}][mesures][0][longueur]" class="longueur mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
                     </div>
+                    <div class="w-full md:w-1/5">
+                        <label for="largeur" class="block text-sm font-medium text-gray-700">Largeur</label>
+                        <input type="number" step="0.001" name="products[${productIndex}][mesures][0][largeur]" class="largeur mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    </div>
+                    <div class="w-full md:w-1/5">
+                        <label for="quantite" class="block text-sm font-medium text-gray-700">Quantité</label>
+                        <input type="number" step="0.001" name="products[${productIndex}][mesures][0][quantite]" class="quantite mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    </div>
+                    <div class="w-full md:w-1/5">
+                        <label for="mode" class="block text-sm font-medium text-gray-700">Mode</label>
+                        <select name="products[${productIndex}][mesures][0][mode]" class="mode mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="M2">M2</option>
+                            <option value="ML">ML</option>
+                            <option value="Unité">Unité</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="removeMesure(this)" class=" -mb-6 bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
                 </div>
-                <button type="button" onclick="removeProduct(this)" id="btn-remove" style="margin-right:-3px; border-radius: 28px 0px 0px 1px; transition:.3s; " class="absolute bottom-2 right-0 -mb-4 bg-red-600 text-white p-4 rounde shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
-                            </svg>
-                        </button>
-                <button type="button" onclick="addMesure(${productIndex})" class="block w-full md:w-auto text-center bg-gray-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                    Ajouter un mesure
-                </button>
-            </div>`;
-        container.insertAdjacentHTML('beforeend', newProduct);
-        productIndex++;
-    }
+            </div>
+            <button type="button" onclick="removeProduct(this)" id="btn-remove" style="margin-right:-3px; border-radius: 28px 0px 0px 1px; transition:.3s; " class="absolute bottom-2 right-0 -mb-4 bg-red-600 text-white p-4 rounde shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0="clip-rule="evenodd"/>
+                </svg>
+            </button>
+            <button type="button" onclick="addMesure(${productIndex})" class="block w-full md:w-auto text-center bg-gray-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                Ajouter un mesure
+            </button>
+        </div>`;
+
+    container.insertAdjacentHTML('beforeend', newProduct);
+    productIndex++;
+
+    // Initialize Select2 for the newly added product select input
+    $(`#product_select_${productIndex - 1}`).select2({
+        placeholder: "~~ choisir le produit ~~",
+        width: '100%',
+        ajax: {
+            url: '{{ route('products.search') }}',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data.map(function (product) {
+                        return {
+                            id: product.name,
+                            text: product.name + " -- " + product.quantity + " Disponible (" + product.unit_price + " MAD)",
+                            unit_price: product.unit_price,
+                            quantity: product.quantity,
+                        };
+                    })
+                };
+            },
+            cache: true
+        },
+        templateResult: function (product) {
+            if (!product.id) {
+                return product.text;
+            }
+            return $('<option>', {
+                value: product.id,
+                text: product.text,
+                'data-unit-price': product.unit_price
+            });
+        }
+    });
+
+    // Add the event listener to update the 'prix_unitaire' input when a product is selected
+    $(`#product_select_${productIndex - 1}`).on('select2:select', function (e) {
+        const selectedOption = e.params.data;
+        const productItem = $(this).closest('.product-item');
+        const unitPriceInput = productItem.find('.prix-unitaire');
+
+        if (unitPriceInput.length) {
+            unitPriceInput.val(selectedOption.unit_price || '');
+        }
+
+        // Show SweetAlert if quantity is 5 or less
+        if (selectedOption.quantity <= 10) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stock Faible!',
+                text: `Seulement ${selectedOption.quantity} unités disponibles.`,
+                confirmButtonColor: '#d33'
+            });
+        }
+
+        calculateTotal();
+    });
+}
 
     function calculateTotal() {
         const products = document.querySelectorAll(".product-item");

@@ -102,7 +102,9 @@ Route::post('/avance/update', [ReglementController::class, 'updateAvance'])->nam
 
 
 // -=-=-= 00 Products ROUTES 00 -=-=-=-
+Route::get('/products/search', [ProductController::class, 'searchProducts'])->name('products.search');
 Route::resource('products', ProductController::class);
+// Route::get('/products/search', [ProductController::class, 'searchProducts'])->name('products.search');
 
 // -=-=-= 00 Users ROUTES 00 -=-=-=-
 Route::resource('users', UserController::class);

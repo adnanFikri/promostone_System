@@ -33,17 +33,17 @@ class BonCoupeController extends Controller
             
             $bons = $bons->map(function ($group) {
                 $bon = $group->first();  // Get the first bon for this group
-                
+                $canEdit = auth()->user()->can('create users');
                 // Loop through all sales and get the 'ref_produit' for each sale
                 $products = $group->flatMap(function($bon) {
                     return $bon->sales->map(function($sale) {
-                        return $sale->ref_produit;  // Extract 'ref_produit' from each sale
+                        return $sale->produit;  // Extract 'ref_produit' from each sale
                     });
                 });
-            
+    
                 // Convert the products to a unique, comma-separated string
                 $productsString = $products->unique()->implode(', ');
-            
+    
                 return [
                     'id' => $bon->id,
                     'no_bl' => $bon->no_bl,
@@ -55,6 +55,16 @@ class BonCoupeController extends Controller
                     'products' => $productsString,  // Return the products as a string
                     'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
+                    'created_at' => $bon->created_at, // Add created_at for sorting
+                    'can_edit' => $canEdit,
+                ];
+            });
+    
+            // Sort by coupe (Non first) and created_at (oldest first)
+            $bons = $bons->sortBy(function ($item) {
+                return [
+                    $item['coupe'] === 'Non' ? 0 : 1, // Non should come first
+                    $item['created_at'] // Sort by created_at
                 ];
             });
     
@@ -71,6 +81,7 @@ class BonCoupeController extends Controller
     
         return view('bons.coupe_view');
     }
+    
     
     public function showBonCoup($no_bl)
     {

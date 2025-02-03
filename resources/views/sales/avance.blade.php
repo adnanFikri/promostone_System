@@ -150,11 +150,11 @@
                         <div id="cheque_fields" class="grid grid-cols-2 gap-6">
                             <div class="mb-4">
                                 <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">N Référence</label>
-                                <input type="number" name="reference_chq" id="reference_chq" placeholder="Référence du chèque" required
+                                <input type="text" name="reference_chq" id="reference_chq" placeholder="Référence du chèque" required
                                     class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                             </div>
                             <div class="mb-4">
-                                <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Expiration</label>
+                                <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date D'echeance</label>
                                 <input type="date" name="date_chq" id="date_chq" required
                                     class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                             </div>
@@ -206,7 +206,7 @@
         chequeFields.style.display = 'none';
     }
 
-// Save form data
+// Save form dataDOMContentLoaded
 
 $('#save-button').on('click', function (e) {
     e.preventDefault();

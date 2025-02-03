@@ -125,25 +125,6 @@ class SalesController extends Controller
         foreach ($validatedData['products'] as $product) {
             foreach ($product['mesures'] as $mesure) {
 
-                $productModel = Product::where('name', $product['produit'])->first(); // Assuming 'name' matches 'produit'
-                if ($productModel) {
-                    // Check if there's enough quantity in stock
-                    if ($productModel->quantity >= $mesure['quantite']) {
-                        // Reduce the product's quantity
-                        $productModel->quantity -= $mesure['quantite'];
-                        $productModel->save();
-                    } else {
-                        // Handle case when there's not enough stock
-                        return redirect()->back()->withErrors([
-                            'products' => "Insufficient stock for product: {$product['produit']}"
-                        ]);
-                    }
-                } else {
-                    return redirect()->back()->withErrors([
-                        'products' => "Product not found: {$product['produit']}"
-                    ]);
-                }
-
                 $sale = new Sale();
                 $sale->no_bl = $no_bl;
                 $sale->annee = now()->year;
@@ -178,11 +159,31 @@ class SalesController extends Controller
                     $montant = $sale->nbr * $sale->prix_unitaire;
                     $sale->longueur = null;
                     $sale->largeur = null;
-                    $sale->qte = null;
+                    $sale->qte = $sale->nbr;
                 }
                 $sale->montant = $montant;
                 
+
+                $productModel = Product::where('name', $product['produit'])->first(); // Assuming 'name' matches 'produit'
+                if ($productModel) {
+                    // Check if there's enough quantity in stock
+                    // if ($productModel->quantity >= $sale->qte) {
+                        // Reduce the product's quantity
+                        $productModel->quantity -= $sale->qte;
+                        $productModel->save();
+                    // } else {
+                    //     // Handle case when there's not enough stock
+                    //     return redirect()->back()->withErrors([
+                    //         'products' => "Stock insuffisant pour le produit : {$product['produit']}"
+                    //     ]);
+                    // }
+                } else {
+                    return redirect()->back()->withErrors([
+                        'products' => "Product not found: {$product['produit']}"
+                    ]);
+                }
                 $sale->save();
+
             }
         }
 
@@ -197,7 +198,7 @@ class SalesController extends Controller
                 $sale->produit = $service['type'];
                 $sale->longueur = null; // Not applicable for services
                 $sale->largeur = null; // Not applicable for services
-                $sale->qte = null;     // Not applicable for services
+                $sale->qte = $service['quantite'];     // Not applicable for services
                 $sale->nbr = $service['quantite'];     // Not applicable for services
                 $sale->mode = 'service';     // Not applicable for services
                 $sale->prix_unitaire = $service['montant']; // Optional

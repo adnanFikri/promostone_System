@@ -279,7 +279,7 @@
         <div class="py-2 px-9">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8">
 
-                @can('create users')
+                @can('view index show modif details')
                     @if($lastSaleCheck)
                         {{-- <div class="bg-gray-100 border border-gray-300 text-gray-800 px-4 py-2 rounded mb-4 inline-block font-bold" role="alert"> --}}
                         <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4 inline-block " role="alert">
@@ -367,10 +367,11 @@
                             
                             
                         </div> --}}
-                        <div id="sum-montant-total" class="font-bold text-lg mb-4"> Total : </div>
-                        <div id="sum-montant-payed" class="font-bold text-lg mb-4"> Payé : </div>
-                        <div id="sum-montant-restant" class="font-bold text-lg mb-4">  Restant : </div>
-    
+                        @can('view index show total montant')
+                            <div id="sum-montant-total" class="font-bold text-lg mb-4"> Total : </div>
+                            <div id="sum-montant-payed" class="font-bold text-lg mb-4"> Payé : </div>
+                            <div id="sum-montant-restant" class="font-bold text-lg mb-4">  Restant : </div>
+                        @endcan
     
     
                         <div id="parent1">
@@ -762,7 +763,7 @@
     }
 
 
-    var canCreateUsers = @json(auth()->user()->can('create users'));
+    var canModifDetails = @json(auth()->user()->can('view index show modif details'));
     var table;
     $(document).ready(function () {
         var table = $('#payment-status-table').DataTable({
@@ -842,13 +843,13 @@
                                 const saleCheckUrl = `{{ route('saleCheck.show', ['id' => ':id']) }}`.replace(':id', saleCheck.id);
                                 const formattedDate = formatDate(saleCheck.created_at); // Use the formatDate function
  
-                                return `<a href="${saleCheckUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" target="_blank">
+                                return `<a href="${saleCheckUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" >
                                             ${formattedDate} <!-- Use the formatted date here -->
                                         </a>`;
                             }).join('');
                             
                             dropdown = `
-                            @can('view users')
+                            @can('view index show modif details')
                             <div class="relative inline-block text-left">
                                 <button 
                                     type="button" 
@@ -905,12 +906,12 @@
                             >
                                 @can('view bon livraison')
                                     <div class="py-1">
-                                        <a href="${bonLivraisonUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" target="_blank">Bon de Livraison</a>
+                                        <a href="${bonLivraisonUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Bon de Livraison</a>
                                     </div>
                                 @endcan
                                 @can('view bon coup')
                                     <div class="py-1">
-                                        <a href="${bonCoupUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" target="_blank">Bon de Coup</a>
+                                        <a href="${bonCoupUrl}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Bon de Coup</a>
                                     </div>
                                 @endcan
                             </div>
@@ -937,7 +938,7 @@
             },
             createdRow: function (row, data, dataIndex) {
             // Check if ChangeCount > 0 and add a red background
-            if (canCreateUsers && data.changeCount > 0) {
+            if (canModifDetails && data.changeCount > 0) {
                 $('td', row).eq(0).css('background-color', '#ffd0d0'); // Change the background of the specific cell (index 7)
             }
         },
@@ -1365,73 +1366,73 @@
     });
     
     
-        // Close modal
-        function closeModal() {
-            $('#salesModal').addClass('hidden'); // Hide the modal
-        }
+    // Close modal
+    function closeModal() {
+        $('#salesModal').addClass('hidden'); // Hide the modal
+    }
     
     
     
     
-        // £££ modal regelemtns 
-        $(document).on('click', '.view-reglements', function () {
-            var blNumber = $(this).data('bl'); // Get the BL number
-            $('#reglements-bl-number').text(blNumber); // Set the BL number in the header
-            $('#reglementsModal').removeClass('hidden'); // Show the modal
-    
-            // Make the AJAX request to get the reglements data for this BL
-            $.ajax({
-                // url: '/reglements/get-by-bl', // The route to get reglements by BL
-                url: '{{ route('reglements.get-by-bl') }}',
-                method: 'GET',
-                data: { no_bl: blNumber },
-                success: function (response) {
-                    var reglementsTableBody = $('#reglements-modal-table tbody');
-                    reglementsTableBody.empty(); // Clear previous data
-                    console.log(response);
-    
-                    if (response.reglements.length > 0) {
-                        // Get client details from the first reglement entry
-                        var clientName = response.reglements[0].nom_client || 'N/A';
-                        var codeClient = "(" + response.reglements[0].code_client + ")" || 'N/A';
-    
-                        // Update the modal header with client information
-                        $('#reglements-client-name').text(clientName);
-                        $('#reglements-code-client').text(codeClient);
-                    } else {
-                        // Fallback if no reglements are found
-                        $('#reglements-client-name').text('N/A');
-                        $('#reglements-code-client').text('N/A');
-                    }
-    
-                    // Populate the table with the reglements data
-                    response.reglements.forEach(function (reglement) {
-                        reglementsTableBody.append(`
-                            <tr>
-                                <td class="px-4 py-2 border">${reglement.id}</td>
-                                <td class="px-4 py-2 border">${reglement.no_bl}</td>
-                                <td class="px-4 py-2 border">${reglement.code_client}</td>
-                                <td class="px-4 py-2 border">${reglement.nom_client}</td>
-                                <td class="px-4 py-2 border">${reglement.montant}</td>
-                                <td class="px-4 py-2 border">${reglement.date}</td>
-                                <td class="px-4 py-2 border">${reglement.type_pay}</td>
-                            </tr>
-                        `);
-                    });
-    
-                    // Re-initialize DataTable for the modal table
-                    $('#reglements-modal-table').DataTable();
-                },
-                error: function () {
-                    alert('Error fetching reglements data');
-                },
-            });
+    // £££ modal regelemtns 
+    $(document).on('click', '.view-reglements', function () {
+        var blNumber = $(this).data('bl'); // Get the BL number
+        $('#reglements-bl-number').text(blNumber); // Set the BL number in the header
+        $('#reglementsModal').removeClass('hidden'); // Show the modal
+
+        // Make the AJAX request to get the reglements data for this BL
+        $.ajax({
+            // url: '/reglements/get-by-bl', // The route to get reglements by BL
+            url: '{{ route('reglements.get-by-bl') }}',
+            method: 'GET',
+            data: { no_bl: blNumber },
+            success: function (response) {
+                var reglementsTableBody = $('#reglements-modal-table tbody');
+                reglementsTableBody.empty(); // Clear previous data
+                console.log(response);
+
+                if (response.reglements.length > 0) {
+                    // Get client details from the first reglement entry
+                    var clientName = response.reglements[0].nom_client || 'N/A';
+                    var codeClient = "(" + response.reglements[0].code_client + ")" || 'N/A';
+
+                    // Update the modal header with client information
+                    $('#reglements-client-name').text(clientName);
+                    $('#reglements-code-client').text(codeClient);
+                } else {
+                    // Fallback if no reglements are found
+                    $('#reglements-client-name').text('N/A');
+                    $('#reglements-code-client').text('N/A');
+                }
+
+                // Populate the table with the reglements data
+                response.reglements.forEach(function (reglement) {
+                    reglementsTableBody.append(`
+                        <tr>
+                            <td class="px-4 py-2 border">${reglement.id}</td>
+                            <td class="px-4 py-2 border">${reglement.no_bl}</td>
+                            <td class="px-4 py-2 border">${reglement.code_client}</td>
+                            <td class="px-4 py-2 border">${reglement.nom_client}</td>
+                            <td class="px-4 py-2 border">${reglement.montant}</td>
+                            <td class="px-4 py-2 border">${reglement.date}</td>
+                            <td class="px-4 py-2 border">${reglement.type_pay}</td>
+                        </tr>
+                    `);
+                });
+
+                // Re-initialize DataTable for the modal table
+                $('#reglements-modal-table').DataTable();
+            },
+            error: function () {
+                alert('Error fetching reglements data');
+            },
         });
-    
-        // Close modal
-        function closeReglementsModal() {
-            $('#reglementsModal').addClass('hidden'); // Hide the modal
-        }
+    });
+
+    // Close modal
+    function closeReglementsModal() {
+        $('#reglementsModal').addClass('hidden'); // Hide the modal
+    }
     
     // 0000000 get client data phone and type 00000000
     $(document).on('click', '.client-name', function (e) {

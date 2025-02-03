@@ -11,26 +11,32 @@ class RolePermissionSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    
     public function run(): void
     {
         $permissions = [
             'Sales' => [
+                /** DOOR  */ 'ventes',
                 'view sales', 'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales'
             ],
             'bons' => [
                 'index bon livraison', 'view bon livraison', 'update livree bon livraison',
                 'index bon coup', 'view bon coup', 'update coupe bon coup',
                 'index bon sortie', 'view bon sortie', 'update sortie bon sortie',
+                'print bons'
             ],
             'Clients' => [
-                'view clients', 'create clients', 'store clients', 'view client details', 
+                /** DOOR  */ 'clients',
+                'view clients', 'create clients', 'store clients', 
                 'edit clients', 'update clients', 'delete clients', 'search sales', 
                 'generate client code', 'view client upload', 'import clients', 
                 'view client data by code', 'change client type'
             ],
             'PaymentStatus' => [
+                /** DOOR  */ 'payment statuses',
                 'view payment statuses', 'populate payment statuses', 
-                'view sales with no payment status', 'filter payment statuses by client type'
+                'view sales with no payment status', 'filter payment statuses by client type',
+                'view index show total montant', 'view index show modif details', 'view client details'
             ],
             'Reglements' => [
                 'view reglements', 'create reglements', 'store reglements', 'delete reglements', 
@@ -38,6 +44,7 @@ class RolePermissionSeeder extends Seeder
                 'view client bls', 'view all bls', 'create avance'
             ],
             'Products' => [
+                /** DOOR  */ 'products',
                 'view products', 'create products', 'store products', 'view product details', 
                 'edit products', 'update products', 'delete products'
             ],
@@ -55,6 +62,7 @@ class RolePermissionSeeder extends Seeder
                 'edit users', 'update users', 'delete users'
             ],
             'Achat' => [
+                /** DOOR  */ 'achat',
                 'view achats', 'create achat', 'store achat',  'view achats by bl'
             ],
             'AchatPaymentStatus' => [
@@ -86,27 +94,110 @@ class RolePermissionSeeder extends Seeder
                 'show roles', 'show role', 'create role', 'edit role', 'delete role',
                 'show permissions', 'create permission', 'edit permission', 'delete permission',
             ]), 
+            'Secretaire' => [
+                // Sales
+                'ventes',
+                'view sales', 'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales',
+                // bons  :
+                'index bon livraison', 'view bon livraison', 'update livree bon livraison',
+                'print bons',
+
+                // Clients
+                'Clients',
+                'view clients', 'create clients', 'store clients', 
+                'edit clients', 'update clients', 'search sales', 
+                'generate client code', 'view client upload', 'import clients', 
+                'filter payment statuses', 'view client data by code', 'change client type',
+
+                /** DOOR  */ 'products',
+                'view products', 'create products', 'store products', 'view product details', 
+                'edit products', 'update products',
+
+                // payment status
+                'payment statuses',
+                'view payment statuses','view sales with no payment status', 'filter payment statuses by client type','view client details', 
+                // Reglements
+                'view reglements', 'create reglements', 'store reglements', 
+                'search reglements', 'view payment status by client', 'view reglements by bl', 
+                'view client bls', 'view all bls', 'create avance',
+            ],
+            'Caissier' => [
+                // Sales
+                'ventes',
+                'view sales', 'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales',
+                // bons  :
+                'index bon livraison', 'view bon livraison', 'update livree bon livraison',
+                'index bon coup', 'view bon coup', 'update coupe bon coup',
+                'index bon sortie', 'view bon sortie', 'update sortie bon sortie',
+                'print bons',
+
+                // Clients
+                'Clients',
+                'view clients', 'create clients', 'store clients', 
+                'edit clients', 'update clients', 'search sales', 
+                'generate client code', 'view client upload', 'import clients', 
+                'filter payment statuses', 'view client data by code', 'change client type',
+                // payment status
+                'payment statuses',
+                'view payment statuses','view sales with no payment status', 'filter payment statuses by client type','view client details', 
+                // Reglements
+                'view reglements', 'create reglements', 'store reglements', 
+                'search reglements', 'view payment status by client', 'view reglements by bl', 
+                'view client bls', 'view all bls', 'create avance',
+            ],
             'Commercial' => [
                 // Sales
-                'view sales', 'create sales', 'store sales', 'view bon livraison',
+                'ventes',
+                'view sales', 'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales',
+                // bon de ivraison :
+                'index bon livraison', 'view bon livraison', 'update livree bon livraison','print bons',
+
                 // Clients
-                'view clients', 'create clients', 'store clients', 'view client details', 
+                'Clients',
+                'view clients', 'create clients', 'store clients', 
                 'edit clients', 'update clients', 'delete clients', 'search sales', 
                 'generate client code', 'view client upload', 'import clients', 
                 'filter payment statuses', 'view client data by code', 'change client type',
+
+                // payment status
+                'payment statuses',
+                'view payment statuses','view sales with no payment status', 'filter payment statuses by client type','view client details', 
                 // Reglements
-                'view reglements', 'create reglements', 'store reglements', 'delete reglements', 
+                'view reglements', 'create reglements', 'store reglements', 
                 'search reglements', 'view payment status by client', 'view reglements by bl', 
                 'view client bls', 'view all bls', 'create avance',
             ],
             'chef Atelier' => [
-                // Sales
-                 'view bon coupe',
+                // bons
+                'ventes',
+                'index bon coup', 'view bon coup', 'update coupe bon coup',
                 // Clients
-                'view clients', 'create clients', 'store clients', 'view client details', 
-                'edit clients', 'update clients', 'delete clients', 'search sales', 
-                'generate client code', 'view client upload', 'import clients', 
-                'filter payment statuses', 'view client data by code', 'change client type',
+                // 'view clients', 'create clients', 'store clients', 'view client details', 
+                // 'edit clients', 'update clients', 'delete clients', 'search sales', 
+                // 'generate client code', 'view client upload', 'import clients', 
+                // 'filter payment statuses', 'view client data by code', 'change client type',
+            ],
+            'Magasigner' => [
+                // bons
+                'ventes',
+                'index bon sortie', 'view bon sortie', 'update sortie bon sortie',
+                // Clients
+                // 'view clients', 'create clients', 'store clients', 'view client details', 
+                // 'edit clients', 'update clients', 'delete clients', 'search sales', 
+                // 'generate client code', 'view client upload', 'import clients', 
+                // 'filter payment statuses', 'view client data by code', 'change client type',
+            ],
+            'Controleur' => [
+                // bons
+                'ventes',
+                'index bon livraison', 'view bon livraison', 'update livree bon livraison',
+                'index bon coup', 'view bon coup', 'update coupe bon coup',
+                'index bon sortie', 'view bon sortie', 'update sortie bon sortie',
+                // Clients
+                // 'view clients', 'create clients', 'store clients', 'view client details', 
+                // 'edit clients', 'update clients', 'delete clients', 'search sales', 
+                // 'generate client code', 'view client upload', 'import clients', 
+                // 'filter payment statuses', 'view client data by code', 'change client type',
             ],
         ];
 

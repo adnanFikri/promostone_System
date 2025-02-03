@@ -121,104 +121,102 @@ select.rounded-md.w-md {
     </style>
   
   {{-- @can('view bons_livraison') --}}
-<div class="py-5">
-    <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
-        <div class="p-6 bg-white rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Coupe</h2>
-            
-            <!-- Bons Table -->
-            <div id="container-searchBL" >
-                <input type="text" id="search-no-bl" class="border px-2 py-2 rounded" placeholder="No BL">
-            </div>
-            <div class="overflow-x-aut ">
-                <table id="bons-table" class=" min-w-full text-sm">
-                    <thead>
-                        <tr>
-                            {{-- <th>ID</th> --}}
-                            <th>No BL</th>
-                            <th>Produits</th>
-                            <th>date</th>
-                            <th>commercant</th>
-                            <th>Coupe</th>
-                            <th>Date Coupe</th>
-                            <th>Coupe Par</th>
-                            <th>print_nbr</th>
-                            <th>print date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <div class="py-5">
+        <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
+            <div class="p-6 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Coupe</h2>
+                
+                <!-- Bons Table -->
+                <div id="container-searchBL" >
+                    <input type="text" id="search-no-bl" class="border px-2 py-2 rounded" placeholder="No BL">
+                </div>
+                <div class="overflow-x-aut ">
+                    <table id="bons-table" class=" min-w-full text-sm">
+                        <thead>
+                            <tr>
+                                {{-- <th>ID</th> --}}
+                                <th>No BL</th>
+                                <th>Produits</th>
+                                <th>date</th>
+                                <th>commercant</th>
+                                <th>Coupe</th>
+                                <th>Date Coupe</th>
+                                <th>Coupe Par</th>
+                                <th>print_nbr</th>
+                                <th>print date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {{-- @endcan --}}
 
 <script>
-var table;
-table = $('#bons-table').DataTable({
-     processing: true,
-     serverSide: true,
-     ajax: '{{ route("listBonCoupe.index") }}',
-     responsive: true,  // Add this line to enable responsive table
-     order: [[0, 'desc']],
-     columns: [
-        //  { data: 'id', name: 'id' }, 
-         { data: 'no_bl', name: 'no_bl' },
-         { data: 'products', name: 'products' }, // This column corresponds to products
-         { data: 'date', name: 'date' }, // Sale date column
-         { data: 'commercant', name: 'commercant' }, // Commercant column
-         { 
-             data: 'coupe', 
-             name: 'coupe', 
-             render: function(data, type, row) {
-                 return `
-                     <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1">
-                        <option value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
-                        <option value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
-                     </select>
-                 `;
-             }
-         },
-         { 
-            data: 'date_coupe', 
-            name: 'date_coupe',
-            render: function(data, type, row) {
-                return data ? data : 'pas encore';
-            }
-        },
-         { data: 'userName', name: 'userName' }, // Commercant column
+    var table;
+    table = $('#bons-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route("listBonCoupe.index") }}',
+        responsive: true,  // Add this line to enable responsive table
+        //  order: [[0, 'desc']],
+        order: [
+            [5, 'asc'],  // Order by coupe column (index 5), 'Non' will come first.
+            [3, 'asc']   // Then order by created_at column (index 7), oldest first.
+        ],
+        columns: [
+            //  { data: 'id', name: 'id' }, 
+            { data: 'no_bl', name: 'no_bl' },
+            { data: 'products', name: 'products' }, // This column corresponds to products
+            { data: 'date', name: 'date' }, // Sale date column
+            { data: 'commercant', name: 'commercant' }, // Commercant column
+            { 
+                data: 'coupe', 
+                name: 'coupe', 
+                render: function(data, type, row) {
+                    let disabled = (data === 'Oui' && !row.can_edit) ? 'disabled' : '';
+
+                    return `
+                        <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
+                            <option value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
+                            <option value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
+                        </select>
+                    `;
+                }
+            },
+            { 
+                data: 'date_coupe', 
+                name: 'date_coupe',
+                render: function(data, type, row) {
+                    return data ? data : 'pas encore';
+                }
+            },
+            { data: 'userName', name: 'userName' }, // Commercant column
+            
+            
+            { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
+            { data: 'print_date', name: 'print_date' }, // Commercant column
+            { 
+                data: 'actions', 
+                name: 'actions', 
+                orderable: false, 
+                searchable: false,
+                render: function(data, type, row) {
+                    return `
+                        <a href="{{ url('/bon-coup/') }}/${row.no_bl}" class="btnA" title="Voir Bon de Livraison">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
+                                <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
+                            </svg>
+                        </a>
+                    `;
+                }
+            },
+        ],
         
-         
-         { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
-         { data: 'print_date', name: 'print_date' }, // Commercant column
-         { 
-             data: 'actions', 
-             name: 'actions', 
-             orderable: false, 
-             searchable: false,
-             render: function(data, type, row) {
-                 return `
-                     <a href="{{ url('/bon-coup/') }}/${row.no_bl}" target="_blank" class="btnA" title="Voir Bon de Livraison">
-                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
-                            <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
-                        </svg>
-                     </a>
-                 `;
-             }
-         },
-     ],
-    //  $('#search-no-bl').on('keyup', function () {
-    //         let value = this.value.trim();
-    //         if (value === "") {
-    //             table.column(0).search("").draw();
-    //         } else {
-    //             table.column(0).search("^" + value + "$", true, false).draw();
-    //         }
-    //     });
-     
- });
+    });
 
     $('#search-no-bl').on('keyup', function () {
         let value = this.value.trim();
@@ -229,64 +227,64 @@ table = $('#bons-table').DataTable({
         }
     });
  
- function updateCoupe(id, value) {
-    // Show confirmation dialog
-    Swal.fire({
-        title: 'Êtes-vous sûr ?',
-        text: 'Voulez-vous vraiment modifier le statut de Coupe ?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Oui, confirmer',
-        cancelButtonText: 'Annuler',
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Proceed with the update if the user confirms
-            fetch(`/bonCoupe/${id}/update-coupe`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ coupe: value })
-            }).then(response => {
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Mis à jour avec succès !',
-                        text: 'Le statut de Coupe a été mis à jour.',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#3085d6',
-                    });
-                    $('#bons-table').DataTable().ajax.reload();
-                } else {
+    function updateCoupe(id, value) {
+        // Show confirmation dialog
+        Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: 'Voulez-vous vraiment modifier le statut de Coupe ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Oui, confirmer',
+            cancelButtonText: 'Annuler',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the update if the user confirms
+                fetch(`/bonCoupe/${id}/update-coupe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ coupe: value })
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Mis à jour avec succès !',
+                            text: 'Le statut de Coupe a été mis à jour.',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur lors de la mise à jour.',
+                            text: 'Un problème est survenu lors de la mise à jour du statut de Coupe.',
+                            confirmButtonText: 'Réessayer',
+                            confirmButtonColor: '#d33',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    }
+                }).catch(error => {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erreur lors de la mise à jour.',
-                        text: 'Un problème est survenu lors de la mise à jour du statut de Coupe.',
-                        confirmButtonText: 'Réessayer',
+                        title: 'Erreur réseau',
+                        text: 'Il y a eu un problème avec la requête. Veuillez réessayer plus tard.',
+                        confirmButtonText: 'OK',
                         confirmButtonColor: '#d33',
                     });
                     $('#bons-table').DataTable().ajax.reload();
-                }
-            }).catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur réseau',
-                    text: 'Il y a eu un problème avec la requête. Veuillez réessayer plus tard.',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#d33',
                 });
+            } else {
+                // User canceled, no action needed
+                console.log('Modification annulée');
                 $('#bons-table').DataTable().ajax.reload();
-            });
-        } else {
-            // User canceled, no action needed
-            console.log('Modification annulée');
-            $('#bons-table').DataTable().ajax.reload();
-        }
-    });
-}
+            }
+        });
+    }
 
 
 </script>

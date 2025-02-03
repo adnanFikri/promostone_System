@@ -58,24 +58,6 @@ class AchatController extends Controller
         foreach ($validatedData['products'] as $product) {
             foreach ($product['mesures'] as $mesure) {
 
-                $productModel = Product::where('name', $product['produit'])->first(); // Assuming 'name' matches 'produit'
-                if ($productModel) {
-                    // Check if there's enough quantity in stock
-                    // if ($productModel->quantity >= $mesure['quantite']) {
-                        // Reduce the product's quantity
-                        $productModel->quantity += $mesure['quantite'];
-                        $productModel->save();
-                    // } else {
-                        // Handle case when there's not enough stock
-                    //     return redirect()->back()->withErrors([
-                    //         'products' => "Insufficient stock for product: {$product['produit']}"
-                    //     ]);
-                    // }
-                } else {
-                    return redirect()->back()->withErrors([
-                        'products' => "Product not found: {$product['produit']}"
-                    ]);
-                }
 
                 $sale = new Achat();
                 $sale->no_bl = $no_bl;
@@ -111,11 +93,30 @@ class AchatController extends Controller
                     $montant = $sale->nbr * $sale->prix_unitaire;
                     $sale->longueur = null;
                     $sale->largeur = null;
-                    $sale->qte = null;
+                    $sale->qte = $mesure['quantite'];
                 }
                 $sale->montant = $montant;
                 
                 $sale->save();
+
+                $productModel = Product::where('name', $product['produit'])->first(); // Assuming 'name' matches 'produit'
+                if ($productModel) {
+                    // Check if there's enough quantity in stock
+                    // if ($productModel->quantity >= $mesure['quantite']) {
+                        // Reduce the product's quantity
+                        $productModel->quantity += $sale->qte;
+                        $productModel->save();
+                    // } else {
+                        // Handle case when there's not enough stock
+                    //     return redirect()->back()->withErrors([
+                    //         'products' => "Insufficient stock for product: {$product['produit']}"
+                    //     ]);
+                    // }
+                } else {
+                    return redirect()->back()->withErrors([
+                        'products' => "Product not found: {$product['produit']}"
+                    ]);
+                }
             }
         }
 

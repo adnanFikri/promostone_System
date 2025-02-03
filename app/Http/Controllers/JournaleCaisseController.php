@@ -19,7 +19,7 @@ class JournaleCaisseController extends Controller
         $this->middleware('permission:view journaleCaisse')->only(['journalCaisse']);
     }
 
-public function journalCaisse()
+    public function journalCaisse()
 {
     return view('journaleCaisse.show', [
         'dateFrom' => null, // Initialize as null
@@ -68,7 +68,6 @@ public function journalCaisse()
     ->groupBy('no_bl') // Group by no_bl
     ->map(fn($reglements) => $reglements->first());
 
-    dd($filteredReglements);
 
     $totalReglementEspece = $filteredReglements->where('type_pay', 'Espèce')->sum('montant');
     $totalReglementCheque = $filteredReglements->where('type_pay', 'Chèque')->sum('montant');
@@ -82,13 +81,35 @@ public function journalCaisse()
 
 
     // Group sales by product name
-    $groupedSales = $sales->groupBy('no_bl');
-
-    // Retrieve related data for each sale
+    // Group sales by BL and then by product
     $groupedSales = $sales->groupBy('no_bl')->map(function ($salesByBL) {
-        return $salesByBL->groupBy('produit');
+        return $salesByBL->groupBy('produit')->map(function ($salesByProduct) {
+            // Initialize totalQte as 0
+            $totalQte = 0;
+            
+            // Loop through each sale and determine whether to sum 'qte' or 'nbr'
+            foreach ($salesByProduct as $sale) {
+                if ($sale->mode == 'Unité' || $sale->mode == 'service') {
+                    // Use 'nbr' for Unité or service modes
+                    $totalQte += $sale->nbr;
+                } else {
+                    // Use 'qte' for M2 or M3 modes
+                    $totalQte += $sale->qte;
+                }
+            }
+    
+            // Prix unitaire remains the same
+            $prixUnitaire = $salesByProduct->first()->prix_unitaire;
+    
+            return [
+                'produit' => $salesByProduct->first()->produit, // Nom du produit
+                'qte' => $totalQte, // Somme des quantités ou nbr
+                'prix_unitaire' => $prixUnitaire,
+                'montant' => $prixUnitaire * $totalQte, // Recalcul du montant total
+            ];
+        });
     });
-
+    
     // Retrieve related data
     $salesDetails = $groupedSales->map(function ($salesByProduit, $no_bl) {
         $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
@@ -101,6 +122,9 @@ public function journalCaisse()
             'reglements' => $reglements,
         ];
     });
+
+    // dd($salesDetails);
+
 
     $filteredReglements = Reglement::whereBetween('date', [
         Carbon::parse($dateFrom)->startOfDay(),

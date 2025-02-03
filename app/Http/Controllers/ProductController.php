@@ -224,5 +224,19 @@ class ProductController extends Controller
     
         return response()->json(['message' => 'Produit supprimé avec succès !']);
     }
+
+
+    public function searchProducts(Request $request)
+    {
+        $search = $request->input('q'); // Select2 sends the search query as 'q'
+        
+        $products = Product::where('name', 'like', "%{$search}%")
+            ->orWhere('product_code', 'like', "%{$search}%")
+            ->limit(10)
+            ->get(['product_code', 'name', 'quantity', 'unit_price']); // Fetch relevant data
+    
+        return response()->json($products);
+    }
+    
     
 }

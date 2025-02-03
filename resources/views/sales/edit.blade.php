@@ -98,14 +98,20 @@
                         <div class="product-item relative overflow-hidden bg-gray-100 flex flex-wrap gap-4 items-center border border-gray-300 p-4 rounded-md">
                             <div class="w-full md:w-3/4">
                                 <label for="produit" class="block text-sm font-medium text-gray-700">Produit</label>
-                                <select name="products[{{ $index }}][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                                {{-- <select name="products[{{ $index }}][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
                                     <option value="" disabled selected>~~ choisir le produit ~~</option>
                                     @foreach($products as $product)
                                         <option value="{{ $product->name }}" data-unit-price="{{ $product->unit_price }}" {{ $product->name == $saleLine->produit ? 'selected' : '' }}>
                                             {{ $product->name }} -- {{$product->quantity}} Disponible ({{ $product->unit_price }})
                                         </option>
                                     @endforeach
+                                </select> --}}
+                                <select name="products[{{ $index }}][produit]" id="product_select" class="product_select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                                    <option value="{{ $saleLine->produit }}" selected>
+                                        {{ $saleLine->produit }} -- {{ $saleLine->quantity ?? '' }} Disponible ({{ $saleLine->prix_unitaire ?? '' }})
+                                    </option>
                                 </select>
+                                
                             </div>
                             <div class="w-full md:w-1/5">
                                 <label for="prix_unitaire" class="block text-sm font-medium text-gray-700">Prix Unitaire</label>
@@ -177,6 +183,73 @@
 
 @endcan
     <script>
+            // search products select 
+        $(document).ready(function () {
+            // Appliquer Select2 à tous les éléments existants au chargement de la page
+            $('.product_select').each(function () {
+                initializeSelect2($(this));
+            });
+
+            // Fonction pour initialiser Select2
+            function initializeSelect2(element) {
+                element.select2({
+                    placeholder: "~~ choisir le produit ~~",
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('products.search') }}', // Ajustez cette route
+                        dataType: 'json',
+                        delay: 250,
+                        processResults: function (data) {
+                            return {
+                                results: data.map(function (product) {
+                                    return {
+                                        id: product.name,
+                                        text: product.name + " -- " + product.quantity + " Disponible (" + product.unit_price + " MAD)",
+                                        unit_price: product.unit_price, // Inclure le prix unitaire dans la réponse
+                                        quantity: product.quantity
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            }
+
+            // Appliquer Select2 aux nouveaux éléments ajoutés dynamiquement
+            $(document).on('focus', '.product_select', function () {
+                if (!$(this).hasClass("select2-hidden-accessible")) {
+                    initializeSelect2($(this));
+                }
+            });
+
+            // Gérer la sélection du produit
+            $(document).on('select2:select', '.product_select', function (e) {
+                const selectedOption = e.params.data;
+                const productItem = $(this).closest('.product-item');
+                const unitPriceInput = productItem.find('.prix-unitaire');
+
+                if (unitPriceInput.length) {
+                    unitPriceInput.val(selectedOption.unit_price || '');
+                }
+
+                // Afficher une alerte si le stock est faible
+                if (selectedOption.quantity <= 10) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Stock Faible!',
+                        text: `Seulement ${selectedOption.quantity} unités disponibles.`,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+
+                calculateTotal();
+            });
+        });
+
+
+
+
         // search client select 
         $(document).ready(function () {
             $('#code_client').select2({
@@ -214,11 +287,8 @@
             <div class="product-item relative overflow-hidden bg-gray-100 flex flex-wrap gap-4 items-center border border-gray-300 p-4 rounded-md">
                 <div class="w-full md:w-3/4">
                     <label for="produit" class="block text-sm font-medium text-gray-700">Produit</label>
-                    <select name="products[${productIndex}][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                        <option>~~ choisir le produit ~~</option>
-                        @foreach($products as $product)
-                            <option value="{{ $product->name }}" data-unit-price="{{ $product->unit_price }}" >{{ $product->name }} -- {{$product->quantity}} Disponible ({{ $product->unit_price }})</option>
-                        @endforeach
+                    <select id="product_select_${productIndex}" name="products[${productIndex}][produit]" class="product-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                        <!-- Options will be loaded dynamically -->
                     </select>
                 </div>
                 <div class="w-full md:w-1/5 ">
@@ -256,9 +326,54 @@
                 </button>
             </div>`;
         container.insertAdjacentHTML('beforeend', newProduct);
+        initializeSelect2(`#product_select_${productIndex}`);
         // productIndex++;
     }
 
+
+    function initializeSelect2(selector) {
+    $(selector).select2({
+        placeholder: "~~ choisir le produit ~~",
+        width: '100%',
+        ajax: {
+            url: '{{ route('products.search') }}',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data.map(product => ({
+                        id: product.name,
+                        text: `${product.name} -- ${product.quantity} Disponible (${product.unit_price} MAD)`,
+                        unit_price: product.unit_price,
+                        quantity: product.quantity
+                    }))
+                };
+            },
+            cache: true
+        }
+    }).on('select2:select', function (e) {
+        const selectedProduct = e.params.data;
+        const productItem = $(this).closest('.product-item');
+        const unitPriceInput = productItem.find('.prix-unitaire');
+
+        if (unitPriceInput.length) {
+            unitPriceInput.val(selectedProduct.unit_price || '');
+        }
+
+        // Alert for low stock
+        if (selectedProduct.quantity <= 10) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stock Faible!',
+                text: `Seulement ${selectedProduct.quantity} unités disponibles.`,
+                confirmButtonColor: '#d33'
+            });
+        }
+    });
+    calculateTotal()
+}
+    
+    
 function calculateTotal() {
     const products = document.querySelectorAll(".product-item");
     let grandTotal = 0;

@@ -161,7 +161,10 @@ var table;
 table = $('#bons-table').DataTable({
      processing: true,
      serverSide: true,
-     order: [[0, 'desc']],
+     order: [
+            [4, 'asc'],  // Order by coupe column (index 5), 'Non' will come first.
+            [3, 'asc']   // Then order by created_at column (index 7), oldest first.
+        ],
      ajax: '{{ route("listBonSortie.index") }}',
      responsive: true,  // Add this line to enable responsive table
      columns: [
@@ -174,13 +177,15 @@ table = $('#bons-table').DataTable({
              data: 'sortie', 
              name: 'sortie', 
              render: function(data, type, row) {
-                 return `
-                     <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1">
-                        <option value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
-                        <option value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
-                     </select>
-                 `;
-             }
+                    let disabled = (data === 'Oui' && !row.can_edit) ? 'disabled' : '';
+
+                    return `
+                        <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
+                            <option value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
+                            <option value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
+                        </select>
+                    `;
+                }
          },
          { 
             data: 'date_sortie', 
@@ -199,7 +204,7 @@ table = $('#bons-table').DataTable({
              searchable: false,
              render: function(data, type, row) {
                  return `
-                     <a href="{{ url('/bon-sortie/') }}/${row.no_bl}" target="_blank" class="btnA" title="Voir Bon de Livraison">
+                     <a href="{{ url('/bon-sortie/') }}/${row.no_bl}" class="btnA" title="Voir Bon de Livraison">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
                             <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
                         </svg>

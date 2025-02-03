@@ -197,14 +197,6 @@
                         <option value="Gris" style="background-color: gray; color: white;">Gris</option>
                     </select>
                 </div>
-                <div>
-                    <label for="edit-inventory-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Inventory Date</label>
-                    <input type="datetime-local" id="edit-inventory-date" name="inventory_date" class="w-full mt-1 px-3 py-2 border rounded-md dark:bg-gray-900 dark:border-gray-600">
-                </div>
-                <div>
-                    <label for="edit-update-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Update Date</label>
-                    <input type="datetime-local" id="edit-update-date" name="update_date" class="w-full mt-1 px-3 py-2 border rounded-md dark:bg-gray-900 dark:border-gray-600">
-                </div>
             </div>
             <div class="mt-4">
                 <label for="edit-image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Image</label>

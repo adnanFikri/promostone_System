@@ -119,10 +119,11 @@ select.rounded-md.w-md {
 }
 
     </style>
+    
   
   {{-- @can('view bons_livraison') --}}
 <div class="py-5">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
         <div class="p-6 bg-white rounded-lg shadow-md">
             <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Livraison</h2>
             
@@ -132,7 +133,7 @@ select.rounded-md.w-md {
             
             <!-- Bons Table -->
             <div class="overflow-x-aut">
-                <table id="bons-table" class="w-full text-sm">
+                <table id="bons-table" class="min-w-full text-sm">
                     <thead>
                         <tr>
                             {{-- <th>ID</th> --}}
@@ -193,7 +194,7 @@ table = $('#bons-table').DataTable({
              render: function(data, type, row) {
                  return `
                  
-                     <a href="{{ url('/bon-livraison/') }}/${row.no_bl}" target="_blank" class="btnA" title="Voir Bon de Livraison">
+                     <a href="{{ url('/bon-livraison/') }}/${row.no_bl}" class="btnA" title="Voir Bon de Livraison">
                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
                             <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
                         </svg>

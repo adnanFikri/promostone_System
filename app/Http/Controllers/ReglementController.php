@@ -149,20 +149,22 @@ class ReglementController extends Controller
                 'montant_payed' => $paymentStatus->montant_payed + $request->montant,
                 'montant_restant' => $rest ,
             ];
-            BonLivraison::firstOrCreate(
-                ['no_bl' => $request->no_bl, 'userName' => Auth::user()->name]
-            );
-
-            BonCoupe::firstOrCreate(
-                ['no_bl' => $request->no_bl]
-            );
-            BonSortie::firstOrCreate(
-                ['no_bl' => $request->no_bl]
-            );
+           
 
 
             if ($request->has('chefAtelier') && $request->chefAtelier !== null) {
                 $paymentStatusData['chef-atelier'] = $request->chefAtelier;
+                BonLivraison::firstOrCreate(
+                    ['no_bl' => $request->no_bl, 'userName' => Auth::user()->name]
+                );
+    
+                BonCoupe::firstOrCreate(
+                    ['no_bl' => $request->no_bl]
+                );
+                
+                BonSortie::firstOrCreate(
+                    ['no_bl' => $request->no_bl]
+                );
                 
             }
             
