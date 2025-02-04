@@ -263,6 +263,20 @@
     z-index: 9999;    /* Ensure it’s on top */
 }
     
+
+    /* button of alert reglement remainning balance*/
+    .my-alert-button {
+        background-color: #28a745 !important; /* Green button color */
+        color: white !important; /* Text color */
+        border: none !important;
+        padding: 10px 20px !important;
+        border-radius: 5px !important;
+        font-size: 16px !important;
+        cursor: pointer !important;
+    }
+    .my-alert-button:hover {
+        background-color: #218838 !important; /* Slightly darker green on hover */
+    }
 </style>
 
         {{-- <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -1160,7 +1174,7 @@
         // Save Règlement
         $('#save-button').on('click', function (e) {
             e.preventDefault();
-    
+
             // Prepare form data
             const formData = {
                 no_bl: $('#no_bl').val(),
@@ -1172,45 +1186,69 @@
                 date_chq: $('#date_chq').val(),
                 _token: '{{ csrf_token() }}'
             };
-    
+
             if (!formData.no_bl || !formData.code_client || !formData.montant) {
-                alert('Please fill in all required fields.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Champs requis!',
+                    text: 'Veuillez remplir tous les champs obligatoires.',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
-    
-            console.log(formData);
-            
-            // if(false){
-                // Send AJAX request
-                fetch('{{ route('reglements.store') }}', {
-                    method: 'POST',
-                    body: new URLSearchParams(formData),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            $('#status-updated').removeClass('hidden');
-                            $('#update-message').text(data.message);
-                            $('#updated-remaining-balance').text(parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2));
-        
-                            // Hide the modal
-                            // $('#reglement-modal').addClass('hidden');
-    
-                            // Optionally, refresh the table
-                        $('#payment-status-table').DataTable().ajax.reload();
-        
-                            
-                        } else {
-                            alert(data.message);
+
+            // Send AJAX request
+            fetch('{{ route('reglements.store') }}', {
+                method: 'POST',
+                body: new URLSearchParams(formData),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide the modal
+                    $('#reglement-modal').addClass('hidden'); // Adjust if using Bootstrap: $('#reglement-modal').modal('hide');
+
+                    // Get updated balance
+                    const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
+
+                    // Show SweetAlert with the updated balance
+                    Swal.fire({
+                        title: 'Solde restant mis à jour',
+                        text: `Le solde restant mis à jour est : ${updatedBalance}`,
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'my-alert-button'
                         }
-                    })
-                    .catch(error => console.error('Error:', error));
-            // }
+                    });
+
+                    // Refresh the table
+                    $('#payment-status-table').DataTable().ajax.reload();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur!',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur!',
+                    text: 'Une erreur s\'est produite lors de la sauvegarde.',
+                    confirmButtonText: 'OK'
+                });
+            });
         });
-    });
+
+
+        });
     
     document.addEventListener('DOMContentLoaded', function () {
         const modeReglement = document.getElementById('mode_reglement');
@@ -1249,64 +1287,6 @@
         // 00000 00000 00000 0000 0000 00 0 0 000 00 0 
         // 00000 00000 00000 0000 0000 00 0 0 000 00 0 
     
-        // Open modal
-        // $(document).on('click', '.view-sales', function () {
-        //     var blNumber = $(this).data('bl'); // Get the BL number
-        //     $('#bl-number').text(blNumber); // Set the BL number in the header
-        //     $('#salesModal').removeClass('hidden'); // Show the modal
-    
-        //     // Make the AJAX request to get the sales data for this BL
-        //     $.ajax({
-        //         url: '/sales/get-by-bl', // The route to get sales by BL
-        //         method: 'GET',
-        //         data: { no_bl: blNumber },
-        //         success: function (response) {
-        //             var salesTableBody = $('#sales-modal-table tbody');
-        //             salesTableBody.empty(); // Clear previous data
-        //             console.log(response);
-    
-        //             if (response.sales.length > 0) {
-        //                 // Get client details from the first sale entry
-        //                 var clientName = response.sales[0].client_name || 'N/A';
-        //                 var codeClient = "("+response.sales[0].code_client + ")" || 'N/A';
-    
-        //                 // Update the modal header with client information
-        //                 $('#modal-client-name').text(clientName);
-        //                 $('#modal-code-client').text(codeClient);
-        //             } else {
-        //                 // Fallback if no sales are found
-        //                 $('#modal-client-name').text('pas de regelement').css('color', 'red');;
-        //                 // $('#modal-code-client').text('N/A');
-        //             }
-    
-        //             // Populate the table with the sales data
-        //             response.sales.forEach(function (sale) {
-        //                 salesTableBody.append(`
-        //                     <tr>
-        //                         <td class="px-4 py-2 border">${sale.id}</td>
-        //                         <td class="px-4 py-2 border">${sale.no_bl}</td>
-        //                         <td class="px-4 py-2 border">${sale.annee}</td>
-        //                         <td class="px-4 py-2 border">${sale.date}</td>
-        //                         <td class="px-4 py-2 border">${sale.ref_produit}</td>
-        //                         <td class="px-4 py-2 border">${sale.produit}</td>
-        //                         <td class="px-4 py-2 border">${sale.longueur}</td>
-        //                         <td class="px-4 py-2 border">${sale.largeur}</td>
-        //                         <td class="px-4 py-2 border">${sale.nbr}</td>
-        //                         <td class="px-4 py-2 border">${sale.qte}</td>
-        //                         <td class="px-4 py-2 border">${sale.prix_unitaire}</td>
-        //                         <td class="px-4 py-2 border">${sale.montant}</td>
-        //                     </tr>
-        //                 `);
-        //             });
-    
-        //             // Re-initialize DataTable for the modal table
-        //             $('#sales-modal-table').DataTable();
-        //         },
-        //         error: function () {
-        //             alert('Error fetching sales data');
-        //         },
-        //     });
-        // });
     
     $(document).on('click', '.view-sales', function () { 
         var blNumber = $(this).data('bl'); // Get the BL number
@@ -1451,6 +1431,7 @@
                 if (data && data.phone && data.type) {
                     // Populate the modal with client details
                     $('#client-modal-body').html(`
+                        <p><strong>category:</strong> ${data.category || 'N/A'}</p>
                         <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
                         <p><strong>Type:</strong> ${data.type || 'N/A'}</p>
                     `);

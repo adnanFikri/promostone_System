@@ -10,7 +10,7 @@ use App\Http\Controllers\BonCoupeController;
 use App\Http\Controllers\BonSortieController;
 use App\Http\Controllers\ReglementController;
 use App\Http\Controllers\SaleCheckController;
-use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\Achat\AchatController;
 use App\Http\Controllers\FournisseurController;

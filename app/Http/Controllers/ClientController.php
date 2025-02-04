@@ -317,6 +317,7 @@ class ClientController extends Controller
         try {
             $client = Client::where('code_client', $code_client)->firstOrFail();
             return response()->json([
+                'category' => $client->category,
                 'phone' => $client->phone,
                 'type' => $client->type,
             ]);

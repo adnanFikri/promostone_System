@@ -157,7 +157,7 @@ select.rounded-md.w-md {
 {{-- @endcan --}}
 
 <script>
-
+var canModiflivree = @json(auth()->user()->can('update livree bon livraison'));
 var table;
 table = $('#bons-table').DataTable({
      processing: true,
@@ -177,8 +177,10 @@ table = $('#bons-table').DataTable({
              data: 'livree', 
              name: 'livree', 
              render: function(data, type, row) {
+                 
+                 let disabled = (!canModiflivree) ? 'disabled' : '';
                  return `
-                     <select onchange="updateLivree(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1">
+                     <select onchange="updateLivree(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
                          <option value="Non" class="text-red-400" ${data === 'non' ? 'selected' : ''}>Non</option>
                          <option value="Oui" class="text-green-400" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
                      </select>

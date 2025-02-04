@@ -58,19 +58,19 @@
             @endcan
         </div>
     @endcan
-    <!-- Bon de Livraison Card -->
+    <!-- Bon de Sortie Card -->
     <div id="bon-de-livraison" class="borde border-gray-00 rounded-lg p-6 shado bg-white">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 text-center ">
             <span class="text-gray-500">le {{ $paymentStatus['date_bl'] }}</span>
-            <div class="border border-gray-400 rounded-lg p-2 bg-gray-200  text-center min-w-72">
-                <p class="font-bold text-orange-500 text-lg">{{ $paymentStatus->name_client }}</p>
-                <p><strong>Code Client:</strong> {{ $paymentStatus->code_client }}</p>
-                <p><strong>Téléphone:</strong> {{ $client->phone }}</p>
+            <div class="border border-gray-400 rounded-lg p-1 bg-gray-200  text-center min-w-72">
+                <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_client }}</p>
+                <p><span class="text-sm">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                <p><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
             </div>
         </div>
 
-        <!-- Client BON -->
+        <!-- Numero BON -->
         <h2 class=" mb-4 text-2xl font-bold text-center text-gray-600">BON DE SORTIE N° <span class="text-black border bg-gray-200 px-1 shadow " id="bs-number">{{ $paymentStatus->no_bl }}</span> / {{ date('Y') }}</h2>
         
 
@@ -154,7 +154,11 @@
         </div>
 
         <div class="uppercase mt-6 text-xl font-bold">
-            <p class="text-red-400">Rest Non Paye : {{ $paymentStatus->montant_restant >= 0 ? $paymentStatus->montant_restant : 0 }} DH</p>
+            @if ($paymentStatus->montant_restant > 0)
+                <p class="text-red-400">Solde impayé ❌</p>
+            @else
+                <p class="text-green-400">Solde payé ✅</p>
+            @endif
         </div>
 
         <!-- Footer Section -->
