@@ -110,10 +110,14 @@
                                     @if ($firstRowBl)
                                         <td class="border border-gray-300  p-2 align-middle text-blue-700 text-center font-bold" rowspan="{{ $totalBlRows }}">{{ number_format($paymentStatus->montant_total, 2) }}</td>
                                         <td class="border border-gray-300  p-2 align-middle text-gray-800 font-medium" rowspan="{{ $totalBlRows }}">
-                                            {{$reglements->type_pay ??  $reglements->type_pay ?? 'N/A' }}
-                                            @if (($reglements->type_pay ?? '') == 'Chèque')
-                                                <br><span class="text-sm text-gray-500">Ref: {{ $reglements->reference_chq ?? 'N/A' }}</span>
-                                                <br><span class="text-sm text-gray-500">Date: {{ $reglements->date_chq ?? 'N/A' }}</span>
+                                            @if(($reglements->montant ?? 0) > 0)
+                                                {{$reglements->type_pay ??  $reglements->type_pay ?? 'N/A' }}
+                                                @if (($reglements->type_pay ?? '') == 'Chèque')
+                                                    <br><span class="text-sm text-gray-500">Ref: {{ $reglements->reference_chq ?? 'N/A' }}</span>
+                                                    <br><span class="text-sm text-gray-500">Date: {{ $reglements->date_chq ?? 'N/A' }}</span>
+                                                @endif
+                                            @else
+                                                -
                                             @endif
                                         </td>
                                         <td class="border border-gray-300  p-2 text-center align-middle font-semibold text-green-600" rowspan="{{ $totalBlRows }}">
