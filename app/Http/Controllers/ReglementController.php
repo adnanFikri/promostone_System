@@ -51,6 +51,7 @@ class ReglementController extends Controller
                 'reglements.date_chq'
             )
             ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client') // LEFT JOIN with clients table
+            ->where('reglements.montant', '>', 0)
             ->get();
 
             return DataTables::of($data)
