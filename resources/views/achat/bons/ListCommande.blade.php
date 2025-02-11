@@ -125,7 +125,7 @@
 <div class="py-5">
     <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
         <div class="p-6 bg-white rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Livraison</h2>
+            <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de commande</h2>
             
             <div id="container-searchBL" >
                 <input type="text" id="search-no-bl" class="border px-2 py-2 rounded" placeholder="No BL">
@@ -142,8 +142,8 @@
                             <th>Raison</th>
                             <th>Produits</th>
                             <th>date</th>
-                            <th>commercant</th>
-                            <th>Livrée</th>
+                            {{-- <th>commercant</th> --}}
+                            <th>Reception</th>
                             {{-- <th>Crée par</th> --}}
                             <th>Actions</th>
                         </tr>
@@ -162,7 +162,7 @@ var table;
 table = $('#bons-table').DataTable({
      processing: true,
      serverSide: true,
-     ajax: '{{ route("listBonLivraison.index") }}',
+     ajax: '{{ route("listCommande.index") }}',
      responsive: true,  // Add this line to enable responsive table
      order: [[0, 'desc']],
      columns: [
@@ -172,15 +172,15 @@ table = $('#bons-table').DataTable({
         //  { data: 'name_client', name: 'name_client' },
          { data: 'products', name: 'products' }, // This column corresponds to products
          { data: 'date', name: 'date' }, // Sale date column
-         { data: 'commercant', name: 'commercant' }, // Commercant column
+        //  { data: 'commercant', name: 'commercant' }, // Commercant column
          { 
-             data: 'livree', 
-             name: 'livree', 
+             data: 'reception', 
+             name: 'reception', 
              render: function(data, type, row) {
                  
                  let disabled = (!canModiflivree) ? 'disabled' : '';
                  return `
-                     <select onchange="updateLivree(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
+                     <select onchange="updateLivree(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" disabled>
                          <option value="Non" class="text-red-400" ${data === 'non' ? 'selected' : ''}>Non</option>
                          <option value="Oui" class="text-green-400" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
                      </select>
@@ -196,15 +196,15 @@ table = $('#bons-table').DataTable({
              render: function(data, type, row) {
                  return `
                  
-                     <a href="{{ url('/bon-livraison/') }}/${row.no_bl}" class="btnA" title="Voir Bon de Livraison">
+                     <a href="{{ url('/bon-commande/') }}/${row.no_bl}" class="btnA" title="Voir Bon de Livraison">
                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
                             <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
                         </svg>
                      </a>
 
                      
-                    @can('update livree bon livraison')
-                        <a href="/sales/edit/${row.no_bl}" class="btn btn-primary" title="Edit Bon">
+                    @can('update Sales')
+                        <a href="/confirmReception/${row.no_bl}" class="btn btn-primary" title="Genere bon reception">
                             <svg class="w-9 h-9 text-blue-800 dark:text-white mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
                             </svg>

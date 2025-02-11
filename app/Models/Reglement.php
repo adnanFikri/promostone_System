@@ -18,6 +18,7 @@ class Reglement extends Model
         'code_client', 
         'nom_client', 
         'montant', 
+        'mode', 
         'date', 
         'type_pay',
         'reference_chq',

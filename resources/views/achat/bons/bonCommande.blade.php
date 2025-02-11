@@ -74,19 +74,19 @@ body {
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 text-center ">
             <span class="text-gray-900 text-lg">le {{ $paymentStatus['date_bl'] }}</span>
-            <div class="border border-gray-300 rounded-lg p-1  text-center min-w-72">
-                <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_client }}</p>
+            <div class="border border-gray-400 rounded-lg p-1  text-center min-w-72">
+                <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_fournisseur }}</p>
                 <p class="px-6"><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
-                <p class="px-6"><span class="text-sm ">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                {{-- <p class="px-6"><span class="text-sm ">Code Client:</span> {{ $paymentStatus->id_fournisseur }}</p> --}}
             </div>
         </div>
 
         <!-- Client BON -->
-        <h2 class="mb-4 text-2xl font-bold text-center text-gray-600">BON DE LIVRAISON N° <span class="text-black border bg-gray-200 px-1 shadow " id="bl-number">{{ $paymentStatus->no_bl }}</span> / {{ date('Y') }}</h2>
+        <h2 class="mb-4 text-2xl font-bold text-center text-gray-600">BON DE COMMANDE N° <span class="text-black border bg-gray-200 px-1 shadow " id="bl-number">{{ $paymentStatus->no_bl }}</span> / 2025</h2>
         
 
         <!-- Agent Info -->
-        <p class="mb-4 border p-4 border-gray-300 rounded-md"><strong>Agent:</strong> {{ $paymentStatus->commerçant }} {{ $paymentStatus['tel-commerçant'] ? '- '. $paymentStatus['tel-commerçant'] .' ' : ''}}</p>
+        {{-- <p class="mb-4 border p-4 border-gray-300 rounded-md"><strong>Agent:</strong> {{ $paymentStatus->commerçant }} {{ $paymentStatus['tel-commerçant'] ? '- '. $paymentStatus['tel-commerçant'] .' ' : ''}}</p> --}}
 
         <!-- Table Section -->
         <div class="overflow-x-auto">
@@ -108,7 +108,7 @@ body {
                         @if ($sale->mode == "service")
                             <!-- Row for services -->
                             <tr>
-                                <td class="border border-gray-300 p-2 font-bold text-blue-600" colspan="1">
+                                <td class="border border-gray-300 ps-1 font-bold text-blue-600" colspan="1">
                                     {{ $sale->produit }}
                                 </td>
                                 <td class="border border-gray-300 p-2 text-center" colspan="3">{{ $sale->nbr ?? '-' }}</td>
@@ -120,14 +120,14 @@ body {
                             <!-- Row for products -->
                             <tr>
                                 @if ($index === 0)
-                                    <td class="border border-gray-300 p-2" rowspan="{{ count($sales) }}">
+                                    <td class="border border-gray-300 ps-1" rowspan="{{ count($sales) }}">
                                         {{ $produit }}
                                     </td>
                                 @endif
                                 @if ($sale->mode =="Unité")
                                     {{-- <td class="border border-gray-300 p-2 text-center" > - </td> --}}
                                     {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->qte }}</td> --}}
-                                    <td class="border border-gray-300 p-2 text-center" colspan="3">{{ $sale->nbr }}</td>
+                                    <td class="border border-gray-300 px-1 text-center" colspan="3">{{ $sale->nbr }}</td>
                                     <td class="border border-gray-300 p-2 text-center" >{{ $sale->mode }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td>
@@ -205,7 +205,9 @@ body {
                         </tr>
                     </thead>
                     <tbody>
-                       
+                        <tr>
+                            {{-- <td class="border border-gray-300 p-2">{{ $reglement->date }}</td> --}}
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -288,9 +290,6 @@ function printBonLivraison() {
                 margin: 0;
                 padding: 1cm; /* Add padding inside the page */
                 zoom: 0.7; 
-            }
-            .border-gray-300{
-                border-color:black;
             }
         </style>
     `;

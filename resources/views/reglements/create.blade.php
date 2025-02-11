@@ -106,6 +106,20 @@
         .hiddena {
             display: none;
         }
+
+        /* button of alert */
+        .my-alert-button {
+            background-color: #28a745 !important; /* Green button color */
+            color: white !important; /* Text color */
+            border: none !important;
+            padding: 10px 20px !important;
+            border-radius: 5px !important;
+            font-size: 16px !important;
+            cursor: pointer !important;
+        }
+        .my-alert-button:hover {
+            background-color: #218838 !important; /* Slightly darker green on hover */
+        }
     </style>
 @can("create reglements")
     <div class="py-5 ">
@@ -191,8 +205,11 @@
                             </div>
                         </div>
 
-                        <button type="button" id="save-button" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">Save</button>
-                        <button type="button" id="finish-button" class="w-full mt-2 px-4 py-2 text-white bg-green-600 rounded hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500">Finish</button>
+                        {{-- for mode of paye avance or reglement   --}}
+                        <input type="hidden" id="mode" name="mode" value="reglement">
+
+                        <button type="button" id="save-button" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">Valider</button>
+                        {{-- <button type="button" id="finish-button" class="w-full mt-2 px-4 py-2 text-white bg-green-600 rounded hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500">Finish</button> --}}
                     </form>
 
                     <div id="status-updated" class="mt-6 hidden bg-green-100 text-green-800 px-4 py-2 rounded">
@@ -266,8 +283,8 @@
             .catch(error => console.error('Error:', error));
     });
 
-    // Save form data
-    $('#save-button').on('click', function (e) {
+// Save form data
+$('#save-button').on('click', function (e) {
     e.preventDefault();
 
     const selectionMode = $('input[name="selection_mode"]:checked').val();
@@ -292,15 +309,14 @@
     const formData = {
         no_bl: bl,
         code_client: client,
-        montant: $('#montant').val(), // Replace with your input ID
-        date: $('#date_reglement').val(), // Replace with your input ID
-        type_pay: $('#mode_reglement').val(), // Replace with your input ID
-        reference_chq: $('#reference_chq').val(), // Replace with your input ID
-        date_chq: $('#date_chq').val(), // Replace with your input ID
+        montant: $('#montant').val(), 
+        date: $('#date_reglement').val(), 
+        type_pay: $('#mode_reglement').val(), 
+        reference_chq: $('#reference_chq').val(), 
+        date_chq: $('#date_chq').val(), 
+        mode: $('#mode').val(), 
         _token: '{{ csrf_token() }}'
     };
-
-    console.log(formData);
 
     fetch('{{ route('reglements.store') }}', {
         method: 'POST',
@@ -312,14 +328,44 @@
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            $('#status-updated').removeClass('hidden');
-            $('#update-message').text(data.message);
-            $('#updated-remaining-balance').text(parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2));
+            const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
+            
+            // Show SweetAlert with the updated balance
+            Swal.fire({
+                title: 'Solde restant mis à jour',
+                text: `Le solde restant mis à jour est : ${updatedBalance}`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                }
+            }).then(() => {
+                window.location.href = '{{ route("reglements.index") }}';
+            });
         } else {
-            alert(data.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur!',
+                text: data.message,
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                }
+            });
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur!',
+            text: 'Une erreur s\'est produite lors de la sauvegarde.',
+            confirmButtonText: 'OK',
+            customClass: {
+                confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+            }
+        });
+    });
 });
 // -=-==-=-= end save data -=-=-==- 
 // 0-=-= 0=-== 0==0 

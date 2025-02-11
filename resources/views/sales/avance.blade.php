@@ -176,6 +176,9 @@
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                         </div>
                     </div>
+
+                    {{-- for mode of paye avance or reglement   --}}
+                    <input type="hidden" id="mode" name="mode" value="avance">
                 
                     <button type="submit" id="save-button"
                         class="w-full px-4 py-2 mt-4 text-white bg-blue-600 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -221,6 +224,7 @@ $('#save-button').on('click', function (e) {
         date_chq: $('#date_chq').val(),
         chefAtelier: $('#chef-atelier').val(),
         date_echeance: $('#date-echeance').val(),
+        mode : $('#mode').val(),
         _token: '{{ csrf_token() }}'
     };
 

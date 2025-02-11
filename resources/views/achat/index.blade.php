@@ -37,7 +37,7 @@
         }
 
         #sales-table th {
-            background-color: #3ba5b0;
+            background-color: #2b939f;
             color: white;
         }
 
@@ -77,24 +77,24 @@
         <div class="max-w-15xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
 
-                <a href="{{ route('sales.upload') }}" class="btnA">
+                {{-- <a href="{{ route('sales.upload') }}" class="btnA">
                     <svg class="w-6 h-6 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" d="M12 3a1 1 0 0 1 .78.375l4 5a1 1 0 1 1-1.56 1.25L13 6.85V14a1 1 0 1 1-2 0V6.85L8.78 9.626a1 1 0 1 1-1.56-1.25l4-5A1 1 0 0 1 12 3ZM9 14v-1H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-4v1a3 3 0 1 1-6 0Zm8 2a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clip-rule="evenodd"/>
                       </svg>
-                </a>
+                </a> --}}
                 
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="font-serif uppercase underline text-gray-600  text-center mb-4 text-2xl font-bold">Les ventes</h2>
+                    <h2 class="font-serif uppercase underline text-gray-600  text-center mb-4 text-2xl font-bold">Les achats</h2>
 
                     <table id="sales-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
-                        <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                        <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase">
                             <tr>
-                                <th>ID</th>
+                                {{-- <th>ID</th> --}}
                                 <th>No BL</th>
                                 <th>Date de BL</th>
-                                <th>temps</th>
-                                <th>Code Client</th>
-                                <th>Client</th>
+                                {{-- <th>temps</th> --}}
+                                {{-- <th>Code Client</th> --}}
+                                <th>Fournisseur</th>
                                 <th>Ref Produit</th>
                                 <th>Produit</th>
                                 <th>Long</th>
@@ -120,31 +120,31 @@
             $('#sales-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('sales.index') }}',
+                ajax: '{{ route('achat.index') }}',
                 columns: [
-                    { data: 'id', name: 'sales.id' },
-                    { data: 'no_bl', name: 'sales.no_bl' },
+                    // { data: 'id', name: 'achats.id' },
+                    { data: 'no_bl', name: 'achats.no_bl' },
                     // { data: 'annee', name: 'sales.annee' },
-                    { data: 'date', name: 'sales.date' }, 
-                    { data: 'morocco_time', name: 'morocco_time' },
-                    { data: 'code_client', name: 'sales.code_client' },
+                    { data: 'date', name: 'achats.date' }, 
+                    // { data: 'morocco_time', name: 'morocco_time' },
+                    // { data: 'id_fournisseur', name: 'achats.id_fournisseur' },
                     { data: 'client_name', name: 'clients.name' },
-                    { data: 'ref_produit', name: 'sales.ref_produit' },
-                    { data: 'produit', name: 'sales.produit' },
-                    { data: 'longueur', name: 'sales.longueur' },
-                    { data: 'largeur', name: 'sales.largeur' },
-                    { data: 'nbr', name: 'sales.nbr' },
-                    { data: 'qte', name: 'sales.qte' },
+                    { data: 'ref_produit', name: 'achats.ref_produit' },
+                    { data: 'produit', name: 'achats.produit' },
+                    { data: 'longueur', name: 'achats.longueur' },
+                    { data: 'largeur', name: 'achats.largeur' },
+                    { data: 'nbr', name: 'achats.nbr' },
+                    { data: 'qte', name: 'achats.qte' },
                     {
                         data: 'prix_unitaire',
-                        name: 'sales.prix_unitaire',
+                        name: 'achats.prix_unitaire',
                         render: function (data) {
                             return formatNumberWithSpaces(data);
                         }
                     },
                     {
                         data: 'montant',
-                        name: 'sales.montant',
+                        name: 'achats.montant',
                         render: function (data) {
                             return formatNumberWithSpaces(data);
                         }

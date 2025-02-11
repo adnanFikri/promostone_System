@@ -62,11 +62,11 @@
     <div id="bon-de-livraison" class="borde border-gray-00 rounded-lg p-6 shado bg-white">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 text-center ">
-            <span class="text-gray-500">le {{ $paymentStatus['date_bl'] }}</span>
-            <div class="border border-gray-400 rounded-lg p-1 bg-gray-200  text-center min-w-72">
+            <span class="text-gray-900 text-lg">le {{ $paymentStatus['date_bl'] }}</span>
+            <div class="border border-gray-700 rounded-lg p-1  text-center min-w-72">
                 <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_client }}</p>
-                <p><span class="text-sm">Code Client:</span> {{ $paymentStatus->code_client }}</p>
-                <p><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
+                <p class="px-6"><span class="text-sm">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                <p class="px-6"><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
             </div>
         </div>
 
@@ -84,9 +84,9 @@
                     <tr>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Désignation</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Mesures</th>
-                        <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Unité</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Qté</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Surface</th>
+                        <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Unité</th>
                         {{-- <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600">P.U HT</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600">Montant</th> --}}
                     </tr>
@@ -100,11 +100,12 @@
                         @if ($sale->mode == "service")
                             <!-- Row for services -->
                             <tr>
-                                <td class="border border-gray-300 p-2 font-bold text-blue-600" colspan="3">
+                                <td class="border border-gray-900 p-2 font-bold text-blue-600" colspan="2">
                                     {{ $sale->produit }}
                                 </td>
-                                <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
-                                <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
+                                <td class="border border-gray-900 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
+                                <td class="border border-gray-900 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
+                                <td class="border border-gray-900 p-2 text-center">Service</td>
                                 @php
                                         // Calculate surface for this sale and add to total
                                         // $surface = longueur * $sale->largeur;
@@ -120,13 +121,11 @@
                                         {{ $produit }}
                                     </td>
                                 @endif
-                                @if ($sale->mode =="Unite")
-                                    <td class="border border-gray-300 p-2 text-center" colspan="2">{{ $sale->longueur }} - {{ $sale->largeur }}</td>
-                                    {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->qte }}</td> --}}
-                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
+                                @if ($sale->mode =="Unité")
+                                    <td class="border border-gray-300 p-2 text-center" colspan="1">{{ $sale->longueur }} - {{ $sale->largeur }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr }}</td>
-                                    {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
-                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td> --}}
+                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr }}</td>
+                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                 @else
                                     @php
                                         // Calculate surface for this sale and add to total
@@ -134,18 +133,16 @@
                                         $totalSurface += $sale->qte;
                                     @endphp
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->longueur }} x {{ $sale->largeur }}</td>
-                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->qte }}</td>
-                                    {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
-                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td> --}}
+                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                 @endif
                             </tr>
                         @endif
                     @endforeach
                     <tr class="bg-gray-100">
-                        <td colspan="4" class="border border-b-2 border-gray-300 p-2 text-center font-bold">TOTAL {{$produit}} ({{$sale->ref_produit}})</td>
-                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center"> {{ number_format($totalSurface, 3) }} {{ $sale->mode !== "service" ? $sale->mode : '' }}</td>
+                        <td colspan="3" class="border border-b-2 border-gray-300 p-2 text-center font-bold">TOTAL {{$produit}} ({{$sale->ref_produit}})</td>
+                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center" colspan="2"> {{ number_format($totalSurface, 3) }} {{ $sale->mode !== "service" ? 'M2' : '' }}</td>
                     </tr>
                 @endforeach
                    
@@ -162,7 +159,7 @@
         </div>
 
         <!-- Footer Section -->
-        <div class="mt-12 text-center text-gray-500 text-sm">
+        <div class="mt-12 text-left text-gray-500 text-sm">
             <p>📞 0537643290 - 0537643615</p>
             <p>📱 +212 661 464 017</p>
             <p>✉️ promostone2021@gmail.com</p>
@@ -282,7 +279,10 @@
                 print-color-adjust: exact;
                 margin: 0;
                 padding: 1cm; /* Ensures content isn’t too close to the page edge */
-                zoom: 0.8; /* Scales the content to 80% */
+                zoom: 0.7; /* Scales the content to 80% */
+            }
+            .border-gray-300{
+                border-color:black;
             }
         </style>
     `;

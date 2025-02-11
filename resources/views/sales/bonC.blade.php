@@ -58,18 +58,22 @@
 
     <!-- Bon de Coupe Card -->
     <div id="bon-de-coupe" class="borde border-gray-00 rounded-lg p-6 shado bg-white">
+        <div class="print-header">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 text-center ">
-            <span class="text-gray-500">le {{ $paymentStatus['date_bl'] }} - <span class="text-gray-400 font-bold" >Impression N° <span {{$print_nbr->print_nbr > 1 ? 'class=text-red-400' : ""}}>{{$print_nbr->print_nbr + 1}}</span></span> </span>
-            <div class="border border-gray-400 rounded-lg p-1 bg-gray-200  text-center min-w-72">
+            <span class="text-gray-900 text-lg">le {{ $paymentStatus['date_bl'] }} - <span class="text-gray-700 font-bold" >Impression N° <span {{$print_nbr->print_nbr > 1 ? 'class=text-red-400' : ""}}>{{$print_nbr->print_nbr + 1}}</span></span> </span>
+            <div class="border border-gray-400 rounded-lg p-1 text-center min-w-72">
                 <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_client }}</p>
-                <p><span class="text-sm">Code Client:</span> {{ $paymentStatus->code_client }}</p>
-                <p><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
+                <p class="px-6"><span class="text-sm">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                <p class="px-6"><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
             </div>
         </div>
 
-        <!-- Numero de BON -->
-        <h2 class="text-2xl mb-4 font-bold text-center text-gray-600">BON DE COUPE N° <span class="text-black border bg-gray-200 px-1 shadow " id="bc-number">{{ $paymentStatus->no_bl }}</span> / {{ date('Y') }}</h2>
+       
+            <!-- Numero de BON -->
+            <h2 class="text-2xl mb-4 font-bold text-center text-gray-600">BON DE COUPE N° <span class="text-black border bg-gray-200 px-1 shadow " id="bc-number">{{ $paymentStatus->no_bl }}</span> / {{ date('Y') }}</h2>
+
+        </div>
         
 
         <!-- Agent Info -->
@@ -82,9 +86,9 @@
                     <tr>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Désignation</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Mesures</th>
-                        <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Unité</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Qté</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Surface</th>
+                        <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600 uppercase">Unité</th>
                         {{-- <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600">P.U HT</th>
                         <th class="border-2 border-gray-300 p-2 font-bold text-left text-gray-600">Montant</th> --}}
                     </tr>
@@ -98,11 +102,12 @@
                         @if ($sale->mode == "service")
                             <!-- Row for services -->
                             <tr>
-                                <td class="border border-gray-300 p-2 font-bold text-blue-600" colspan="3">
+                                <td class="border border-gray-300 p-2 font-bold text-blue-600" colspan="2">
                                     {{ $sale->produit }}
                                 </td>
                                 <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
                                 <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
+                                <td class="border border-gray-300 p-2 text-center">Service</td>
                                 @php
                                         // Calculate surface for this sale and add to total
                                         // $surface = longueur * $sale->largeur;
@@ -118,11 +123,12 @@
                                         {{ $produit }}
                                     </td>
                                 @endif
-                                @if ($sale->mode =="Unite")
-                                    <td class="border border-gray-300 p-2 text-center" colspan="2">{{ $sale->longueur }} - {{ $sale->largeur }}</td>
+                                @if ($sale->mode =="Unité")
+                                    <td class="border border-gray-300 p-2 text-center" colspan="1">{{ $sale->longueur }} - {{ $sale->largeur }}</td>
                                     {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->qte }}</td> --}}
-                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr }}</td>
+                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr }}</td>
+                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                     {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td> --}}
                                 @else
@@ -132,9 +138,9 @@
                                         $totalSurface += $sale->qte;
                                     @endphp
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->longueur }} x {{ $sale->largeur }}</td>
-                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->qte }}</td>
+                                    <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                     {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td> --}}
                                 @endif
@@ -142,8 +148,8 @@
                         @endif
                     @endforeach
                     <tr class="bg-gray-100">
-                        <td colspan="4" class="border border-b-2 border-gray-300 p-2 text-center font-bold">TOTAL {{$produit}} ({{$sale->ref_produit}})</td>
-                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center"> {{ number_format($totalSurface, 3) }} {{ $sale->mode !== "service" ? $sale->mode : '' }}</td>
+                        <td colspan="3" class="border border-b-2 border-gray-300 p-2 text-center font-bold">TOTAL {{$produit}} ({{$sale->ref_produit}})</td>
+                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center" colspan="2"> {{ number_format($totalSurface, 3) }} {{ $sale->mode !== "service" ? 'M2' : '' }}</td>
                     </tr>
                 @endforeach
                    
@@ -163,12 +169,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($reglements as $reglement)
+                        {{-- @foreach($reglements as $reglement) --}}
                         <tr>
                             <td colspan="4" class="border border-b-2 border-gray-300 p-2 text-cente font-meduiem uppercase">{{ $paymentStatus['destination'] }}, le {{ $paymentStatus['date-echeance'] }}</td>
                             {{-- <td class="border border-gray-300 p-2">{{ $reglement->date }}</td> --}}
                         </tr>
-                        @endforeach
+                        {{-- @endforeach --}}
                     </tbody>
                 </table>
             </div>
@@ -176,7 +182,7 @@
         </div>
 
         <!-- Footer Section -->
-        <div class="mt-12 text-center text-gray-500 text-sm">
+        <div class="mt-12 text-left text-gray-500 text-sm">
             <p>📞 0537643290 - 0537643615</p>
             <p>📱 +212 661 464 017</p>
             <p>✉️ promostone2021@gmail.com</p>
@@ -298,8 +304,28 @@
                 print-color-adjust: exact;
                 margin: 0;
                 padding: 1cm; /* Padding to ensure content is not too close to the edges */
-                zoom: 0.8; /* Scales content to 80% */
+                zoom: 0.7; /* Scales content to 80% */
             }
+            .border-gray-300{
+                border-color:black;
+            }
+            // @media print {
+            //     .print-header {
+            //         position: fixed;
+            //         top: 0;
+            //         width: 100%;
+            //         z-index: 1000;
+            //         background-color: white;
+            //         padding: 20px;
+            //         text-align: center;
+            //     }
+            //     .page-break {
+            //         page-break-before: always;
+            //     }
+            //     .borde {
+            //         margin-top: 100px;
+            //     }
+            // }
         </style>
     `;
 

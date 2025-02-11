@@ -1,0 +1,484 @@
+CATEGORIE	DESIGNATION		PRIX DE VENTE
+GRANIT :	
+    ROSE PORINO,	TRANCHE	240.00
+	CREMA JULIA,	TRANCHE	280.00
+	MONDARIZ,	TRANCHE	280.00
+	BLANC PERLE,	TRANCHE	390.00
+	GRIS RAFAYEL,	TRANCHE	340.00
+	BLANCO MINIOS,	TRANCHE	320.00
+	GRIS ESPANGOL,	TRANCHE	340.00
+	GRAND PERLA / GRAND TACHE,	TRANCHE	420.00
+	ROSAVEL,	TRANCHE	340.00
+	CREMA CAMELIA,	TRANCHE	340.00
+	ROUGE BALMORAL,	TRANCHE	650.00
+	BALTIC BROWN,	TRANCHE	600.00
+	LABRADOR NOIR,	TRANCHE	950.00
+	LABRADOR GOLD,	TRANCHE	950.00
+	NOIR GALAXY,	TRANCHE	670.00
+	NOIR ABSOLUT,	TRANCHE	670.00
+	NOIR ANGOLA,	TRANCHE	650.00
+	GRANIT NOIR FLAME,	TRANCHE	950.00
+	TITANUM GOLD,	TRANCHE	1,500.00
+	BLANC MONTREAL,	TRANCHE	1,500.00
+	GRIS ORIENT / HALAYEB,	TRANCHE	240.00
+	LABRADOR BLEU,	TRANCHE	950.00
+	ROUGE CARMEN,	TRANCHE	700.00
+	NEW CREMA CALACATA / STATOUARIO,	TRANCHE	950.00
+	NEW CREMA BLANC,TRANCHE	900.00
+	NEW CREMA GRIS,	TRANCHE	800.00
+	ASCALE (PRIX POUR CUISINE),	TRANCHE	1,300.00
+			
+MARBRE IMPORTE :
+    MARMARA,	TRANCHE	560.00
+	SILVIA,	TRANCHE	160.00
+	PERLATINO, 	TRANCHE	540.00
+	CREMA MARFIL, 	TRANCHE	450.00
+	CREMA GALALA,	TRANCHE	280.00
+	CREMA ROYALE,	TRANCHE	900.00
+	BLANC CARRARE, 	TRANCHE	540.00
+	BLANC KAMALPASHA,	TRANCHE	540.00
+	BLANC SAPHIR,	TRANCHE	850.00
+	BLANC IBIZA,	TRANCHE	540.00
+	ROUGE ALICANTE,	TRANCHE	540.00
+	VERT GUATEMALA,	TRANCHE	540.00
+	VERT ALPE,	TRANCHE	540.00
+	BLANC CRYSTAL,	TRANCHE	600.00
+	MARRON IMPERIAL,	TRANCHE	520.00
+	MARRON LIGHT,	TRANCHE	450.00
+	MARRON ROYALE,	TRANCHE	560.00
+	ROSE PORTUGAL,	TRANCHE	520.00
+	BLANC PORTUGAL,	TRANCHE	560.00
+	BLANC POLARIS,	TRANCHE	850.00
+	TOUNDRA GREY,	TRANCHE	650.00
+	LILAC,	TRANCHE	700.00
+			
+MARBRE LOCALE :
+    GRIS VIOLET,	TRANCHE	210.00
+	GRIS BENSLIMANE	,TRANCHE	210.00
+	GRIS TIFLET	TRANCHE,	220.00
+	ROUGE TINGHIR,	TRANCHE	180.00
+	BLANC ZAYANE,	TRANCHE	260.00
+	NOIR AZILAL,	TRANCHE	280.00
+	NOIR KHENIFRA,	TRANCHE	260.00
+	ROUGE BENSLIMANE,	TRANCHE	200.00
+	JAUNE BEJAAD,	TRANCHE	190.00
+	GRIS OULMES,	TRANCHE	160.00
+	TAZA BEIGE 2CM POLI OU BOUCHARDE,	TRANCHE	150.00
+	TAZA GRIS 2CM POLI OU BOUCHARDE	,TRANCHE	160.00
+	TAZA BEIGE 3CM POLI OU BOUCHARDE,	TRANCHE	170.00
+	TAZA GRIS 3CM POLI OU BOUCHARDE,	TRANCHE	190.00
+	TAZA BEIGE 2CM VIELLI,	TRANCHE	180.00
+	TAZA GRIS 2CM VIELLI,	TRANCHE	190.00
+	TAZA BEIGE 3CM VIELLI,	TRANCHE	210.00
+	TAZA GRIS 3CM VIELLI,	TRANCHE	220.00
+	GRIS SAHARA,	TRANCHE	200.00
+	CREMA ATLAS,	TRANCHE	170.00
+	VOLUBULIS BRUT,	TRANCHE	200.00
+	VOLUBULIS POLI,	TRANCHE	250.00
+	VOLUBILIS RESINE,	TRANCHE	300.00
+	GRIS KHENIFRA,	TRANCHE	190.00
+	ATLAS STONE,	TRANCHE	400.00
+	ROUGE AGADIR,	TRANCHE	260.00
+	NOIR BOUTFADA,	TRANCHE	250.00
+	SAINT LAURENT,	TRANCHE	450.00
+
+
+total 3 first lines in excel : 77
+
+
+
+GRANIT : 27 + 77 = 104
+	ROSE PORINO	DEBITE	450.00
+	CREMA JULIA	DEBITE	480.00
+	MONDARIZ	DEBITE	480.00
+	BLANC PERLE	DEBITE	580.00
+	GRIS RAFAYEL	DEBITE	560.00
+	BLANCO MINIOS	DEBITE	520.00
+	GRIS ESPANGOL	DEBITE	560.00
+	GRAND PERLA / GRAND TACHE	DEBITE	620.00
+	ROSAVEL	DEBITE	560.00
+	CREMA CAMELIA	DEBITE	560.00
+	ROUGE BALMORAL	DEBITE	900.00
+	BALTIC BROWN	DEBITE	860.00
+	LABRADOR NOIR	DEBITE	1,300.00
+	LABRADOR GOLD	DEBITE	1,200.00
+	NOIR GALAXY	DEBITE	1,100.00
+	NOIR ABSOLUT	DEBITE	1,100.00
+	NOIR ANGOLA	DEBITE	960.00
+	GRANIT NOIR FLAME	DEBITE	1,300.00
+	TITANUM GOLD	DEBITE	2,000.00
+	BLANC MONTREAL	DEBITE	2,000.00
+	GRIS ORIENT / HALAYEB	DEBITE	450.00
+	LABRADOR BLEU	DEBITE	1,300.00
+	ROUGE CARMEN	DEBITE	950.00
+	NEW CREMA CALACATA / STATOUARIO	DEBITE	1,300.00
+	NEW CREMA BLANC	DEBITE	1,200.00
+	NEW CREMA GRIS	DEBITE	1,000.00
+	ASCALE (PRIX POUR CUISINE)	DEBITE	1,900.00
+			
+MARBRE IMPORTE:	22 + 104
+    MARMARA	DEBITE	900.00
+	SILVIA	DEBITE	280.00
+	PERLATINO 	DEBITE	750.00
+	CREMA MARFIL 	DEBITE	750.00
+	CREMA GALALA	DEBITE	420.00
+	CREMA ROYALE	DEBITE	1,300.00
+	BLANC CARRARE 	DEBITE	750.00
+	BLANC KAMALPASHA	DEBITE	750.00
+	BLANC SAPHIR	DEBITE	1,200.00
+	BLANC IBIZA	DEBITE	820.00
+	ROUGE ALICANTE	DEBITE	750.00
+	VERT GUATEMALA	DEBITE	820.00
+	VERT ALPE	DEBITE	750.00
+	BLANC CRYSTAL	DEBITE	900.00
+	MARRON IMPERIAL	DEBITE	750.00
+	MARRON LIGHT	DEBITE	620.00
+	MARRON ROYALE	DEBITE	850.00
+	ROSE PORTUGAL	DEBITE	750.00
+	BLANC PORTUGAL	DEBITE	820.00
+	BLANC POLARIS	DEBITE	650.00
+	TOUNDRA GREY	DEBITE	1,100.00
+	LILAC	DEBITE	1,200.00
+			
+MARBRE LOCALE: 28 + 126 = 154
+	GRIS VIOLET	DEBITE	320.00
+	GRIS BENSLIMANE	DEBITE	320.00
+	GRIS TIFLET	DEBITE	320.00
+	ROUGE TINGHIR	DEBITE	360.00
+	BLANC ZAYANE	DEBITE	460.00
+	NOIR AZILAL	DEBITE	480.00
+	NOIR KHENIFRA	DEBITE	450.00
+	ROUGE BENSLIMANE	DEBITE	360.00
+	JAUNE BEJAAD	DEBITE	320.00
+	GRIS OULMES	DEBITE	260.00
+	TAZA BEIGE 2CM POLI OU BOUCHARDE	DEBITE	240.00
+	TAZA GRIS 2CM POLI OU BOUCHARDE	DEBITE	260.00
+	TAZA BEIGE 3CM POLI OU BOUCHARDE	DEBITE	280.00
+	TAZA GRIS 3CM POLI OU BOUCHARDE	DEBITE	340.00
+	TAZA BEIGE 2CM VIELLI	DEBITE	280.00
+	TAZA GRIS 2CM VIELLI	DEBITE	300.00
+	TAZA BEIGE 3CM VIELLI	DEBITE	320.00
+	TAZA GRIS 3CM VIELLI	DEBITE	380.00
+	GRIS SAHARA	DEBITE	300.00
+	CREMA ATLAS	DEBITE	270.00
+	VOLUBULIS BRUT	DEBITE	420.00
+	VOLUBULIS POLI	DEBITE	460.00
+	VOLUBILIS RESINE	DEBITE	500.00
+	GRIS KHENIFRA	DEBITE	290.00
+	ATLAS STONE	DEBITE	600.00
+	ROUGE AGADIR	DEBITE	480.00
+	NOIR BOUTFADA	DEBITE	450.00
+	SAINT LAURENT	DEBITE	800.00
+
+
+
+
+CARREAUX : 39 + 154 = 193
+	CREMA ROYALE 60x30 EXTRA	CARREAUX	560.00	
+	SILVIA ESCALIER POLI	ESCALIER	160.00	
+	SILVIA 60x30 BRUT	CARREAUX	130.00	
+	SILVIA 60x30 POLI	CARREAUX	150.00	
+	PERLATINO ESCALIER	ESCALIER	560.00	
+	CREMA MARFIL 60x30 BRUT STD	CARREAUX	240.00	
+	CREMA MARFIL 60x30 BRUT 1ER CHOIX	CARREAUX	300.00	
+	BLANC CARRARE 60x30 BRUT	CARREAUX	380.00	
+	BLANC IBIZA 50x30 - 40x30 POLI	CARREAUX	220.00	
+	BLANC IBIZA 60x30 POLI 1ER CHOIX	CARREAUX	320.00	
+	BLANC IBIZA 60x30 POLI ORO	CARREAUX	240.00	
+	BLANC IBIZA 120x60 POLI	CARREAUX	480.00	
+	BLANC KAMALPASHA	CARREAUX	380.00	
+	PERLATINO 60x30 POLI CP	CARREAUX	380.00	
+	PERLATINO 60x30 ODDO	CARREAUX	320.00	
+	PERLATINO 60x30 BRUT	CARREAUX	240.00	
+	PERLATINO 40x40 POLI	CARREAUX	380.00	
+	PERLATO 30x30 BRUT	CARREAUX	250.00	
+	GRIS TIFLET 60x30 BRUT	CARREAUX	150.00	
+	GRIS TIFLET 30x30 BRUT	CARREAUX	120.00	
+	GRIS TIFLET 30x10 BRUT	CARREAUX	60.00	
+	GRIS BENSLIMANE 60x30 BRUT	CARREAUX	150.00	
+	JAUNE BEJAAD 60x30 BRUT	CARREAUX	150.00	
+	JAUNE BEJAAD 30x30 BRUT	CARREAUX	110.00	
+	JAUNE BEJAAD 30x10 BRUT	CARREAUX	60.00	
+	NOIR KHENIFRA 60x30 BRUT	CARREAUX	170.00	
+	NOIR KHENIFRA 30x10 BRUT	CARREAUX	65.00	
+	TAZA BEIGE 60x30 BRUT	CARREAUX	120.00	
+	TAZA GRIS 60x30 BRUT	CARREAUX	130.00	
+	TAZA BEIGE 60x40 BRUT	CARREAUX	140.00	
+	TAZA GRIS 60x40 BRUT	CARREAUX	140.00	
+	CREMA ROYALE 60x30	CARREAUX	480.00	
+	BLANC ZAYANE 60x30 BRUT	CARREAUX	200.00	
+	VOLUBILIS 60x30	CARREAUX	180.00	
+	VOLUBILIS 30x30 CLAIR	CARREAUX	160.00	
+	VOLUBILIS 30x30	CARREAUX	140.00	
+	CHEVRON BLANC IMPORT 30x10	CARREAUX	160.00	
+	CHEVRON SILVIA 30x10	CARREAUX	70.00	
+	CHEVRON BEIGE IMPORT 30x10	CARREAUX	150.00	
+
+
+FINITION :10 + 193 = 203
+    FINITION NORMAL	30.00
+	FINITION JOINT CREUX	120.00
+	FINITION BESEAUTE	35.00
+	FINITION BESEAUTE LARGE	40.00
+	FINITION RONDE	80.00
+	FINITION DEMI RONDE	50.00
+	FINITION LOUIS 15	150.00
+	FINITION BEC DE CANARD	150.00
+	FINITION LED	150.00
+	FINITION RECEVEUR DOUCHE	700.00
+		
+DEBITAGE: 15 + 203 = 218
+	COUPE GRAND EVIER / SOUS PLAN	450.00
+	COUPE GRAND EVIER / SUR PLAN	500.00
+	COUPE GRAND EVIER / NORMALE	300.00
+	COUPE PETIT EVIER / SOUS PLAN	350.00
+	COUPE PETIT EVIER / SUR PLAN	350.00
+	COUPE PETIT EVIER / NORMALE	250.00
+	COUPE PLAQUE	200.00
+	COUPE JOINT CREUX	50.00
+	COUPE JOINT LED	50.00
+	COUPE CANIVEAU	200.00
+	COUPE SIPHON	120.00
+	COUPE ROBINET	60.00
+	COUPE DISTRI. SAVON	60.00
+	COUPE PORTE SERVIETTE	500.00
+	COUPE PORTE PAPIER HYGIENIQUE	180.00
+
+
+
+===> TOTAL LINES IS : 218
+
+
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::: seeeder ''''''''''''''''''''''''''' :::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::
+
+
+// GRANIT
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'ROSE PORINO', 'unit_price' => 240.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'CREMA JULIA', 'unit_price' => 280.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'MONDARIZ', 'unit_price' => 280.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'BLANC PERLE', 'unit_price' => 390.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'GRIS RAFAYEL', 'unit_price' => 340.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'BLANCO MINIOS', 'unit_price' => 320.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'GRIS ESPANGOL', 'unit_price' => 340.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'GRAND PERLA / GRAND TACHE', 'unit_price' => 420.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'ROSAVEL', 'unit_price' => 340.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'CREMA CAMELIA', 'unit_price' => 340.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'ROUGE BALMORAL', 'unit_price' => 650.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'BALTIC BROWN', 'unit_price' => 600.00],
+['category' => 'GRANIT','type' => 'TRANCHE', 'name' => 'LABRADOR NOIR', 'unit_price' => 950.00],
+// MARBRE IMPORTE
+['category' => 'MARBRE IMPORTE', 'type' => 'TRANCHE', 'name' => 'MARMARA', 'unit_price' => 560.00],
+['category' => 'MARBRE IMPORTE', 'type' => 'TRANCHE', 'name' => 'SILVIA', 'unit_price' => 160.00],
+['category' => 'MARBRE IMPORTE', 'type' => 'TRANCHE', 'name' => 'PERLATINO', 'unit_price' => 540.00],
+['category' => 'MARBRE IMPORTE', 'type' => 'TRANCHE', 'name' => 'CREMA MARFIL', 'unit_price' => 450.00],
+['category' => 'MARBRE IMPORTE', 'type' => 'TRANCHE', 'name' => 'CREMA GALALA', 'unit_price' => 280.00],
+['category' => 'MARBRE IMPORTE', 'type' => 'TRANCHE', 'name' => 'CREMA ROYALE', 'unit_price' => 900.00],
+['category' => 'MARBRE IMPORTE', 'type' => 'TRANCHE', 'name' => 'BLANC CARRARE', 'unit_price' => 540.00],
+// MARBRE LOCALE
+['category' => 'MARBRE LOCALE', 'type' => 'TRANCHE', 'name' => 'GRIS VIOLET', 'unit_price' => 210.00],
+['category' => 'MARBRE LOCALE', 'type' => 'TRANCHE', 'name' => 'GRIS BENSLIMANE', 'unit_price' => 210.00],
+['category' => 'MARBRE LOCALE', 'type' => 'TRANCHE', 'name' => 'GRIS TIFLET', 'unit_price' => 220.00],
+['category' => 'MARBRE LOCALE', 'type' => 'TRANCHE', 'name' => 'ROUGE TINGHIR', 'unit_price' => 180.00],
+['category' => 'MARBRE LOCALE', 'type' => 'TRANCHE', 'name' => 'BLANC ZAYANE', 'unit_price' => 260.00],
+['category' => 'MARBRE LOCALE', 'type' => 'TRANCHE', 'name' => 'NOIR AZILAL', 'unit_price' => 280.00],
+
+// ------------
+
+// GRANIT
+['category' => 'GRANIT', 'name' => 'ROSE PORINO', 'type' => 'DEBITE', 'price' => 450.00],
+['category' => 'GRANIT', 'name' => 'CREMA JULIA', 'type' => 'DEBITE', 'price' => 480.00],
+['category' => 'GRANIT', 'name' => 'MONDARIZ', 'type' => 'DEBITE', 'price' => 480.00],
+['category' => 'GRANIT', 'name' => 'BLANC PERLE', 'type' => 'DEBITE', 'price' => 580.00],
+['category' => 'GRANIT', 'name' => 'GRIS RAFAYEL', 'type' => 'DEBITE', 'price' => 560.00],
+['category' => 'GRANIT', 'name' => 'BLANCO MINIOS', 'type' => 'DEBITE', 'price' => 520.00],
+['category' => 'GRANIT', 'name' => 'GRIS ESPANGOL', 'type' => 'DEBITE', 'price' => 560.00],
+['category' => 'GRANIT', 'name' => 'GRAND PERLA / GRAND TACHE', 'type' => 'DEBITE', 'price' => 620.00],
+['category' => 'GRANIT', 'name' => 'ROSAVEL', 'type' => 'DEBITE', 'price' => 560.00],
+['category' => 'GRANIT', 'name' => 'CREMA CAMELIA', 'type' => 'DEBITE', 'price' => 560.00],
+['category' => 'GRANIT', 'name' => 'ROUGE BALMORAL', 'type' => 'DEBITE', 'price' => 900.00],
+['category' => 'GRANIT', 'name' => 'BALTIC BROWN', 'type' => 'DEBITE', 'price' => 860.00],
+['category' => 'GRANIT', 'name' => 'LABRADOR NOIR', 'type' => 'DEBITE', 'price' => 1300.00],
+['category' => 'GRANIT', 'name' => 'LABRADOR GOLD', 'type' => 'DEBITE', 'price' => 1200.00],
+['category' => 'GRANIT', 'name' => 'NOIR GALAXY', 'type' => 'DEBITE', 'price' => 1100.00],
+
+// MARBRE IMPORTE
+['category' => 'MARBRE IMPORTE', 'name' => 'MARMARA', 'type' => 'DEBITE', 'price' => 900.00],
+['category' => 'MARBRE IMPORTE', 'name' => 'SILVIA', 'type' => 'DEBITE', 'price' => 280.00],
+['category' => 'MARBRE IMPORTE', 'name' => 'PERLATINO', 'type' => 'DEBITE', 'price' => 750.00],
+['category' => 'MARBRE IMPORTE', 'name' => 'CREMA MARFIL', 'type' => 'DEBITE', 'price' => 750.00],
+['category' => 'MARBRE IMPORTE', 'name' => 'CREMA GALALA', 'type' => 'DEBITE', 'price' => 420.00],
+
+// MARBRE LOCALE
+['category' => 'MARBRE LOCALE', 'name' => 'GRIS VIOLET', 'type' => 'DEBITE', 'price' => 320.00],
+['category' => 'MARBRE LOCALE', 'name' => 'GRIS BENSLIMANE', 'type' => 'DEBITE', 'price' => 320.00],
+['category' => 'MARBRE LOCALE', 'name' => 'GRIS TIFLET', 'type' => 'DEBITE', 'price' => 320.00],
+['category' => 'MARBRE LOCALE', 'name' => 'ROUGE TINGHIR', 'type' => 'DEBITE', 'price' => 360.00],
+['category' => 'MARBRE LOCALE', 'name' => 'BLANC ZAYANE', 'type' => 'DEBITE', 'price' => 460.00],
+
+
+// CARREAUX : 39
+['name' => 'CREMA ROYALE 60x30 EXTRA', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 560.00],
+['name' => 'SILVIA ESCALIER POLI', 'type' => 'ESCALIER', 'category' => 'CARREAUX', 'price' => 160.00],
+['name' => 'SILVIA 60x30 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 130.00],
+['name' => 'SILVIA 60x30 POLI', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 150.00],
+['name' => 'PERLATINO ESCALIER', 'type' => 'ESCALIER', 'category' => 'CARREAUX', 'price' => 560.00],
+['name' => 'CREMA MARFIL 60x30 BRUT STD', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 240.00],
+['name' => 'CREMA MARFIL 60x30 BRUT 1ER CHOIX', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 300.00],
+['name' => 'BLANC CARRARE 60x30 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 380.00],
+['name' => 'BLANC IBIZA 50x30 - 40x30 POLI', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 220.00],
+['name' => 'BLANC IBIZA 60x30 POLI 1ER CHOIX', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 320.00],
+['name' => 'BLANC IBIZA 60x30 POLI ORO', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 240.00],
+['name' => 'BLANC IBIZA 120x60 POLI', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 480.00],
+['name' => 'BLANC KAMALPASHA', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 380.00],
+['name' => 'PERLATINO 60x30 POLI CP', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 380.00],
+['name' => 'PERLATINO 60x30 ODDO', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 320.00],
+['name' => 'PERLATINO 60x30 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 240.00],
+['name' => 'PERLATINO 40x40 POLI', 'category' => 'CARREAUX', 'price' => 380.00],
+['name' => 'PERLATO 30x30 BRUT', 'category' => 'CARREAUX', 'price' => 250.00],
+['name' => 'GRIS TIFLET 60x30 BRUT', 'category' => 'CARREAUX', 'price' => 150.00],
+['name' => 'GRIS TIFLET 30x30 BRUT', 'category' => 'CARREAUX', 'price' => 120.00],
+['name' => 'GRIS TIFLET 30x10 BRUT', 'category' => 'CARREAUX', 'price' => 60.00],
+['name' => 'GRIS BENSLIMANE 60x30 BRUT', 'category' => 'CARREAUX', 'price' => 150.00],
+['name' => 'JAUNE BEJAAD 60x30 BRUT', 'category' => 'CARREAUX', 'price' => 150.00],
+['name' => 'JAUNE BEJAAD 30x30 BRUT', 'category' => 'CARREAUX', 'price' => 110.00],
+['name' => 'JAUNE BEJAAD 30x10 BRUT', 'category' => 'CARREAUX', 'price' => 60.00],
+['name' => 'NOIR KHENIFRA 60x30 BRUT', 'category' => 'CARREAUX', 'price' => 170.00],
+['name' => 'NOIR KHENIFRA 30x10 BRUT', 'category' => 'CARREAUX', 'price' => 65.00],
+['name' => 'TAZA BEIGE 60x30 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 120.00],
+['name' => 'TAZA GRIS 60x30 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 130.00],
+['name' => 'TAZA BEIGE 60x40 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 140.00],
+['name' => 'TAZA GRIS 60x40 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 140.00],
+['name' => 'CREMA ROYALE 60x30', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 480.00],
+['name' => 'BLANC ZAYANE 60x30 BRUT', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 200.00],
+['name' => 'VOLUBILIS 60x30', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 180.00],
+['name' => 'VOLUBILIS 30x30 CLAIR', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 160.00],
+['name' => 'VOLUBILIS 30x30', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 140.00],
+['name' => 'CHEVRON BLANC IMPORT 30x10', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 160.00],
+['name' => 'CHEVRON SILVIA 30x10', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 70.00],
+['name' => 'CHEVRON BEIGE IMPORT 30x10', 'type' => 'CARREAUX', 'category' => 'CARREAUX', 'price' => 150.00],
+
+
+// FINITION : 
+['name' => 'FINITION NORMAL', 'category' => 'FINITION', 'price' => 30.00],
+['name' => 'FINITION JOINT CREUX', 'category' => 'FINITION', 'price' => 120.00],
+['name' => 'FINITION BESEAUTE', 'category' => 'FINITION', 'price' => 35.00],
+['name' => 'FINITION BESEAUTE LARGE', 'category' => 'FINITION', 'price' => 40.00],
+['name' => 'FINITION RONDE', 'category' => 'FINITION', 'price' => 80.00],
+['name' => 'FINITION DEMI RONDE', 'category' => 'FINITION', 'price' => 50.00],
+['name' => 'FINITION LOUIS 15', 'category' => 'FINITION', 'price' => 150.00],
+['name' => 'FINITION BEC DE CANARD', 'category' => 'FINITION', 'price' => 150.00],
+['name' => 'FINITION LED', 'category' => 'FINITION', 'price' => 150.00],
+['name' => 'FINITION RECEVEUR DOUCHE', 'category' => 'FINITION', 'price' => 700.00],
+
+// DEBITAGE : 
+['name' => 'COUPE GRAND EVIER / SOUS PLAN', 'category' => 'DEBITAGE', 'price' => 450.00],
+['name' => 'COUPE GRAND EVIER / SUR PLAN', 'category' => 'DEBITAGE', 'price' => 500.00],
+['name' => 'COUPE GRAND EVIER / NORMALE', 'category' => 'DEBITAGE', 'price' => 300.00],
+['name' => 'COUPE PETIT EVIER / SOUS PLAN', 'category' => 'DEBITAGE', 'price' => 350.00],
+['name' => 'COUPE PETIT EVIER / SUR PLAN', 'category' => 'DEBITAGE', 'price' => 350.00],
+['name' => 'COUPE PETIT EVIER / NORMALE', 'category' => 'DEBITAGE', 'price' => 250.00],
+['name' => 'COUPE PLAQUE', 'category' => 'DEBITAGE', 'price' => 200.00],
+['name' => 'COUPE JOINT CREUX', 'category' => 'DEBITAGE', 'price' => 50.00],
+['name' => 'COUPE JOINT LED', 'category' => 'DEBITAGE', 'price' => 50.00],
+['name' => 'COUPE CANIVEAU', 'category' => 'DEBITAGE', 'price' => 200.00],
+['name' => 'DEBITAGE NORME', 'category' => 'DEBITAGE', 'price' => 40.00],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_________________________________________________________________________________________________
+_________________________________________________________________________________________________
+_________________________________________________________________________________________________
+
+DB::table('products')->insert([
+            [
+                'name' => 'COUPE C95 P SUR 2',
+                'type' => 'DEBITE',
+                'category' => 'DEBITGAE',
+                'unit_price' => 120.00,
+                'quantity' => 497,
+                'color' => 'Blanc',
+                'product_code' => 'A1',
+                'image_path' => 'products/0ros47QAk8uCow9gL1taffwL3k2giB4g5n9q4bJM.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'COUPE CYRAMIC 25P DECORATIF',
+                'type' => 'DEBITE',
+                'category' => 'ASCALE',
+                'unit_price' => 100.00,
+                'quantity' => 497,
+                'color' => 'Blanc',
+                'product_code' => 'A2',
+                'image_path' => 'products/M11SqQJBDbgYEddYOSf2FiHwKh3sLc4tsZUnmLA8.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'ML NOIR KHENIFRA TRANCHE',
+                'type' => 'TRANCHE',
+                'category' => 'MARBRE LOCAL',
+                'unit_price' => 280.00,
+                'quantity' => 493,
+                'color' => 'Noir',
+                'product_code' => 'A3',
+                'image_path' => 'products/JXE20ocDaaSyYGTbp0ghuHtCcPpiojtydyG7Srvn.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'ESCALIERS SILVIA POLI',
+                'type' => 'ESCALIERS',
+                'category' => 'MARBRE',
+                'unit_price' => 170.00,
+                'quantity' => 290,
+                'color' => 'Beige',
+                'product_code' => 'A4',
+                'image_path' => 'products/VmNn3dvNbVQKjbDubAxJRjv23ZNrEw2lAywfLwCl.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'M SILVIA TRANCHE',
+                'type' => 'TRANCHE',
+                'category' => 'MARBRE',
+                'unit_price' => 150.00,
+                'quantity' => 458,
+                'color' => 'Rose',
+                'product_code' => 'A5',
+                'image_path' => 'products/ZxvRea37ckRPIvCUDf3ETaFMomuRRSL09JcH9PuY.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]);

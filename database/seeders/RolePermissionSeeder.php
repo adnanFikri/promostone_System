@@ -97,7 +97,7 @@ class RolePermissionSeeder extends Seeder
             'Secretaire' => [
                 // Sales
                 'ventes',
-                'view sales', 'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales',
+                'view sales', 'create sales', 'store sales', 'view sales by bl', 'update Sales',
                 // bons  :
                 'index bon livraison', 'view bon livraison', 'update livree bon livraison',
                 'print bons',
@@ -107,7 +107,7 @@ class RolePermissionSeeder extends Seeder
                 'view clients', 'create clients', 'store clients', 
                 'edit clients', 'update clients', 'search sales', 
                 'generate client code',
-                'filter payment statuses', 'view client data by code', 'change client type',
+                'filter payment statuses', 'view client data by code',
 
                 /** DOOR  */ 'products',
                 'view products', 'create products', 'store products', 'view product details', 
@@ -124,7 +124,7 @@ class RolePermissionSeeder extends Seeder
             'Caissier' => [
                 // Sales
                 'ventes',
-                'view sales', 'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales',
+                'view sales', 'create sales', 'store sales', 'view sales by bl', 'update Sales',
                 // bons  :
                 'index bon livraison', 'view bon livraison', 'update livree bon livraison',
                 'index bon coup', 'view bon coup', 'update coupe bon coup',
@@ -136,7 +136,7 @@ class RolePermissionSeeder extends Seeder
                 'view clients', 'create clients', 'store clients', 
                 'edit clients', 'update clients', 'search sales', 
                 'generate client code', 
-                'filter payment statuses', 'view client data by code', 'change client type',
+                'filter payment statuses', 'view client data by code',
                 // payment status
                 'payment statuses',
                 'view payment statuses','view sales with no payment status', 'filter payment statuses by client type','view client details', 
@@ -148,7 +148,7 @@ class RolePermissionSeeder extends Seeder
             'Commercial' => [
                 // Sales
                 'ventes',
-                'create sales', 'store sales', 'import sales', 'view sales by bl', 'update Sales',
+                'create sales', 'store sales', 'view sales by bl', 'update Sales',
                 // bon de ivraison :
                 'index bon livraison', 'view bon livraison', 'update livree bon livraison','print bons',
 
@@ -157,7 +157,7 @@ class RolePermissionSeeder extends Seeder
                 'view clients', 'create clients', 'store clients', 
                 'edit clients', 'update clients', 'search sales', 
                 'generate client code', 
-                'filter payment statuses', 'view client data by code', 'change client type',
+                'filter payment statuses', 'view client data by code',
 
                 'create reglements', 'store reglements', 
                 'search reglements', 'view payment status by client', 'view reglements by bl', 
@@ -171,7 +171,7 @@ class RolePermissionSeeder extends Seeder
                 // 'view clients', 'create clients', 'store clients', 'view client details', 
                 // 'edit clients', 'update clients', 'delete clients', 'search sales', 
                 // 'generate client code', 'view client upload', 'import clients', 
-                // 'filter payment statuses', 'view client data by code', 'change client type',
+                // 'filter payment statuses', 'view client data by code',
             ],
             'Magasigner' => [
                 // bons
@@ -181,7 +181,7 @@ class RolePermissionSeeder extends Seeder
                 // 'view clients', 'create clients', 'store clients', 'view client details', 
                 // 'edit clients', 'update clients', 'delete clients', 'search sales', 
                 // 'generate client code', 'view client upload', 'import clients', 
-                // 'filter payment statuses', 'view client data by code', 'change client type',
+                // 'filter payment statuses', 'view client data by code', 
             ],
             'Controleur' => [
                 // bons
@@ -192,7 +192,7 @@ class RolePermissionSeeder extends Seeder
                 // 'view clients', 'create clients', 'store clients', 'view client details', 
                 // 'edit clients', 'update clients', 'delete clients', 'search sales', 
                 // 'generate client code', 'view client upload', 'import clients', 
-                // 'filter payment statuses', 'view client data by code', 'change client type',
+                // 'filter payment statuses', 'view client data by code', 
             ],
         ];
 

@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Sale;
 use App\Models\Client;
 use App\Models\Product;
-use App\Models\BonCoupe;
-use App\Models\BonSortie;
 use App\Models\Reglement;
 use App\Models\SaleCheck;
 use App\Imports\SalesImport;
-use App\Models\BonLivraison;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
 use Illuminate\Support\Facades\DB;
@@ -324,7 +321,7 @@ class SalesController extends Controller
         if ($mode === 'Unité') {
             $sale->longueur = null;
             $sale->largeur = null;
-            $sale->qte = null;
+            $sale->qte = $sale->nbr;
         }
 
         $sale->save();
@@ -341,7 +338,7 @@ class SalesController extends Controller
             $sale->produit = $service['type'];
             $sale->longueur = null;
             $sale->largeur = null;
-            $sale->qte = null;
+            $sale->qte = $service['quantite'];
             $sale->nbr = $service['quantite'];
             $sale->mode = 'service';
             $sale->prix_unitaire = $service['montant'];

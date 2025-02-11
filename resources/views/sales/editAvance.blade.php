@@ -124,7 +124,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="mb-4">
                             <label for="montant" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Montant d'Avance</label>
-                            <input type="number" name="montant" id="montant" value="{{ old('montant', $oldPayedAmount ?? '') }}" placeholder="Entrez le montant de l'avance" required
+                            <input type="number" disabled name="montant" id="montant" value="{{ old('montant', $oldPayedAmount ?? '') }}" placeholder="Entrez le montant de l'avance" required
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                         </div>
                 
@@ -145,7 +145,7 @@
                                 <option value="Espèce">Espèce</option>
                                 <option value="Virement">Virement</option>
                             </select> --}}
-                            <select name="type_pay" id="mode_reglement" required
+                            <select name="type_pay" id="mode_reglement" required disabled
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                                 <option value="Chèque" {{ old('type_pay', $regelement->type_pay ?? '') == 'Chèque' ? 'selected' : '' }}>Chèque</option>
                                 <option value="Espèce" {{ old('type_pay', $regelement->type_pay ?? '') == 'Espèce' ? 'selected' : '' }}>Espèce</option>
@@ -156,12 +156,12 @@
                         <div id="cheque_fields" class="grid grid-cols-2 gap-6">
                             <div class="mb-4">
                                 <label for="reference_chq"  class="block text-lg font-medium text-gray-900 dark:text-white mb-2">N Référence</label>
-                                <input type="number" name="reference_chq" id="reference_chq" value="{{ old('montant', $regelement->reference_chq ?? '') }}"  placeholder="Référence du chèque" required
+                                <input type="text" name="reference_chq" disabled id="reference_chq" value="{{ old('montant', $regelement->reference_chq ?? '') }}"  placeholder="Référence du chèque" required
                                     class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" />
                             </div>
                             <div class="mb-4">
                                 <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Expiration</label>
-                                <input type="date" name="date_chq" id="date_chq" required
+                                <input type="date" name="date_chq" id="date_chq" required disabled
                                     class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" 
                                     value="{{ old('date-echeance', isset($regelement['date_chq']) ? \Carbon\Carbon::parse($regelement['date_chq'])->format('Y-m-d') : '') }}"
                                     />
@@ -186,6 +186,9 @@
                         
                         </div>
                     </div>
+
+                    {{-- for mode of paye avance or reglement   --}}
+                    <input type="hidden" id="mode" name="mode" value="avance">
                 
                     <button type="submit" id="save-button"
                         class="w-full px-4 py-2 mt-4 text-white bg-blue-600 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -231,6 +234,7 @@ $('#save-button').on('click', function (e) {
         date_chq: $('#date_chq').val(),
         chefAtelier: $('#chef-atelier').val(),
         date_echeance: $('#date-echeance').val(),
+        mode : $('#mode').val(),
         _token: '{{ csrf_token() }}'
     };
 

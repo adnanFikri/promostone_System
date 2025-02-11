@@ -97,6 +97,7 @@
                                 <th scope="col" class="px-6 py-3">Code Client</th>
                                 <th scope="col" class="px-6 py-3">RAISON</th>
                                 <th scope="col" class="px-6 py-3">Montant</th>
+                                <th scope="col" class="px-6 py-3">mode</th>
                                 <th scope="col" class="px-6 py-3">Date</th>
                                 <th scope="col" class="px-6 py-3">Mode Paiement</th>
                                 <th scope="col" class="px-6 py-3">Action</th>
@@ -130,8 +131,8 @@
     
     @endcan
 
-    <script>
-       $(document).ready(function() {
+<script>
+$(document).ready(function() {
     $('#reglements-table').DataTable({
         processing: true,
         serverSide: true,
@@ -142,6 +143,19 @@
             { data: 'code_client', name: 'code_client' },
             { data: 'name_client', name: 'name_client' },
             { data: 'montant', name: 'montant' },
+            { 
+                data: 'mode', 
+                name: 'mode',
+                render: function(data, type, row) {
+                    if (type === 'display' || type === 'filter') {
+                        if (!data) return ''; // Handle null or undefined values
+                        let modeUpper = data.toUpperCase();
+                        let color = (modeUpper === 'AVANCE') ? 'green' : 'blue';
+                        return `<span style="color:${color}; font-weight: bold;">${modeUpper}</span>`;
+                    }
+                    return data;
+                }
+            },
             { data: 'date', name: 'date' },
             { data: 'type_pay', name: 'type_pay' },
             {

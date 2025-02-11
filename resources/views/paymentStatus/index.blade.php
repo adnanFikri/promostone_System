@@ -512,6 +512,8 @@
                             </div>
                         </div>
                     </div>
+                    {{-- for mode of paye avance or reglement   --}}
+                    <input type="hidden" id="mode" name="mode" value="reglement">
     
                     <button type="button" id="save-button" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">Save</button>
                     {{-- <button type="button" id="finish-button" class="w-full mt-2 px-4 py-2 text-white bg-green-600 rounded hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500">Finish</button> --}}
@@ -1184,6 +1186,7 @@
                 type_pay: $('#mode_reglement').val(),
                 reference_chq: $('#reference_chq').val(),
                 date_chq: $('#date_chq').val(),
+                mode: $('#mode').val(),
                 _token: '{{ csrf_token() }}'
             };
 

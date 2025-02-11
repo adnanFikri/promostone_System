@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('id_fournisseur'); 
             $table->string('nom_fournisseur')->nullable(); 
             $table->decimal('montant', 10, 2); 
-            $table->date('date')->default(now()); 
+            $table->dateTime('date')->default(now()); 
             $table->string('type_pay'); 
             $table->string('reference_chq')->nullable(); 
             $table->date('date_chq')->nullable(); 

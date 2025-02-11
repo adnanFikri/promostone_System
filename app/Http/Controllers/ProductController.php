@@ -232,8 +232,8 @@ class ProductController extends Controller
         
         $products = Product::where('name', 'like', "%{$search}%")
             ->orWhere('product_code', 'like', "%{$search}%")
-            ->limit(10)
-            ->get(['product_code', 'name', 'quantity', 'unit_price']); // Fetch relevant data
+            ->limit(20)
+            ->get(['product_code', 'name', 'quantity', 'unit_price','type']); // Fetch relevant data
     
         return response()->json($products);
     }

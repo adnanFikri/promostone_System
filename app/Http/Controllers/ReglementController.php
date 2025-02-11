@@ -44,6 +44,7 @@ class ReglementController extends Controller
                 'reglements.code_client',
                 'clients.name as name_client',
                 'reglements.montant',
+                'reglements.mode',
                 'reglements.date',
                 'reglements.type_pay',
                 'reglements.reference_chq', 
@@ -54,6 +55,7 @@ class ReglementController extends Controller
 
             return DataTables::of($data)
             ->addColumn('actions', function ($row) {
+                $btn = ''; // Initialize the variable to prevent "Undefined variable" error
                 if (auth()->user()->can('delete reglements')) {
                     $btn = '
                             <a style="float:right;" href="' . route('reglements.destroy', $row->id) . '" class="delete btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById(\'delete-form-' . $row->id . '\').submit();"><svg class="w-6 h-6 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -135,6 +137,7 @@ class ReglementController extends Controller
                 'code_client' => $request->code_client,
                 'nom_client' => $paymentStatus->name_client ,
                 'montant' => $request->montant,
+                'mode' => $request->mode,
                 'date' =>  $request->has('destination') ? now() : $request->date, 
                 'type_pay' => $request->type_pay,
                 'reference_chq' => $request->reference_chq, 
@@ -414,10 +417,10 @@ class ReglementController extends Controller
 
         // $rest = $paymentStatus->montant_total - ($paymentStatus->montant_payed + $request->montant);
         // Prepare data to update PaymentStatus
-        $paymentStatusData = [
-            'montant_payed' => $paymentStatus->montant_payed + $difference,
-            'montant_restant' => $paymentStatus->montant_restant - $difference,
-        ];
+        // $paymentStatusData = [
+        //     'montant_payed' => $paymentStatus->montant_payed + $difference,
+        //     'montant_restant' => $paymentStatus->montant_restant - $difference,
+        // ];
         
         
 

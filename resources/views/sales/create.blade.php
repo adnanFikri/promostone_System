@@ -46,7 +46,24 @@
     }
     #el03 {background:url(/i/icon-info.gif) no-repeat 100% 50%}
 
-    
+    /* Increase dropdown height */
+    .custom-select-dropdown .select2-results__options {
+        max-height: 300px !important; /* Increase dropdown height */
+        overflow-y: auto !important;
+    }
+
+    /* Ensure dropdown is visible */
+    .select2-container--default .select2-results__option {
+        padding: 10px;
+        font-size: 13px; /* Adjust text size */
+    }
+
+    .select2-container .select2-results__options {
+        min-height: 350px !important;
+        overflow-y: auto !important;
+    }
+
+
     
     
 </style>
@@ -166,31 +183,40 @@
 
 
 <script>
-
-    // search client select 
-    $(document).ready(function () {
-        $('#code_client').select2({
-            placeholder: "choisir le client",
-            ajax: {
-                url: '{{ route('reglements.search') }}', // Adjust the route as needed
-                dataType: 'json',
-                delay: 250,
-                processResults: function (data) {
-                    // console.log(data);
-                    
-                    return {
-                        results: data.map(function (client) {
-                            return {
-                                id: client.code_client,
-                                text: client.code_client + " - " + client.name
-                            };
-                        })
-                    };
-                },
-                cache: true
+$(document).ready(function () {
+    $('#code_client').select2({
+        placeholder: "Choisir le client",
+        ajax: {
+            url: '{{ route('reglements.search') }}',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data.map(function (client) {
+                        return {
+                            id: client.code_client,
+                            text: client.code_client + " - " + client.name
+                        };
+                    })
+                };
+            },
+            cache: true
+        },
+        dropdownParent: $("#code_client").parent(), // Fix for dropdown styling
+        templateResult: function (data) {
+            if (!data.id) {
+                return $('<span>' + data.text + '</span>'); 
             }
-        });
+            return $('<div style="padding: 0; font-size: 12px;">' + data.text + '</div>');
+        },
+        templateSelection: function (data) {
+            return data.text || "Choisir le client";
+        }
     });
+});
+
+
+
         
         // search products select 
     $(document).ready(function () {
@@ -227,6 +253,8 @@
             }
         });
 
+        
+        
         // Handle selection and set data-unit-price
         $('#product_select').on('select2:select', function (e) {
             const selectedOption = e.params.data;

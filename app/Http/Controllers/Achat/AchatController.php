@@ -7,7 +7,9 @@ use App\Models\Achat\Achat;
 use App\Models\Fournisseur;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
+use Yajra\DataTables\DataTables;
 use App\Models\Achat\AchatStatus;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,11 +22,59 @@ class AchatController extends Controller
         $this->middleware('auth');
         
         // Define permission-based middleware for each method
-        $this->middleware('permission:view sales')->only(['index']);
+        $this->middleware('permission:view achats')->only(['index']);
         $this->middleware('permission:create sales')->only(['create']);
         $this->middleware('permission:store sales')->only(['store']);
         $this->middleware('permission:view achats by bl')->only(['getByBl']);
     }
+
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+            // Join clients table for sorting and filtering
+            $achats = Achat::select([
+                    'achats.id',
+                    'achats.no_bl',
+                    // 'sales.annee',
+                    DB::raw('DATE_FORMAT(CONVERT_TZ(achats.created_at, "+00:00", "+01:00"), "%H:%i:%s") as morocco_time'),
+                    'achats.date',
+                    'achats.id_fournisseur',
+                    'achats.ref_produit',
+                    'achats.produit',
+                    'achats.longueur',
+                    'achats.largeur',
+                    'achats.nbr',
+                    'achats.qte',
+                    'achats.prix_unitaire',
+                    'achats.montant',
+                    'fournisseurs.raison as client_name' // Include client name in query
+                ])
+                ->leftJoin('fournisseurs', 'achats.id_fournisseur', '=', 'fournisseurs.id') // Join the clients table
+                ->orderBy('achats.created_at', 'desc');
+    
+            return DataTables::of($achats)
+                ->addColumn('client_name', function ($achat) {
+                    return $achat->client_name ?? 'N/A';
+                })
+                ->addColumn('actions', function ($achat) {
+                    $editUrl = route('sales.index', $achat->id);
+                    $deleteUrl = route('sales.index', $achat->id);
+                    return '
+                        <a href="' . $editUrl . '" class="text-blue-500 hover:underline mr-2">Edit</a>
+                        <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Are you sure?\');">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+    
+        return view('achat.index');
+    }
+    
+    
     public function create(){
 
         $Fournisseurs = Fournisseur::all();
@@ -158,7 +208,7 @@ class AchatController extends Controller
             'user-name' => Auth::user()->name,
         ]);
 
-        return redirect()->back()->with('success', 'Achat ajoutée avec succès!');
+        return redirect()->route('achatStatus.index')->with('success', 'Achat ajoutée avec succès!');
         // return redirect()->route('avanceAchat.create', [
         //     'no_bl' => $no_bl, 
         //     'id_fournisseur' => $validatedData['id_fournisseur'],

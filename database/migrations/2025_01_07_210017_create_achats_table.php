@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('no_bl')->nullable();
             $table->integer('annee')->nullable();
-            $table->date('date')->nullable();
+            $table->dateTime('date')->nullable();
             $table->string('id_fournisseur')->nullable(); // Foreign key
             $table->string('ref_produit')->nullable();
             $table->string('produit')->nullable();

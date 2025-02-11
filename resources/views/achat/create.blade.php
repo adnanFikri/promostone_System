@@ -45,6 +45,23 @@
         color: #4B5563; /* Custom color for legend text */
     }
     #el03 {background:url(/i/icon-info.gif) no-repeat 100% 50%}
+
+     /* Increase dropdown height */
+     .custom-select-dropdown .select2-results__options {
+        max-height: 300px !important; /* Increase dropdown height */
+        overflow-y: auto !important;
+    }
+
+    /* Ensure dropdown is visible */
+    .select2-container--default .select2-results__option {
+        padding: 10px;
+        font-size: 13px; /* Adjust text size */
+    }
+
+    .select2-container .select2-results__options {
+        min-height: 350px !important;
+        overflow-y: auto !important;
+    }
 </style>
 
 @can("create sales")

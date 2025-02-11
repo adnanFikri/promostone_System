@@ -154,8 +154,10 @@
                         <option value="MONSIEUR">MONSIEUR</option>
                         <option value="MADAME">MADAME</option>
                         <option value="SOCIÉTÉ">SOCIÉTÉ</option>
-                        <option value="POSSEUR">POSSEUR</option>
+                        <option value="POSSEUR">POSEUR</option>
                         <option value="REVENDEUR">REVENDEUR</option>
+                        <option value="REVENDEUR">PROMOTEUR</option>
+                        <option value="REVENDEUR">AMICALE</option>
                     </select>
                     @error('category')
                         <small class="text-red-600">{{ $message }}</small>
@@ -176,9 +178,11 @@
                     <label for="type" class="block text-gray-700 font-medium">Type</label>
                     <select id="type" name="type" 
                             class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
-                        <option value="PARTICULIER">Particulier</option>
-                        <option value="FICHE CLIENT">Fiche client</option>
-                        <option value="ANOMALIE">Anomalie</option>
+                            <option value="PARTICULIER">Particulier</option>
+                            @hasanyrole('Admin|SuperAdmin')
+                                <option value="FICHE CLIENT">Fiche client</option>
+                                <option value="ANOMALIE">Anomalie</option>
+                            @endhasanyrole
                     </select>
                 </div>
 

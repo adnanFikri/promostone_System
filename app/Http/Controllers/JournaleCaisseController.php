@@ -125,22 +125,35 @@ class JournaleCaisseController extends Controller
 
     // dd($salesDetails);
 
-
-    $filteredReglements = Reglement::whereBetween('date', [
+    // 0000000000000000000000000000000000000000000000000000000000000000000000000000
+    // 000000000 for showed reglemetns details include just reglements mode 0000000
+    // 0000000000000000000000000000000000000000000000000000000000000000000000000000
+    $filteredReglements = Reglement::whereBetween('created_at', [
         Carbon::parse($dateFrom)->startOfDay(),
         Carbon::parse($dateTo)->endOfDay()
     ])
-    ->whereIn('no_bl', $salesNoBL) // Ensure it's related to the sales
+    // ->whereIn('no_bl', $salesNoBL) // Ensure it's related to the sales
+    ->where('mode', 'reglement') // Ensure it's related to the sales
     ->get()
-    ->groupBy('no_bl') // Group by no_bl
-    ->map(function ($reglements) {
-        return $reglements->skip(1); // Skip the first record of each no_bl
-    })
+    ->groupBy('no_bl')
     ->flatten(); // Flatten the grouped results
 
+    // 0000000000000000000000000000000000000000000000000000000000000000000000000000
+    // 000000000 for showed reglemetns details include just reglements mode 0000000
+    // 0000000000000000000000000000000000000000000000000000000000000000000000000000
     $filteredReglementsSum = $filteredReglements->sum('montant');
+    // $filteredReglementsSum = Reglement::whereBetween('created_at', [
+    //     Carbon::parse($dateFrom)->startOfDay(),
+    //     Carbon::parse($dateTo)->endOfDay()
+    // ])
+    // // ->whereIn('no_bl', $salesNoBL) // Ensure it's related to the sales
+    // // ->where('mode', 'reglement') // Ensure it's related to the sales
+    // ->get()
+    // ->groupBy('no_bl')
+    // ->flatten()->sum('montant'); // Flatten the grouped results
 
-    $reglements = Reglement::whereBetween('date', [
+
+    $reglements = Reglement::whereBetween('created_at', [
         Carbon::parse($dateFrom)->startOfDay(),
         Carbon::parse($dateTo)->endOfDay()
     ])->get();

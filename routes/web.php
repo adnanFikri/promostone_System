@@ -20,6 +20,7 @@ use App\Http\Controllers\JournaleCaisseController;
 use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\Achat\AchatStatusController;
 use App\Http\Controllers\Achat\AchatreglementController;
+use App\Http\Controllers\Achat\BonCommandeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -150,10 +151,19 @@ Route::get('/fournisseurs/search', [FournisseurController::class, 'search'])->na
 
 // 00000000000000000000 ACHAT 000000000000000000000
 Route::get('/achat/create', [AchatController::class, 'create'])->name('achat.create');
-Route::get('/achat/get-by-bl', [AchatController::class, 'getByBl'])->name("achat.get-by-bl");
+Route::get('/achats', [AchatController::class, 'index'])->name("achat.index");
 Route::get('/achat/create', [AchatController::class, 'create'])->name("achat.create");
 Route::post('/achat/store', [AchatController::class, 'store'])->name('achat.store');
 Route::get('/achat/get-by-bl', [AchatController::class, 'getByBl'])->name("achat.get-by-bl");
+
+// 00000000000000000000 BONS ACHAT 000000000000000000000
+Route::get('/listCommande', [BonCommandeController::class, 'index'])->name('listCommande.index'); // DataTable
+// Route::get('/confirmReception', [BonCommandeController::class, 'confirmReception'])->name('confirmReception.edit'); // DataTable
+Route::get('/confirmReception/{no_bl}', [BonCommandeController::class, 'confirmReception'])->name('confirmReception.edit');
+Route::put('/confirmReception/{id}', [BonCommandeController::class, 'saveConfirmReception'])->name('confirmReception.save');
+
+Route::get('/bon-commande/{no_bl}', [BonCommandeController::class, 'showBonCommande'])->name('bon_commande');
+Route::get('/bon-reception/{no_bl}', [BonCommandeController::class, 'showBonReception'])->name('bon_reception');
 
 
 // 0000000000000 00 ACHAT STATUS Controller ROUTES 00 0000000000000

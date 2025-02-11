@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('no_bl')->nullable(); // Add BL number
             $table->string('id_fournisseur'); // Foreign key to clients
             $table->string('name_fournisseur')->nullable();
-            $table->date('date_bl')->nullable();
+            $table->dateTime('date_bl')->nullable();
             $table->decimal('montant_total', 10, 2)->default(0); // Total amount owed (sum of all sales amounts)
             $table->decimal('montant_payed', 10, 2)->default(0); // Total amount paid by the client
             $table->decimal('montant_restant', 10, 2)->default(0); // Remaining balance to be paid
