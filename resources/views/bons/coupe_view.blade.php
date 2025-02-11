@@ -136,6 +136,7 @@ select.rounded-md.w-md {
                             <tr>
                                 {{-- <th>ID</th> --}}
                                 <th>No BL</th>
+                                <th>Raison</th>
                                 <th>Produits</th>
                                 <th>date</th>
                                 <th>commercant</th>
@@ -170,6 +171,7 @@ select.rounded-md.w-md {
         columns: [
             //  { data: 'id', name: 'id' }, 
             { data: 'no_bl', name: 'no_bl' },
+            { data: 'client', name: 'client' },
             { data: 'products', name: 'products' }, // This column corresponds to products
             { data: 'date', name: 'date' }, // Sale date column
             { data: 'commercant', name: 'commercant' }, // Commercant column

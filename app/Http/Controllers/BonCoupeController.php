@@ -34,6 +34,16 @@ class BonCoupeController extends Controller
             $bons = $bons->map(function ($group) {
                 $bon = $group->first();  // Get the first bon for this group
                 $canEdit = auth()->user()->can('create users');
+
+                // Retrieve client information
+                $code_client = $group->first()->paymentStatuses->first()->code_client ?? null;
+                $client_raison = 'N/A';
+                
+                if ($code_client) {
+                    $client = Client::where('code_client', $code_client)->first();
+                    $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
+                }
+                
                 // Loop through all sales and get the 'ref_produit' for each sale
                 $products = $group->flatMap(function($bon) {
                     return $bon->sales->map(function($sale) {
@@ -46,6 +56,7 @@ class BonCoupeController extends Controller
     
                 return [
                     'id' => $bon->id,
+                    'client' => $client->name, // Add client name
                     'no_bl' => $bon->no_bl,
                     'coupe' => $bon->coupe,
                     'print_nbr' => $bon->print_nbr,
