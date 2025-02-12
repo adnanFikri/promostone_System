@@ -178,8 +178,8 @@
                             </div>
 
                             <div class="mb-6 dateInput">
-                                <label for="date_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Regelment</label>
-                                <input type="date" name="date" id="date_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                <label for="date_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Expiration</label>
+                                <input type="date" name="date" id="date_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                             </div>
                         </div>
 
@@ -199,8 +199,8 @@
                                     <input type="number" name="reference_chq" id="reference_chq" placeholder="Montant" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                                 </div>
                                 <div class="mb-6 dateInput">
-                                    <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Expiration</label>
-                                    <input type="date" name="date_chq" id="date_chq" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                    <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date d'échéance</label>
+                                    <input type="date" name="date_chq" id="date_chq"  required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                                 </div>
                             </div>
                         </div>
@@ -220,9 +220,21 @@
             </div>
         </div>
     </div>
-
 @endcan
 <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Check if user has 'admin', 'superAdmin', or 'caissier' roles
+        const isAdminOrSuperAdmin = @json(auth()->user()->hasRole('admin') || auth()->user()->hasRole('SuperAdmin'));
+
+        if (!isAdminOrSuperAdmin) {
+            // Only apply min date if the user is not an admin or superAdmin
+            let today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            document.getElementById("date_reglement").setAttribute("min", today); // Set the min attribute
+        }
+    });
+
+    
     $(document).ready(function () {
     // Initialize Select2 for the 'code_client' field
     $('#code_client').select2({

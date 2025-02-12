@@ -62,11 +62,11 @@
     <div id="bon-de-livraison" class="borde border-gray-00 rounded-lg p-6 shado bg-white">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 text-center ">
-            <span class="text-gray-900 text-lg">le {{ $paymentStatus['date_bl'] }}</span>
-            <div class="border border-gray-700 rounded-lg p-1  text-center min-w-72">
+            <span class="text-gray-900 text-xl">Le {{ $paymentStatus['date_bl'] }}</span>
+            <div class="border border-gray-700 rounded-lg py-2 px-12  text-center min-w-72 text-lg">
                 <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_client }}</p>
-                <p class="px-6"><span class="text-sm">Code Client:</span> {{ $paymentStatus->code_client }}</p>
-                <p class="px-6"><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
+                <p class="px-6"><span class="text-s">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                <p class="px-6"><span class="text-s">Téléphone:</span> {{ $client->phone }}</p>
             </div>
         </div>
 
@@ -151,7 +151,7 @@
         </div>
 
         <div class="uppercase mt-6 text-xl font-bold">
-            @if ($paymentStatus->montant_restant > 0)
+            @if ($paymentStatus->montant_restant > 3)
                 <p class="text-red-400">Solde impayé ❌</p>
             @else
                 <p class="text-green-400">Solde payé ✅</p>
@@ -161,7 +161,7 @@
         <!-- Footer Section -->
         <div class="mt-12 text-left text-gray-500 text-sm">
             <p>📞 0537643290 - 0537643615</p>
-            <p>📱 +212 661 464 017</p>
+                <p>📱 +212 661 464 017</p>
             <p>✉️ promostone2021@gmail.com</p>
         </div>
     </div>

@@ -61,11 +61,11 @@
         <div class="print-header">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 text-center ">
-            <span class="text-gray-900 text-lg">le {{ $paymentStatus['date_bl'] }} - <span class="text-gray-700 font-bold" >Impression N° <span {{$print_nbr->print_nbr > 1 ? 'class=text-red-400' : ""}}>{{$print_nbr->print_nbr + 1}}</span></span> </span>
-            <div class="border border-gray-400 rounded-lg p-1 text-center min-w-72">
+            <span class="text-gray-900 text-xl">le {{ $paymentStatus['date_bl'] }}</span>
+            <div class="border border-gray-700 rounded-lg py-2 px-12  text-center min-w-72 text-lg">
                 <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_client }}</p>
-                <p class="px-6"><span class="text-sm">Code Client:</span> {{ $paymentStatus->code_client }}</p>
-                <p class="px-6"><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
+                <p class="px-6"><span class="text-s">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                <p class="px-6"><span class="text-s">Téléphone:</span> {{ $client->phone }}</p>
             </div>
         </div>
 
@@ -131,6 +131,9 @@
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->mode }}</td>
                                     {{-- <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td> --}}
+                                    @php
+                                        $totalSurface += $sale->qte;
+                                    @endphp
                                 @else
                                     @php
                                         // Calculate surface for this sale and add to total

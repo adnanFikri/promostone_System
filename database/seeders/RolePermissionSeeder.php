@@ -150,7 +150,7 @@ class RolePermissionSeeder extends Seeder
                 'ventes',
                 'create sales', 'store sales', 'view sales by bl', 'update Sales',
                 // bon de ivraison :
-                'index bon livraison', 'view bon livraison', 'update livree bon livraison','print bons',
+                'index bon livraison', 'view bon livraison','print bons',
 
                 // Clients
                 'Clients',

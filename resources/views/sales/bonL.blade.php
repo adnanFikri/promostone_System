@@ -73,13 +73,14 @@ body {
     <div id="bon-de-livraison" class="borde bordr-gray-300 rounded-lg p-6  bg-white">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 text-center ">
-            <span class="text-gray-900 text-lg">le {{ $paymentStatus['date_bl'] }}</span>
-            <div class="border border-gray-300 rounded-lg p-1  text-center min-w-72">
+            <span class="text-gray-900 text-xl">Le {{ $paymentStatus['date_bl'] }}</span>
+            <div class="border border-gray-700 rounded-lg py-2 px-12  text-center min-w-72 text-lg">
                 <p class="font-bold text-orange-500 text-">{{ $paymentStatus->name_client }}</p>
-                <p class="px-6"><span class="text-sm">Téléphone:</span> {{ $client->phone }}</p>
-                <p class="px-6"><span class="text-sm ">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                <p class="px-6"><span class="text-s ">Code Client:</span> {{ $paymentStatus->code_client }}</p>
+                <p class="px-6"><span class="text-s">Téléphone:</span> {{ $client->phone }}</p>
             </div>
         </div>
+        
 
         <!-- Client BON -->
         <h2 class="mb-4 text-2xl font-bold text-center text-gray-600">BON DE LIVRAISON N° <span class="text-black border bg-gray-200 px-1 shadow " id="bl-number">{{ $paymentStatus->no_bl }}</span> / {{ date('Y') }}</h2>
@@ -104,6 +105,9 @@ body {
                 </thead>
                 <tbody>
                 @foreach($groupedSales as $produit => $sales)
+                    @php
+                        $totalMontant = 0; // Initialize total surface for this product
+                    @endphp
                     @foreach($sales as $index => $sale)
                         @if ($sale->mode == "service")
                             <!-- Row for services -->
@@ -115,6 +119,9 @@ body {
                                 <td class="border border-gray-300 p-2 text-center">Service</td>
                                 <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire ?? '-' }}</td>
                                 <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td>
+                                @php
+                                    $totalMontant += $sale->montant;
+                                @endphp
                             </tr>
                         @else
                             <!-- Row for products -->
@@ -131,7 +138,13 @@ body {
                                     <td class="border border-gray-300 p-2 text-center" >{{ $sale->mode }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td>
+                                    @php
+                                        $totalMontant += $sale->montant;
+                                    @endphp
                                 @else
+                                    @php
+                                        $totalMontant += $sale->montant;
+                                    @endphp
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->longueur }} x {{ $sale->largeur }} </td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->qte }}</td>
@@ -142,13 +155,17 @@ body {
                             </tr>
                         @endif
                     @endforeach
+                    <tr class="bg-gray-100">
+                        <td colspan="6" class="border border-b-2 border-gray-300 p-2 text-center font-bold">TOTAL {{$produit}} ({{$sale->ref_produit}})</td>
+                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center" colspan="1"> {{ number_format($totalMontant, 3) }}</td>
+                    </tr>
                 @endforeach
                    
                 </tbody>
                 <tfoot>
                     <tr class="bg-gray-100">
-                        <td colspan="6" class="border border-gray-300 p-2 text-right font-bold">Total GLOBAL H.T:</td>
-                        <td class="border border-gray-300 p-2 font-bold text-blue-700 text-center">{{ $paymentStatus->montant_total }}</td>
+                        <td colspan="6" class="border border-gray-300 p-2 text-right font-bold uppercase">Montant TOTAL </td>
+                        <td class="border border-gray-300 p-2 font-bold text-blue-900 text-center">{{ $paymentStatus->montant_total }} DH</td>
                     </tr>
                 </tfoot>
             </table>

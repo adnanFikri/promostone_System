@@ -121,7 +121,7 @@ class JournaleCaisseController extends Controller
             'paymentStatus' => $paymentStatus,
             'reglements' => $reglements,
         ];
-    });
+    })->sortBy('no_bl');
 
     // dd($salesDetails);
 

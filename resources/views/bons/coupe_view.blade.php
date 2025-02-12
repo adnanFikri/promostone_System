@@ -179,7 +179,7 @@ select.rounded-md.w-md {
                 data: 'coupe', 
                 name: 'coupe', 
                 render: function(data, type, row) {
-                    let disabled = (data === 'Oui' && !row.can_edit) ? 'disabled' : '';
+                    let disabled = (data === 'Oui' && row.can_edit) ? 'disabled' : '';
 
                     return `
                         <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
