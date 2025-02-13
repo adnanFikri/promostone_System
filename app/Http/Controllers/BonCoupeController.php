@@ -33,7 +33,7 @@ class BonCoupeController extends Controller
             
             $bons = $bons->map(function ($group) {
                 $bon = $group->first();  // Get the first bon for this group
-                $canEdit = auth()->user()->can('create users');
+                $isAdmin = auth()->user()->can('create users');
 
                 // Retrieve client information
                 $code_client = $group->first()->paymentStatuses->first()->code_client ?? null;
@@ -60,6 +60,7 @@ class BonCoupeController extends Controller
                     'no_bl' => $bon->no_bl,
                     'coupe' => $bon->coupe,
                     'print_nbr' => $bon->print_nbr,
+                    'finition' => $bon->finition,
                     'print_date' => $bon->print_date,
                     'date_coupe' => $bon->date_coupe,
                     'userName' => $bon->userName,
@@ -67,17 +68,29 @@ class BonCoupeController extends Controller
                     'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
                     'created_at' => $bon->created_at, // Add created_at for sorting
-                    'can_edit' => $canEdit,
+                    'isAdmin' => $isAdmin,
                 ];
             });
     
             // Sort by coupe (Non first) and created_at (oldest first)
+            // $bons = $bons->sortBy(function ($item) {
+            //     return [
+            //         $item['coupe'] === 'Non' ? 0 : 1, // Non should come first
+            //         $item['created_at'] // Sort by created_at
+            //     ];
+            // });
+
             $bons = $bons->sortBy(function ($item) {
+                $coupeOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2];
+                $finitionOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2, 'Sans' => 3];
+            
                 return [
-                    $item['coupe'] === 'Non' ? 0 : 1, // Non should come first
-                    $item['created_at'] // Sort by created_at
+                    $coupeOrder[$item['coupe']] ?? 3, // Default to last if not found
+                    $finitionOrder[$item['finition']] ?? 4, // Default to last if not found
+                    $item['created_at'] // Sort by date, oldest first
                 ];
             });
+            
     
             return datatables()->of($bons)
                 ->addColumn('actions', function ($bon) {
@@ -146,7 +159,14 @@ class BonCoupeController extends Controller
             $bon->save();
         }
     
-        return response()->json(['message' => 'Livrée status updated successfully.']);
+        return response()->json(['message' => 'Coupe status updated successfully.']);
+    }
+    public function updateFinition(Request $request, $id)
+    {
+        $bon = BonCoupe::findOrFail($id);
+        $bon->finition = $request->input('finition');
+        $bon->save();
+        return response()->json(['message' => 'Finition status updated successfully.']);
     }
     
     

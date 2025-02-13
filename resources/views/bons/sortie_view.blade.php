@@ -156,6 +156,7 @@ select.rounded-md.w-md {
 {{-- @endcan --}}
 
 <script>
+    var canModifSortie = @json(auth()->user()->can('update sortie bon sortie'));
 
 var table;
 table = $('#bons-table').DataTable({
@@ -177,10 +178,11 @@ table = $('#bons-table').DataTable({
              data: 'sortie', 
              name: 'sortie', 
              render: function(data, type, row) {
-                    let disabled = (data === 'Oui' && !row.can_edit) ? 'disabled' : '';
+                    // let disabled = (data === 'Oui' && !row.can_edit) ? 'disabled' : '';
+                    let disabled = ((data === 'Oui' && !row.isAdmin) || !canModifSortie) ? 'disabled' : '';
 
                     return `
-                        <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
+                        <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 ${data == 'Oui' ? 'bg-green-300' : 'bg-red-300'}" ${disabled}>
                             <option value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
                             <option value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
                         </select>

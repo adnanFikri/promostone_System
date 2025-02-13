@@ -30,7 +30,7 @@ class BonSortieController extends Controller
             
             $bons = $bons->map(function ($group) {
                 $bon = $group->first();  // Get the first bon for this group
-                $canEdit = auth()->user()->can('creates users');
+                $isAdmin = auth()->user()->can('create users');
                 
                 // Loop through all sales and get the 'ref_produit' for each sale
                 $products = $group->flatMap(function($bon) {
@@ -52,7 +52,7 @@ class BonSortieController extends Controller
                     'products' => $productsString,  // Return the products as a string
                     'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
-                    'can_edit' => $canEdit,
+                    'isAdmin' => $isAdmin,
                 ];
             });
     

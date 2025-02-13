@@ -125,6 +125,7 @@ Route::post('/bonLivraison/{id}/update-livree', [BonLivraisonController::class, 
 Route::get('/listBonCoupe', [BonCoupeController::class, 'index'])->name('listBonCoupe.index'); // DataTable
 Route::get('/bon-coup/{no_bl}', [BonCoupeController::class, 'showBonCoup'])->name('bon_coup');
 Route::post('/bonCoupe/{id}/update-coupe', [BonCoupeController::class, 'updateCoupe']);
+Route::post('/bonCoupe/{id}/update-finition', [BonCoupeController::class, 'updateFinition']);
 Route::post('/bonCoupe/increment-print/{id}', [BonCoupeController::class, 'incrementPrintNbr'])->name('bon_coupe.increment_print');
 
 // -=-=-= 00 BON DE SORTIE ROUTES 00 -=-=-=-

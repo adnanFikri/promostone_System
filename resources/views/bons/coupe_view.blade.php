@@ -141,9 +141,10 @@ select.rounded-md.w-md {
                                 <th>date</th>
                                 <th>commercant</th>
                                 <th>Coupe</th>
+                                <th>Finition</th>
                                 <th>Date Coupe</th>
                                 <th>Coupe Par</th>
-                                <th>print_nbr</th>
+                                <th>N°print</th>
                                 <th>print date</th>
                                 <th>Actions</th>
                             </tr>
@@ -157,6 +158,7 @@ select.rounded-md.w-md {
 {{-- @endcan --}}
 
 <script>
+    var canModifCoupe = @json(auth()->user()->can('update coupe bon coup'));
     var table;
     table = $('#bons-table').DataTable({
         processing: true,
@@ -165,8 +167,9 @@ select.rounded-md.w-md {
         responsive: true,  // Add this line to enable responsive table
         //  order: [[0, 'desc']],
         order: [
-            [5, 'asc'],  // Order by coupe column (index 5), 'Non' will come first.
-            [3, 'asc']   // Then order by created_at column (index 7), oldest first.
+            [5, 'asc'],  // Sort by Coupe column first
+            [6, 'asc'],  // Then by Finition column
+            [3, 'asc']    // Then order by created_at column (index 7), oldest first.
         ],
         columns: [
             //  { data: 'id', name: 'id' }, 
@@ -179,12 +182,36 @@ select.rounded-md.w-md {
                 data: 'coupe', 
                 name: 'coupe', 
                 render: function(data, type, row) {
-                    let disabled = (data === 'Oui' && row.can_edit) ? 'disabled' : '';
+                    let disabled = ((data === 'Oui' && !row.isAdmin) || !canModifCoupe) ? 'disabled' : '';
 
                     return `
-                        <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
-                            <option value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
-                            <option value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
+                        <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 
+                            ${data === 'Oui' ? 'bg-green-300' : data === 'Non' ? 'bg-red-300' : 'bg-orange-300'}" ${disabled}
+                        >
+                            <option class="bg-gray-100 text-red-400" value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
+                            <option class="bg-gray-100 text-orange-400" value="En cours" ${data === 'En cours' ? 'selected' : ''}>En cours</option>
+                            <option class="bg-gray-100 text-green-400" value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
+                            
+                        </select>
+                    `;
+                }
+            },
+            { 
+                data: 'finition', 
+                name: 'finition', 
+                render: function(data, type, row) {
+                    let disabled = (( (data === 'Oui' || data === 'Sans') && !row.isAdmin) || !canModifCoupe) ? 'disabled' : '';
+                    console.log(data);
+                    
+
+                    return `
+                        <select onchange="updateFinition(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 
+                            ${data === 'Oui' ? 'bg-green-300' : data === 'Non' ? 'bg-red-300' : data === 'En cours' ? 'bg-orange-300' : data === 'Sans' ? 'bg-blue-300' : ''}" ${disabled}
+                        >
+                            <option class="bg-gray-100 text-red-400" value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
+                            <option class="bg-gray-100 text-orange-400" value="En cours" ${data === 'En cours' ? 'selected' : ''}>En cours</option>
+                            <option class="bg-gray-100 text-green-400" value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
+                            <option class="bg-gray-100 text-blue-400" value="Sans" ${data === 'Sans' ? 'selected' : ''}>Sans</option>
                         </select>
                     `;
                 }
@@ -265,6 +292,66 @@ select.rounded-md.w-md {
                             icon: 'error',
                             title: 'Erreur lors de la mise à jour.',
                             text: 'Un problème est survenu lors de la mise à jour du statut de Coupe.',
+                            confirmButtonText: 'Réessayer',
+                            confirmButtonColor: '#d33',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    }
+                }).catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur réseau',
+                        text: 'Il y a eu un problème avec la requête. Veuillez réessayer plus tard.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#d33',
+                    });
+                    $('#bons-table').DataTable().ajax.reload();
+                });
+            } else {
+                // User canceled, no action needed
+                console.log('Modification annulée');
+                $('#bons-table').DataTable().ajax.reload();
+            }
+        });
+    }
+
+
+    function updateFinition(id, value) {
+        // Show confirmation dialog
+        Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: 'Voulez-vous vraiment modifier le statut de Finition ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Oui, confirmer',
+            cancelButtonText: 'Annuler',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the update if the user confirms
+                fetch(`/bonCoupe/${id}/update-finition`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ finition: value })
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Mis à jour avec succès !',
+                            text: 'Le statut de Finition a été mis à jour.',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur lors de la mise à jour.',
+                            text: 'Un problème est survenu lors de la mise à jour du statut de Finition.',
                             confirmButtonText: 'Réessayer',
                             confirmButtonColor: '#d33',
                         });
