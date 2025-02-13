@@ -291,7 +291,7 @@
         
     
         <div class="py-2 px-9">
-            <div class="max-w-9xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
 
                 @can('view index show modif details')
                     @if($lastSaleCheck)
@@ -373,7 +373,7 @@
 
                 @endcan
                 
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white w-min-full dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 pt-4 text-gray-900 dark:text-gray-100 ">
                         <h2 class="font-serif text-center rounded-lg text-gray-600 bg-gray-10 p-2 underline mb-12 text-2xl font-bold ">VENTE STATUS PAIEMENT</h2>
                      
@@ -426,14 +426,16 @@
     
                         </div>
                         
-                        <table id="payment-status-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
+                        <table id="payment-status-table" class="w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                             <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                                 <tr>
                                     {{-- <th scope="col" class="px-6 py-3">ID</th> --}}
                                     <th scope="col" class="px-6 py-3">No BL</th>
-                                    <th scope="col" class="px-6 py-3">CODE CLIENT</th>
+                                    {{-- <th scope="col" class="px-6 py-3">CODE CLIENT</th> --}}
                                     <th scope="col" class="px-6 py-3">RAISON</th>
                                     <th scope="col" class="px-6 py-3">DATE de BL</th>
+                                    <th scope="col" class="px-6 py-3">Coupe Statut</th>
+                                    <th scope="col" class="px-6 py-3">Sortie Statut</th>
                                     <th scope="col" class="px-6 py-3">MONTANT TOTAL ($)</th>
                                     <th scope="col" class="px-6 py-3">MONTAT PAYé ($)</th>
                                     <th scope="col" class="px-6 py-3">Solde Rest ($)</th>
@@ -796,7 +798,7 @@
             columns: [
                 // { data: 'id', name: 'id' },
                 { data: 'no_bl', name: 'no_bl' },
-                { data: 'code_client', name: 'code_client' },
+                // { data: 'code_client', name: 'code_client' },
                 // { data: 'name_client', name: 'name_client' },
                 {
                     data: 'name_client',
@@ -806,6 +808,36 @@
                     }
                 },
                 { data: 'date_bl', name: 'date_bl' },
+                { 
+                    data: 'coupe', 
+                    name: 'coupe', 
+                    render: function(data, type, row) {
+
+                        return `
+                            <p onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 
+                                ${data === 'Oui' ? 'bg-green-400 text-gray-200' : data === 'Non' ? 'bg-red-400 text-gray-200' : 'bg-orange-400 text-gray-200'}" 
+                            >
+                                ${data}
+                                
+                            </p>
+                        `;
+                    }
+                },
+                { 
+                    data: 'sortie', 
+                    name: 'sortie', 
+                    render: function(data, type, row) {
+
+                        return `
+                            <p onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 text-medium
+                                ${data === 'Oui' ? 'bg-green-400 text-gray-200' : data === 'Non' ? 'bg-red-400 text-gray-200' : 'bg-orange-400 text-gray-200'}" 
+                            >
+                                ${data}
+                                
+                            </p>
+                        `;
+                    }
+                },
                 {
                     data: 'montant_total',
                     name: 'montant_total',

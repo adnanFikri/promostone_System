@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use App\Models\Client;
+use App\Models\BonCoupe;
+use App\Models\BonSortie;
 use App\Models\SaleCheck;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
@@ -85,6 +87,11 @@ class PaymentStatusController extends Controller
                 } else {
                     $item->saleChecks = [];
                 }
+                    // Fetch `coupe` from BonCoupe
+                $item->coupe = BonCoupe::where('no_bl', $item->no_bl)->value('coupe');
+
+                // Fetch `sortie` from BonSortie
+                $item->sortie = BonSortie::where('no_bl', $item->no_bl)->value('sortie');
             });
 
             return DataTables::of($data)

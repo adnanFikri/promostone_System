@@ -44,7 +44,7 @@ class BonSortieController extends Controller
                 // Loop through all sales and get the 'ref_produit' for each sale
                 $products = $group->flatMap(function($bon) {
                     return $bon->sales->map(function($sale) {
-                        return $sale->ref_produit;  // Extract 'ref_produit' from each sale
+                        return $sale->produit;  // Extract 'ref_produit' from each sale
                     });
                 });
             
