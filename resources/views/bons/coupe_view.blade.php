@@ -167,9 +167,9 @@ select.rounded-md.w-md {
         responsive: true,  // Add this line to enable responsive table
         //  order: [[0, 'desc']],
         order: [
-            [5, 'asc'],  // Sort by Coupe column first
-            [6, 'asc'],  // Then by Finition column
-            [3, 'asc']    // Then order by created_at column (index 7), oldest first.
+            // [5, 'asc'],  // Sort by Coupe column first
+            // [6, 'asc'],  // Then by Finition column
+            // [3, 'asc']    // Then order by created_at column (index 7), oldest first.
         ],
         columns: [
             //  { data: 'id', name: 'id' }, 

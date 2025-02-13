@@ -138,6 +138,7 @@ select.rounded-md.w-md {
                             {{-- <th>ID</th> --}}
                             <th>No BL</th>
                             <th>Produits</th>
+                            <th>Raison</th>
                             <th>date</th>
                             <th>commercant</th>
                             <th>Sortie</th>
@@ -163,8 +164,8 @@ table = $('#bons-table').DataTable({
      processing: true,
      serverSide: true,
      order: [
-            [4, 'asc'],  // Order by coupe column (index 5), 'Non' will come first.
-            [3, 'asc']   // Then order by created_at column (index 7), oldest first.
+            // [5, 'asc'],  // Order by coupe column (index 5), 'Non' will come first.
+            // [3, 'asc']   // Then order by created_at column (index 7), oldest first.
         ],
      ajax: '{{ route("listBonSortie.index") }}',
      responsive: true,  // Add this line to enable responsive table
@@ -172,6 +173,7 @@ table = $('#bons-table').DataTable({
         //  { data: 'id', name: 'id' }, 
          { data: 'no_bl', name: 'no_bl' },
          { data: 'products', name: 'products' }, 
+         { data: 'client', name: 'client' },
          { data: 'date', name: 'date' }, 
          { data: 'commercant', name: 'commercant' }, 
          { 
@@ -183,8 +185,8 @@ table = $('#bons-table').DataTable({
 
                     return `
                         <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 ${data == 'Oui' ? 'bg-green-300' : 'bg-red-300'}" ${disabled}>
-                            <option value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
-                            <option value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
+                            <option class="bg-gray-100 text-red-400" value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
+                            <option class="bg-gray-100 text-green-400" value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
                         </select>
                     `;
                 }

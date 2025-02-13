@@ -117,13 +117,26 @@ class ProductController extends Controller
 
     // Generate the product code
     $category = $request->category;
-    $categoryInitial = strtoupper(substr($category, 0, 1)); // First letter of the category
+   // Generate the product code safely
+    $categoryInitial = strtoupper(substr($category, 0, 1));
 
-    // Count existing products with the same category initial
-    $count = Product::where('category', $category)->count();
+    // Find the highest existing product code in this category
+    $maxProductCode = Product::where('category', $request->category)
+        ->where('product_code', 'like', $categoryInitial . '%')
+        ->max('product_code');
 
-    // Generate the product code (e.g., M001, M002, ...)
-    $productCode = $categoryInitial . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+    if ($maxProductCode) {
+        $lastNumber = (int) substr($maxProductCode, 1);
+        $productCode = $categoryInitial . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+    } else {
+        $productCode = $categoryInitial . '001';
+    }
+
+    // Ensure uniqueness (prevent race conditions)
+    while (Product::where('product_code', $productCode)->exists()) {
+        $lastNumber++;
+        $productCode = $categoryInitial . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+    }
 
     $imagePath = null;
     if ($request->hasFile('image')) {

@@ -213,6 +213,7 @@
 
 $('#save-button').on('click', function (e) {
     e.preventDefault();
+    $(this).prop('disabled', true); // Prevent multiple clicks
 
     const formData = {
         no_bl: '{{ $no_bl }}', // From your backend view
@@ -262,6 +263,7 @@ $('#save-button').on('click', function (e) {
         method: 'POST',
         body: new URLSearchParams(formData),
         headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Content-Type': 'application/x-www-form-urlencoded',
         },
     })

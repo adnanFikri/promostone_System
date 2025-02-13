@@ -72,24 +72,41 @@ class BonCoupeController extends Controller
                 ];
             });
     
-            // Sort by coupe (Non first) and created_at (oldest first)
+
             // $bons = $bons->sortBy(function ($item) {
+            //     $coupeOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2];
+            //     $finitionOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2, 'Sans' => 3];
+            
             //     return [
-            //         $item['coupe'] === 'Non' ? 0 : 1, // Non should come first
-            //         $item['created_at'] // Sort by created_at
+            //         $coupeOrder[$item['coupe']] ?? 3, // Default to last if not found
+            //         $finitionOrder[$item['finition']] ?? 4, // Default to last if not found
+            //         $item['created_at'] // Sort by date, oldest first
             //     ];
             // });
 
-            $bons = $bons->sortBy(function ($item) {
+            $bons = $bons->sort(function ($a, $b) {
                 $coupeOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2];
                 $finitionOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2, 'Sans' => 3];
             
-                return [
-                    $coupeOrder[$item['coupe']] ?? 3, // Default to last if not found
-                    $finitionOrder[$item['finition']] ?? 4, // Default to last if not found
-                    $item['created_at'] // Sort by date, oldest first
-                ];
+                // Compare coupe order
+                if ($coupeOrder[$a['coupe']] !== $coupeOrder[$b['coupe']]) {
+                    return $coupeOrder[$a['coupe']] <=> $coupeOrder[$b['coupe']];
+                }
+            
+                // Compare finition order
+                if ($finitionOrder[$a['finition']] !== $finitionOrder[$b['finition']]) {
+                    return $finitionOrder[$a['finition']] <=> $finitionOrder[$b['finition']];
+                }
+            
+                // If coupe is "Oui", sort by created_at descending
+                if ($a['coupe'] === 'Oui' && $b['coupe'] === 'Oui') {
+                    return $b['created_at'] <=> $a['created_at']; // Newest first
+                }
+            
+                // Default sorting by created_at ascending (oldest first)
+                return $a['created_at'] <=> $b['created_at'];
             });
+            
             
     
             return datatables()->of($bons)

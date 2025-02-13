@@ -31,6 +31,15 @@ class BonSortieController extends Controller
             $bons = $bons->map(function ($group) {
                 $bon = $group->first();  // Get the first bon for this group
                 $isAdmin = auth()->user()->can('create users');
+
+                 // Retrieve client information
+                 $code_client = $group->first()->paymentStatuses->first()->code_client ?? null;
+                 $client_raison = 'N/A';
+                 
+                 if ($code_client) {
+                     $client = Client::where('code_client', $code_client)->first();
+                     $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
+                 }
                 
                 // Loop through all sales and get the 'ref_produit' for each sale
                 $products = $group->flatMap(function($bon) {
@@ -44,6 +53,7 @@ class BonSortieController extends Controller
             
                 return [
                     'id' => $bon->id,
+                    'client' => $client->name, // Add client name
                     'no_bl' => $bon->no_bl,
                     'sortie' => $bon->sortie,
                     'print_nbr' => $bon->print_nbr,
@@ -53,15 +63,24 @@ class BonSortieController extends Controller
                     'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
                     'isAdmin' => $isAdmin,
+                    'created_at' => $bon->created_at
                 ];
             });
     
-            $bons = $bons->sortBy(function ($item) {
-                return [
-                    $item['sortie'] === 'Non' ? 0 : 1, // Non should come first
-                    // $item['created_at'] // Sort by created_at
-                ];
+            $bons = $bons->sort(function ($a, $b) {
+                // Sort by 'sortie' ('Non' first)
+                if ($a['sortie'] === 'Non' && $b['sortie'] === 'Oui') return -1;
+                if ($a['sortie'] === 'Oui' && $b['sortie'] === 'Non') return 1;
+            
+                // If both are 'Non', sort by date ascending (oldest first)
+                if ($a['sortie'] === 'Non') {
+                    return strtotime($a['created_at']) <=> strtotime($b['created_at']);
+                }
+            
+                // If both are 'Oui', sort by date descending (latest first)
+                return strtotime($b['created_at']) <=> strtotime($a['created_at']);
             });
+            
             
             return datatables()->of($bons)
                 ->addColumn('actions', function ($bon) {
