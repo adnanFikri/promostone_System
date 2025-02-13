@@ -162,7 +162,7 @@
         <div class="mt-12 text-left text-gray-500 text-sm">
             <p>📞 0537643290 - 0537643615</p>
                 <p>📱 +212 661 464 017</p>
-            <p>✉️ promostone2021@gmail.com</p>
+            <p>✉️ ipromostone@gmail.com</p>
         </div>
     </div>
 </div>
