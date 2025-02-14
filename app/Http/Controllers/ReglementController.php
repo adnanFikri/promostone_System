@@ -220,6 +220,7 @@ class ReglementController extends Controller
             ->where('name', 'like', "%{$search}%")
             ->orWhere('code_client', 'like', "%{$search}%")
             ->distinct() // Ensure unique combinations of code_client and name_client
+            ->orderByDesc('id') 
             ->get()
             ->map(function ($client) {
                 return [

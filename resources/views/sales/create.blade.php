@@ -19,7 +19,6 @@
         height: 200px !important;
         border-color:  gray !important;
         margin-top: 5px;
-        
     }
     .select2-selection{
         height: 38px !important;
@@ -64,7 +63,21 @@
     }
 
 
-    
+    /* button ajoute client */
+    .btnA svg{
+            width: 50px;
+            height: 40px;
+            background-color:#909090;
+            float: left;
+            /* margin-right: 3px; */
+            /* margin: 3px; */
+            transition: .3s;
+            border-radius: 10%;
+        }
+        .btnA svg:hover{
+            background-color:#ffffff;
+            color: #909090;
+        }
     
 </style>
 
@@ -81,6 +94,14 @@
                     <select name="code_client" id="code_client" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                         <!-- Options will be populated via Select2 -->
                     </select>
+
+                    @can('create clients')
+                        <a href="#" onclick="openModal()" class="btnA float-right">
+                            <svg class="w-7 h-6 text-gray-200 dark:text-white " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    @endcan
                 </div>
 
                 <!-- Products Container -->
@@ -180,7 +201,67 @@
     </div>
 @endcan
 
+    {{-- modal for create new user --}}
+    <div id="clientModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 class="text-xl font-semibold mb-4">New Client</h3>
+            <form id="clientForm" method="POST" action="{{ route('clients.store') }}">
+                @csrf
+                <div class="mb-4">
+                    <label for="code_clientFormCreate" class="block text-gray-700 font-medium">Client Code</label>
+                    <input type="text" id="code_clientFormCreate" name="code_client"  readonly 
+                        class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
+                </div>
 
+                <div class="mb-6">
+                    <label for="category" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Categorie Client </label>
+                    <select name="category" id="category" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
+                        <option value="MONSIEUR">MONSIEUR</option>
+                        <option value="MADAME">MADAME</option>
+                        <option value="SOCIÉTÉ">SOCIÉTÉ</option>
+                        <option value="POSSEUR">POSEUR</option>
+                        <option value="REVENDEUR">REVENDEUR</option>
+                        <option value="REVENDEUR">PROMOTEUR</option>
+                        <option value="REVENDEUR">AMICALE</option>
+                    </select>
+                    @error('category')
+                        <small class="text-red-600">{{ $message }}</small>
+                    @enderror
+                </div>
+                
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 font-medium">Name</label>
+                    <input type="text" id="name" name="name" 
+                        class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
+                </div>
+                <div class="mb-4">
+                    <label for="phone" class="block text-gray-700 font-medium">Phone</label>
+                    <input type="text" id="phone" name="phone" 
+                        class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
+                </div>
+                <div class="mb-4">
+                    <label for="type" class="block text-gray-700 font-medium">Type</label>
+                    <select id="type" name="type" 
+                            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
+                            <option value="PARTICULIER">Particulier</option>
+                            @hasanyrole('Admin|SuperAdmin')
+                                <option value="FICHE CLIENT">Fiche client</option>
+                                <option value="ANOMALIE">Anomalie</option>
+                            @endhasanyrole
+                    </select>
+                </div>
+
+                <input type="text" hidden name="user-name" value="{{ auth()->user()->name }}">
+                
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeModal()" 
+                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 mr-2">Cancel</button>
+                    <button type="submit" 
+                            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 <script>
 $(document).ready(function () {
@@ -489,26 +570,6 @@ $(document).ready(function () {
         }
 
 
-        // add the product price selected to input of prix-unitaire 
-        // document.addEventListener('DOMContentLoaded', () => {
-        //     const container = document.getElementById('products-container');
-
-        //     container.addEventListener('change', function (event) {
-        //         if (event.target.classList.contains('product-select')) {
-        //             const selectedOption = event.target.options[event.target.selectedIndex];
-        //             const unitPrice = selectedOption.getAttribute('data-unit-price');
-        //             const productItem = event.target.closest('.product-item');
-        //             const unitPriceInput = productItem.querySelector('.prix-unitaire');
-
-        //             if (unitPriceInput) {
-        //                 unitPriceInput.value = unitPrice || ''; // Set the value or clear if no product selected
-        //             }
-        //             calculateTotal();
-        //         }
-        //     });
-        // });
-
-
         // --------------- service ----------
         let serviceIndex = 1;
 
@@ -555,6 +616,75 @@ $(document).ready(function () {
             serviceItem.remove();
         }
 
+        // CLIENTS DETAILS MDOAL FOR CREATE NEW CLIENT 
+        // modal open and close for create new client
+    function openModal() {
+        fetch('/clients/next-code', {
+            method: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('code_clientFormCreate').value = data.code_client; // Populate the input
+            document.getElementById('clientModal').classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error fetching client code:', error);
+            Swal.fire('Error!', 'Failed to fetch client code', 'error');
+        });
+    }
+    function closeModal() {
+        document.getElementById('clientModal').classList.add('hidden');
+    }
+       
+    
+    document.querySelector('#clientForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent default form submission
         
+        let formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire('Success!', data.message, 'success');
+            closeModal(); // Close the modal
+             // Add the new client to Select2
+             let $clientSelect = $('#code_client');
+             console.log("hejejfgejg");
+             
+
+            // Create a new option and append it to Select2
+            let newOption = new Option(
+                data.client.code_client + " - " + data.client.name, 
+                data.client.code_client, 
+                true, // Marks as selected
+                true  // Ensures it is selected
+            );
+            console.log(clientSelect);
+            
+
+            $clientSelect.append(newOption).trigger('change'); // Append & trigger chang
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Swal.fire('Error!', 'Échec de la création du client', 'error');
+            Swal.fire('Success!', 'Client créé avec succès!', 'success');
+            closeModal(); // Close the modal
+        });
+    });
 </script>
 @endsection

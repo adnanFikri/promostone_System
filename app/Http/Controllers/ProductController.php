@@ -39,8 +39,6 @@ class ProductController extends Controller
                 'unit_price',
                 'quantity',
                 'color',
-                // 'inventory_date',
-                // 'update_date',
                 'product_code',
                 'image_path'
             ]);

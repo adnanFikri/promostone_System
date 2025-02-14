@@ -116,11 +116,11 @@
                                 {{-- <th>ID</th> --}}
                                 <th>Code</th>
                                 <th>Nom</th>
-                                <th>Type</th>
-                                <th>Catégorie</th>
+                                {{-- <th>Type</th> --}}
+                                {{-- <th>Catégorie</th> --}}
                                 <th>Prix Unitaire</th>
-                                <th>Quantité</th>
-                                <th>Couleur</th>
+                                {{-- <th>Quantité</th> --}}
+                                {{-- <th>Couleur</th> --}}
                                 {{-- <th>Date d'Inventaire</th>
                                 <th>Date Mise à Jour</th> --}}
                                 <th>Image</th>
@@ -224,11 +224,11 @@
                     // { data: 'id', name: 'id' },
                     { data: 'product_code', name: 'product_code' },
                     { data: 'name', name: 'name' },
-                    { data: 'type', name: 'type' },
-                    { data: 'category', name: 'category' },
+                    // { data: 'type', name: 'type' },
+                    // { data: 'category', name: 'category' },
                     { data: 'unit_price', name: 'unit_price' },
-                    { data: 'quantity', name: 'quantity' },
-                    { data: 'color', name: 'color' },
+                    // { data: 'quantity', name: 'quantity' },
+                    // { data: 'color', name: 'color' },
                     // { data: 'inventory_date', name: 'inventory_date' },
                     // { data: 'update_date', name: 'update_date' },
                     { data: 'image_path', name: 'image_path', orderable: false, searchable: false },
