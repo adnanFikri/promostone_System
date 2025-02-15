@@ -112,17 +112,16 @@
 
                     <table id="products-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                            <tr>
-                                {{-- <th>ID</th> --}}
+                             <tr>
                                 <th>Code</th>
-                                <th>Nom</th>
-                                {{-- <th>Type</th> --}}
-                                {{-- <th>Catégorie</th> --}}
+                                <th>Nom</th> 
                                 <th>Prix Unitaire</th>
-                                {{-- <th>Quantité</th> --}}
-                                {{-- <th>Couleur</th> --}}
-                                {{-- <th>Date d'Inventaire</th>
-                                <th>Date Mise à Jour</th> --}}
+                                @if(in_array(auth()->user()->role, ['Admin', 'SAdmin']))
+                                    <th>Type</th>
+                                    <th>Catégorie</th> 
+                                    <th>Quantité</th>
+                                    <th>Couleur</th> 
+                                @endif
                                 <th>Image</th>
                                 <th>Actions</th>
                             </tr>
@@ -214,32 +213,34 @@
 @endcan
 
 
-    <script>
-        $(document).ready(function() {
-            $('#products-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route('products.index') }}',
-                columns: [
-                    // { data: 'id', name: 'id' },
-                    { data: 'product_code', name: 'product_code' },
-                    { data: 'name', name: 'name' },
-                    // { data: 'type', name: 'type' },
-                    // { data: 'category', name: 'category' },
-                    { data: 'unit_price', name: 'unit_price' },
-                    // { data: 'quantity', name: 'quantity' },
-                    // { data: 'color', name: 'color' },
-                    // { data: 'inventory_date', name: 'inventory_date' },
-                    // { data: 'update_date', name: 'update_date' },
-                    { data: 'image_path', name: 'image_path', orderable: false, searchable: false },
-                    // { data: 'actions', name: 'actions', orderable: false, searchable: false },
-                    { 
-                        data: 'actions', 
-                        name: 'actions', 
-                        orderable: false, 
-                        searchable: false,
-                        render: function(data, type, row) {
-                            return `
+   
+<script>
+     var isAdminOrSuperAdmin = @json(in_array(auth()->user()->role, ['Admin', 'SAdmin']));
+
+    $(document).ready(function() {
+        let columns = [
+            { data: 'product_code', name: 'product_code' },
+            { data: 'name', name: 'name' },
+            { data: 'unit_price', name: 'unit_price' },
+        ];
+
+        // Add Type, Category, Quantity, and Color columns only for Admin and SuperAdmin
+        if (isAdminOrSuperAdmin) {
+            columns.push({ data: 'type', name: 'type' });
+            columns.push({ data: 'category', name: 'category' });
+            columns.push({ data: 'quantity', name: 'quantity' });
+            columns.push({ data: 'color', name: 'color' });
+        }
+
+        columns.push({ data: 'image_path', name: 'image_path', orderable: false, searchable: false });
+
+        columns.push({ 
+            data: 'actions', 
+            name: 'actions', 
+            orderable: false, 
+            searchable: false,
+            render: function(data, type, row) {
+                return `
                                 @can("edit products")
                                     <button class="edit-btn text-blue-600 hover:underline" 
                                         data-id="${row.id}" 
@@ -265,20 +266,88 @@
                                     </button>
                                 @endcan
                             `;
-                        }
-                    }
-
-                ],
-                responsive: true,
-                order: [[0, 'desc']],
-                language: {
-                    paginate: {
-                        previous: "&laquo;",
-                        next: "&raquo;"
-                    }
-                }
-            });
+            }
         });
+
+        $('#products-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('products.index') }}',
+            columns: columns,
+            responsive: true,
+            order: [[0, 'desc']],
+            language: {
+                paginate: {
+                    previous: "&laquo;",
+                    next: "&raquo;"
+                }
+            }
+        });
+    });
+
+        
+        // $(document).ready(function() {
+        //     $('#products-table').DataTable({
+        //         processing: true,
+        //         serverSide: true,
+        //         ajax: '{{ route('products.index') }}',
+        //         columns: [
+        //             // { data: 'id', name: 'id' },
+        //             { data: 'product_code', name: 'product_code' },
+        //             { data: 'name', name: 'name' },
+        //             { data: 'type', name: 'type' },
+        //             { data: 'category', name: 'category' },
+        //             { data: 'unit_price', name: 'unit_price' },
+        //             { data: 'quantity', name: 'quantity' },
+        //             { data: 'color', name: 'color' },
+        //             { data: 'image_path', name: 'image_path', orderable: false, searchable: false },
+        //             // { data: 'actions', name: 'actions', orderable: false, searchable: false },
+        //             { 
+        //                 data: 'actions', 
+        //                 name: 'actions', 
+        //                 orderable: false, 
+        //                 searchable: false,
+        //                 render: function(data, type, row) {
+        //                     return `
+        //                         @can("edit products")
+        //                             <button class="edit-btn text-blue-600 hover:underline" 
+        //                                 data-id="${row.id}" 
+        //                                 data-name="${row.name}" 
+        //                                 data-type="${row.type}" 
+        //                                 data-category="${row.category}" 
+        //                                 data-unit-price="${row.unit_price}" 
+        //                                 data-quantity="${row.quantity}" 
+        //                                 data-color="${row.color}" 
+        //                                 data-inventory-date="${row.inventory_date}" 
+        //                                 data-update-date="${row.update_date}">
+        //                                 <svg class="w-6 h-6 text-blue-800 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        //                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+        //                                 </svg>
+        //                             </button>
+        //                         @endcan
+        //                         @can("delete products")
+        //                             <button class="delete-btn text-red-600 hover:underline ml-2" 
+        //                                 data-id="${row.id}">
+        //                                 <svg class="w-6 h-6 text-red-400 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+        //                                     <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+        //                                 </svg>
+        //                             </button>
+        //                         @endcan
+        //                     `;
+        //                 }
+        //             }
+
+        //         ],
+        //         responsive: true,
+        //         order: [[0, 'desc']],
+        //         language: {
+        //             paginate: {
+        //                 previous: "&laquo;",
+        //                 next: "&raquo;"
+        //             }
+        //         }
+        //     });
+        // });
 
 
 
