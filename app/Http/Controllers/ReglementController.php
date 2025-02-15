@@ -100,6 +100,24 @@ class ReglementController extends Controller
     public function store(Request $request)
     {
         try {
+            $existingReglement = Reglement::where([
+                ['no_bl', $request->no_bl],
+                ['montant', $request->montant],
+                ['mode', $request->mode],
+            ])->first();
+            
+            if ($existingReglement) {
+                $nextRoute = ($request->mode == 'avance') 
+                    ? route('bon_livraison', ['no_bl' => $request->no_bl]) 
+                    : route('reglements.index');
+            
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ce paiement a déjà été enregistré pour cette BL avec ce montant.',
+                    'nextRoute' => $nextRoute, 
+                ]);
+            }
+            
             $paymentStatus = PaymentStatus::where('no_bl', $request->no_bl)->first();
 
             if (!$paymentStatus) {
@@ -154,8 +172,6 @@ class ReglementController extends Controller
                 'montant_restant' => $rest ,
             ];
            
-
-
             if ($request->has('chefAtelier') && $request->chefAtelier !== null) {
                 $paymentStatusData['chef-atelier'] = $request->chefAtelier;
                 BonLivraison::firstOrCreate(
@@ -175,16 +191,7 @@ class ReglementController extends Controller
             if ($request->has('destination') && $request->destination !== null) {
                 $paymentStatusData['destination'] = $request->destination;
                 $paymentStatusData['commerçant'] = Auth::user()->name;
-                // $paymentStatusData['chef-atelier'] = $request->chefAtelier;
             }
-            
-            // if ($request->has('commerçant') && $request->commerçant !== null) {
-            //     $paymentStatusData['commerçant'] = Auth::user()->name;
-            // }
-            
-            // if ($request->has('tel_commerçant') && $request->tel_commerçant !== null) {
-            //     $paymentStatusData['tel-commerçant'] = $request->tel_commerçant;
-            // }
             
             if ($request->has('date_echeance') && $request->date_echeance !== null) {
                 $paymentStatusData['date-echeance'] = $request->date_echeance;

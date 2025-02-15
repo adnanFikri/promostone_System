@@ -431,7 +431,7 @@
                                 <tr>
                                     {{-- <th scope="col" class="px-6 py-3">ID</th> --}}
                                     <th scope="col" class="px-6 py-3">No BL</th>
-                                    {{-- <th scope="col" class="px-6 py-3">CODE CLIENT</th> --}}
+                                    <th scope="col" class="px-6 py-3">CODE CLIENT</th>
                                     <th scope="col" class="px-6 py-3">RAISON</th>
                                     <th scope="col" class="px-6 py-3">DATE de BL</th>
                                     <th scope="col" class="px-6 py-3">Coupe Statut</th>
@@ -798,7 +798,7 @@
             columns: [
                 // { data: 'id', name: 'id' },
                 { data: 'no_bl', name: 'no_bl' },
-                // { data: 'code_client', name: 'code_client' },
+                { data: 'code_client', name: 'code_client' },
                 // { data: 'name_client', name: 'name_client' },
                 {
                     data: 'name_client',

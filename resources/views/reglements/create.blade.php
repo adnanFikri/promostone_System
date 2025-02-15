@@ -363,6 +363,10 @@ $('#save-button').on('click', function (e) {
                 customClass: {
                     confirmButton: 'my-alert-button' // Applique votre classe personnalisée
                 }
+            }).then((result) => {
+                if (result.isConfirmed && data.nextRoute) {
+                    window.location.replace(data.nextRoute); // Redirect after error message
+                }
             });
         }
     })

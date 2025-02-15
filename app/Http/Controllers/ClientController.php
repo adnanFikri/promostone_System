@@ -45,7 +45,7 @@ class ClientController extends Controller
                     ->addColumn('actions', function ($client) {
                         $actions = '<div id="div-actions1" class="bg-gray-100" style="background-color:transparent;display:flex;">';
         
-                        if (auth()->user()->can('create clients')) {
+                        if (auth()->user()->can('edit clients')) {
                             $actions .= '
                                 <a href="#" onclick="openUpdateModal(' . $client->id . ')" class="text-blue-500 hover:underline">
                                     <svg class="w-6 h-6 text-blue-800 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,7 +54,7 @@ class ClientController extends Controller
                                 </a>';
                         }
         
-                        if (auth()->user()->can('edit clients')) {
+                        if (auth()->user()->can('delete clients')) {
                             $deleteUrl = route('clients.destroy', $client->id);
                             $actions .= '
                                 <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Are you sure?\');">

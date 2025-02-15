@@ -288,7 +288,8 @@ $('#save-button').on('click', function (e) {
                 if (result.isConfirmed) {
                         const noBl = '{{ $no_bl }}'; // Dynamically retrieve the no_bl
                         const nextRoute = '{{ route('bon_livraison', ['no_bl' => ':no_bl']) }}'.replace(':no_bl', noBl);
-                        window.location.href = nextRoute;
+                        // window.location.href = nextRoute;
+                        window.location.replace(nextRoute);
                     }
             });
         } else {
@@ -296,7 +297,14 @@ $('#save-button').on('click', function (e) {
                 icon: 'error',
                 title: 'Erreur!',
                 text: data.message,
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                }
+            }).then((result) => {
+                if (result.isConfirmed && data.nextRoute) {
+                    window.location.replace(data.nextRoute); // Redirect after error message
+                }
             });
         }
     })
