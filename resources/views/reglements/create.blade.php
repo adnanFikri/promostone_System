@@ -120,6 +120,18 @@
         .my-alert-button:hover {
             background-color: #218838 !important; /* Slightly darker green on hover */
         }
+        .alert-button-cancel {
+            background-color: #a72828 !important; /* Green button color */
+            color: white !important; /* Text color */
+            border: none !important;
+            padding: 10px 20px !important;
+            border-radius: 5px !important;
+            font-size: 16px !important;
+            cursor: pointer !important;
+        }
+        .alert-button-cancel:hover {
+            background-color: #882121 !important; /* Slightly darker green on hover */
+        }
     </style>
 @can("create reglements")
     <div class="py-5 ">
@@ -295,7 +307,94 @@
             .catch(error => console.error('Error:', error));
     });
 
-// Save form data
+// // Save form data
+// $('#save-button').on('click', function (e) {
+//     e.preventDefault();
+
+//     const selectionMode = $('input[name="selection_mode"]:checked').val();
+//     let bl, client;
+
+//     if (selectionMode === 'client') {
+//         client = $('#code_client').val();
+//         bl = $('#bls').val();
+//     } else if (selectionMode === 'bl') {
+//         const selectedBL = $('#search_bls').select2('data')[0]; // Get the selected option's data
+//         if (selectedBL) {
+//             bl = selectedBL.id;
+//             client = selectedBL.code_client; // Access code_client from the custom data
+//         }
+//     }
+
+//     if (!bl) {
+//         alert('Please select a BL.');
+//         return;
+//     }
+
+//     const formData = {
+//         no_bl: bl,
+//         code_client: client,
+//         montant: $('#montant').val(), 
+//         date: $('#date_reglement').val(), 
+//         type_pay: $('#mode_reglement').val(), 
+//         reference_chq: $('#reference_chq').val(), 
+//         date_chq: $('#date_chq').val(), 
+//         mode: $('#mode').val(), 
+//         _token: '{{ csrf_token() }}'
+//     };
+
+//     fetch('{{ route('reglements.store') }}', {
+//         method: 'POST',
+//         body: new URLSearchParams(formData),
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//         },
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
+            
+//             // Show SweetAlert with the updated balance
+//             Swal.fire({
+//                 title: 'Solde restant mis à jour',
+//                 text: `Le solde restant mis à jour est : ${updatedBalance}`,
+//                 icon: 'success',
+//                 confirmButtonText: 'OK',
+//                 customClass: {
+//                     confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+//                 }
+//             }).then(() => {
+//                 window.location.href = '{{ route("reglements.index") }}';
+//             });
+//         } else {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Erreur!',
+//                 text: data.message,
+//                 confirmButtonText: 'OK',
+//                 customClass: {
+//                     confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+//                 }
+//             }).then((result) => {
+//                 if (result.isConfirmed && data.nextRoute) {
+//                     window.location.replace(data.nextRoute); // Redirect after error message
+//                 }
+//             });
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Erreur!',
+//             text: 'Une erreur s\'est produite lors de la sauvegarde.',
+//             confirmButtonText: 'OK',
+//             customClass: {
+//                 confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+//             }
+//         });
+//     });
+// });
 $('#save-button').on('click', function (e) {
     e.preventDefault();
 
@@ -306,10 +405,10 @@ $('#save-button').on('click', function (e) {
         client = $('#code_client').val();
         bl = $('#bls').val();
     } else if (selectionMode === 'bl') {
-        const selectedBL = $('#search_bls').select2('data')[0]; // Get the selected option's data
+        const selectedBL = $('#search_bls').select2('data')[0]; 
         if (selectedBL) {
             bl = selectedBL.id;
-            client = selectedBL.code_client; // Access code_client from the custom data
+            client = selectedBL.code_client;
         }
     }
 
@@ -321,68 +420,96 @@ $('#save-button').on('click', function (e) {
     const formData = {
         no_bl: bl,
         code_client: client,
-        montant: $('#montant').val(), 
-        date: $('#date_reglement').val(), 
-        type_pay: $('#mode_reglement').val(), 
-        reference_chq: $('#reference_chq').val(), 
-        date_chq: $('#date_chq').val(), 
-        mode: $('#mode').val(), 
+        montant: $('#montant').val(),
+        date: $('#date_reglement').val(),
+        type_pay: $('#mode_reglement').val(),
+        reference_chq: $('#reference_chq').val(),
+        date_chq: $('#date_chq').val(),
+        mode: $('#mode').val(),
         _token: '{{ csrf_token() }}'
     };
 
-    fetch('{{ route('reglements.store') }}', {
-        method: 'POST',
-        body: new URLSearchParams(formData),
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
-            
-            // Show SweetAlert with the updated balance
-            Swal.fire({
-                title: 'Solde restant mis à jour',
-                text: `Le solde restant mis à jour est : ${updatedBalance}`,
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-                }
-            }).then(() => {
-                window.location.href = '{{ route("reglements.index") }}';
-            });
-        } else {
+    function submitForm(override = false) {
+        if (override) {
+            formData.override = true; // Send override flag
+        }
+
+        fetch('{{ route('reglements.store') }}', {
+            method: 'POST',
+            body: new URLSearchParams(formData),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success === true) {
+                const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
+                
+                Swal.fire({
+                    title: 'Succès!',
+                    text: `Le solde restant mis à jour est : ${updatedBalance}`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                    },
+                }).then(() => {
+                    window.location.href = '{{ route("reglements.index") }}';
+                });
+
+            } else if (data.success === 'confirm' && !override) { 
+                // Show confirmation alert only if override is false
+                Swal.fire({
+                    title: 'Confirmation',
+                    text: data.message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui, enregistrer',
+                    customClass: {
+                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                    },
+                    cancelButtonText: 'Non, annuler',
+                    customClass: {
+                        confirmButton: 'my-alert-button',
+                        cancelButton: 'alert-button-cancel' // Applique votre classe personnalisée
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        submitForm(true); // ✅ Send override = true on retry
+                    }
+                });
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur!',
+                    text: data.message,
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                    },
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur!',
-                text: data.message,
+                text: 'Une erreur s\'est produite lors de la sauvegarde.',
                 confirmButtonText: 'OK',
-                customClass: {
-                    confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-                }
-            }).then((result) => {
-                if (result.isConfirmed && data.nextRoute) {
-                    window.location.replace(data.nextRoute); // Redirect after error message
-                }
+                    customClass: {
+                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                    },
             });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Erreur!',
-            text: 'Une erreur s\'est produite lors de la sauvegarde.',
-            confirmButtonText: 'OK',
-            customClass: {
-                confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-            }
         });
-    });
+    }
+
+    submitForm(); // First submission
 });
+
+
 // -=-==-=-= end save data -=-=-==- 
 // 0-=-= 0=-== 0==0 
 

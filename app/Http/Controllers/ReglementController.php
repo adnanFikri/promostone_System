@@ -100,23 +100,28 @@ class ReglementController extends Controller
     public function store(Request $request)
     {
         try {
-            $existingReglement = Reglement::where([
-                ['no_bl', $request->no_bl],
-                ['montant', $request->montant],
-                ['mode', $request->mode],
-            ])->first();
+            $override = $request->input('override', false); // Get override flag
+
+$existingReglement = Reglement::where([
+    ['no_bl', $request->no_bl],
+    ['montant', $request->montant],
+    ['mode', $request->mode],
+])->first();
+
+if ($existingReglement && !$override) { // If override is false, ask for confirmation
+    if ($request->mode == 'reglement') {
+        return response()->json([
+            'success' => 'confirm', 
+            'message' => 'Un règlement avec le même montant existe déjà pour cette BL. Voulez-vous continuer et enregistrer quand même ?',
+        ]);
+    }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'Ce paiement a déjà été enregistré pour cette BL avec ce montant.',
+    ]);
+}
             
-            if ($existingReglement) {
-                $nextRoute = ($request->mode == 'avance') 
-                    ? route('bon_livraison', ['no_bl' => $request->no_bl]) 
-                    : route('reglements.index');
-            
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ce paiement a déjà été enregistré pour cette BL avec ce montant.',
-                    'nextRoute' => $nextRoute, 
-                ]);
-            }
             
             $paymentStatus = PaymentStatus::where('no_bl', $request->no_bl)->first();
 
