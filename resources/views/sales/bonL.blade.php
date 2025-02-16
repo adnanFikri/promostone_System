@@ -106,7 +106,9 @@ body {
                 <tbody>
                 @foreach($groupedSales as $produit => $sales)
                     @php
-                        $totalMontant = 0; // Initialize total surface for this product
+                        $totalSurface = 0; // Initialize total surface for this product
+
+                        $totalMontant = 0; // Initialize total Montant for this product
                     @endphp
                     @foreach($sales as $index => $sale)
                         @if ($sale->mode == "service")
@@ -120,6 +122,7 @@ body {
                                 <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire ?? '-' }}</td>
                                 <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td>
                                 @php
+                                    $totalSurface += $sale->qte;
                                     $totalMontant += $sale->montant;
                                 @endphp
                             </tr>
@@ -139,10 +142,12 @@ body {
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->prix_unitaire }}</td>
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->montant }}</td>
                                     @php
+                                        $totalSurface += $sale->qte; // Initialize total surface for this product
                                         $totalMontant += $sale->montant;
                                     @endphp
                                 @else
                                     @php
+                                        $totalSurface += $sale->qte; // Initialize total surface for this product
                                         $totalMontant += $sale->montant;
                                     @endphp
                                     <td class="border border-gray-300 p-2 text-center">{{ $sale->longueur }} x {{ $sale->largeur }} </td>
@@ -156,8 +161,9 @@ body {
                         @endif
                     @endforeach
                     <tr class="bg-gray-100">
-                        <td colspan="6" class="border border-b-2 border-gray-300 p-2 text-center font-bold">TOTAL {{$produit}} ({{$sale->ref_produit}})</td>
-                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center" colspan="1"> {{ number_format($totalMontant, 3) }}</td>
+                        <td colspan="3" class="border border-b-2 border-gray-300 p-2 text-right font-bold">TOTAL {{$produit}} ({{$sale->ref_produit}})</td>
+                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center" colspan="3"> {{ number_format($totalSurface, 3) }} {{ $sale->mode !== "service" ? 'M2' : '' }}</td>
+                        <td class="border border-b-2 border-gray-300 p-2 font-bold text-blue-700 text-center" colspan="1"> {{ number_format($totalMontant, 2) }}</td>
                     </tr>
                 @endforeach
                    
@@ -217,7 +223,7 @@ body {
                         </tr>
                         <tr>
                             <th class="bg-gray-100 border border-gray-300 p-2 text-left text-gray-600">Reste à Payer</th>
-                            <td class="border border-gray-300 p-2 text-red-400">{{ $paymentStatus->montant_restant > 0 ? $paymentStatus->montant_restant : 0 }}</td>
+                            <td class="border border-gray-300 p-2 text-red-400">{{ $paymentStatus->montant_restant > 3 ? $paymentStatus->montant_restant : 0 }}</td>
                             {{-- <th class="border border-gray-300 p-2 text-left">Date</th> --}}
                         </tr>
                     </thead>

@@ -174,7 +174,7 @@
                     <tbody>
                         {{-- @foreach($reglements as $reglement) --}}
                         <tr>
-                            <td colspan="4" class="border border-b-2 border-gray-300 p-2 text-cente font-meduiem uppercase">{{ $paymentStatus['destination'] }}, le {{ $paymentStatus['date-echeance'] }}</td>
+                            <td colspan="4" class="border border-b-2 border-gray-300 p-2 text-cente font-bold uppercase">{{ $paymentStatus['destination'] }}, <span class="lowercase text-gray-700 font-medium">date prévue de chargement</span> {{ $paymentStatus['date-echeance'] }}</td>
                             {{-- <td class="border border-gray-300 p-2">{{ $reglement->date }}</td> --}}
                         </tr>
                         {{-- @endforeach --}}
