@@ -298,7 +298,7 @@
                         {{-- <div class="bg-gray-100 border border-gray-300 text-gray-800 px-4 py-2 rounded mb-4 inline-block font-bold" role="alert"> --}}
                         <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4 inline-block " role="alert">
                         {{-- <div class="text-gray-500 font-bold mb-2"> --}}
-                            <b>Dernière modif, BL:</b> {{ $lastSaleCheck->no_bl }} => {{ $lastSaleCheck->created_at }}
+                            <b>Dernière modif, BL:</b> {{ $lastSaleCheck->no_bl }} => {{ $lastSaleCheck->created_at }}, par <span class="font-bold">{{ $lastSaleCheck->user_name }}</span>
                         </div>
                     @endif
 

@@ -26,7 +26,7 @@ class PaymentStatusController extends Controller
         }
     public function index(Request $request)
     {
-        $lastSaleCheck = SaleCheck::select('no_bl', DB::raw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+00:00'), '%Y-%m-%d %H:%i:%s') as created_at"))
+        $lastSaleCheck = SaleCheck::select('no_bl', 'user_name',DB::raw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+00:00'), '%Y-%m-%d %H:%i:%s') as created_at"))
         ->orderBy('created_at', 'desc')
         ->first();
 
