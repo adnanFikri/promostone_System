@@ -347,15 +347,15 @@
                                     <button type="button" id="refreshButton" class="bg-orange-400 text-white px-4 py-2 rounded shadow hover:bg-orange-600 focus:outline-none focus:ring focus:ring-blue-300">
                                         Reset
                                     </button>
-
                                 </form>
 
                                 <!-- Sale Checks List -->
                                 <ul id="saleChecksList">
                                     @foreach ($saleChecks as $saleCheck)
                                         <li class="mb-4">
-                                            <p><strong>No BL:</strong> {{ $saleCheck->no_bl }}</p>
+                                            <p><strong> BL:</strong> {{ $saleCheck->no_bl }}</p>
                                             <p><strong>Date:</strong> {{ $saleCheck->created_at }}</p>
+                                            <p><strong>Par:</strong> {{ $saleCheck->user_name }}</p>
                                             <hr class="mt-2">
                                         </li>
                                     @endforeach
@@ -694,6 +694,7 @@
                 listItem.innerHTML = `
                     <p><strong>No BL:</strong> ${saleCheck.no_bl}</p>
                     <p><strong>Date:</strong> ${formatDate(saleCheck.created_at)}</p>
+                    <p><strong>Par:</strong> ${saleCheck.user_name}</p>
                     <hr class="mt-2">
                 `;
                 saleChecksList.appendChild(listItem);
