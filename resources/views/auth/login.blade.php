@@ -36,17 +36,17 @@
             <div class="input-group uf-input-group input-group-lg mb-3">
               <span class="input-group-text fa fa-user"></span>
               <input type="text" name="email" class="form-control" placeholder="Email address" required> 
-              @error('email')
-                  <span class="text-danger">{{ $message }}</span>
-              @enderror
             </div>
+            @error('email')
+                <p class="text-danger">{{ $message }}</p>
+            @enderror
             <div class="input-group uf-input-group input-group-lg mb-3">
               <span class="input-group-text fa fa-lock"></span>
               <input type="password" name="password" class="form-control" placeholder="Password" required>
-              @error('password')
-                <span class="text-danger">{{ $message }}</span>
-            @enderror
             </div>
+            @error('password')
+              <p class="text-danger">{{ $message }}</p>
+          @enderror
             <div class="d-flex mb-3 justify-content-between">
               <div class="form-check">
                 <input type="checkbox" name="remember" class="form-check-input uf-form-check-input" id="exampleCheck1">

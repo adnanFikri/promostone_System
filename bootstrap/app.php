@@ -15,7 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'restrict.access' => \App\Http\Middleware\RestrictAccessByTime::class,
         ]);
+        $middleware->appendToGroup('web', [
+            \App\Http\Middleware\RestrictAccessByTime::class,
+        ]);
+
+        
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

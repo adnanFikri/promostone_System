@@ -106,6 +106,7 @@ public function update(Request $request, $id)
     // Update user fields
     $user->name = $validatedData['name'];
     $user->email = $validatedData['email'];
+    $user->role = $validatedData['role'];
     $user->roles()->sync([$validatedData['role']]);
 
     // Update password only if provided

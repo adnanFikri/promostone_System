@@ -242,6 +242,7 @@
                 document.getElementById('update_name').value = data.name;
                 document.getElementById('update_email').value = data.email;
                 document.getElementById('update_role').value = data.roles[0]?.id || '';
+                document.getElementById('update_password').value = '';
 
                 // Set form action URL dynamically
                 document.getElementById('updateUserForm').action = `/users/${userId}`;

@@ -100,12 +100,12 @@
                         @if ($sale->mode == "service")
                             <!-- Row for services -->
                             <tr>
-                                <td class="border border-gray-900 p-2 font-bold text-blue-600" colspan="2">
+                                <td class="border border-gray-300 p-2 font-bold text-blue-600" colspan="2">
                                     {{ $sale->produit }}
                                 </td>
-                                <td class="border border-gray-900 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
-                                <td class="border border-gray-900 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
-                                <td class="border border-gray-900 p-2 text-center">Service</td>
+                                <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
+                                <td class="border border-gray-300 p-2 text-center">{{ $sale->nbr ?? '-' }}</td>
+                                <td class="border border-gray-300 p-2 text-center">Service</td>
                                 @php
                                         // Calculate surface for this sale and add to total
                                         // $surface = longueur * $sale->largeur;
@@ -149,8 +149,9 @@
                 </tbody>
             </table>
         </div>
+        <p class="text-right font-bold mt-2 text-lg">Poids total: {{ number_format($totalWeightKg, 2) }} kg</p>
 
-        <div class="uppercase mt-6 text-xl font-bold">
+        <div class="uppercase  text-xl font-bold">
             @if ($paymentStatus->montant_restant > 3)
                 <p class="text-red-400">Solde impayé ❌</p>
             @else

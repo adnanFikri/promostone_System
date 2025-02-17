@@ -117,6 +117,13 @@ class BonSortieController extends Controller
         // Group sales data by product name
         $groupedSales = $sales->groupBy('produit');
 
+        // Calculate the total weight in kg (excluding "Service" mode)
+        $totalWeightKg = $sales->filter(function ($sale) {
+            return $sale->mode !== 'service'; // Exclude 'Service' mode
+        })->sum(function ($sale) {
+            return ($sale->qte * 2) * 27.25;
+        });
+
         // Prepare data for the view
         $data = [
             'paymentStatus' => $paymentStatus,
@@ -124,6 +131,7 @@ class BonSortieController extends Controller
             'reglements' => $reglements,
             'client' => $client,
             'print_nbr' => $print_nbr,
+            'totalWeightKg' => $totalWeightKg, // Pass the total weight to the view
         ];
 
         return view('sales.bonS', $data);
