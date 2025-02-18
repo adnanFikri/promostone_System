@@ -115,7 +115,7 @@
 
                     <table id="clients-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                            <tr>
+                            <tr> 
                                 {{-- <th scope="col" class="px-6 py-3">ID</th> --}}
                                 <th scope="col" class="px-6 py-3">Client Code</th>
                                 <th scope="col" class="px-6 py-3">Categorie</th>
@@ -123,10 +123,10 @@
                                 <th scope="col" class="px-6 py-3">Téléphone</th>
                                 <th scope="col" class="px-6 py-3">Type</th>
                                 <th scope="col" class="px-6 py-3">creé par</th>
-                                @if(in_array(auth()->user()->role, ['Admin', 'SAdmin']))
+                                {{-- @if(in_array(auth()->user()->role, ['Admin', 'SAdmin']))
                                     <th scope="col" class="px-6 py-3">Chiffre d'affaire</th>
                                     <th scope="col" class="px-6 py-3">Montant Paye</th>
-                                @endif
+                                @endif --}}
                                 <th scope="col" class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
@@ -292,26 +292,26 @@
     ];
 
     // Only add total_sales and total_paid if the user is Admin or SAdmin
-    if (isAdminOrSuperAdmin) {
-        columns.push(
-            { 
-                data: 'total_sales', 
-                name: 'total_sales',
-                searchable: false,
-                render: function (data) {
-                    return formatNumberWithSpaces(data);
-                } 
-            },
-            { 
-                data: 'total_paid', 
-                name: 'total_paid',
-                searchable: false,
-                render: function (data) {
-                    return formatNumberWithSpaces(data);
-                } 
-            }
-        );
-    }
+    // if (isAdminOrSuperAdmin) {
+    //     columns.push(
+    //         { 
+    //             data: 'total_sales', 
+    //             name: 'total_sales',
+    //             searchable: false,
+    //             render: function (data) {
+    //                 return formatNumberWithSpaces(data);
+    //             } 
+    //         },
+    //         { 
+    //             data: 'total_paid', 
+    //             name: 'total_paid',
+    //             searchable: false,
+    //             render: function (data) {
+    //                 return formatNumberWithSpaces(data);
+    //             } 
+    //         }
+    //     );
+    // }
 
     // Add actions column
     columns.push({
