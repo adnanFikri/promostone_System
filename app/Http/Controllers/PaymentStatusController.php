@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Sale;
 use App\Models\Client;
 use App\Models\BonCoupe;
@@ -87,11 +88,25 @@ class PaymentStatusController extends Controller
                 } else {
                     $item->saleChecks = [];
                 }
-                    // Fetch `coupe` from BonCoupe
+                // Fetch `coupe` from BonCoupe
                 $item->coupe = BonCoupe::where('no_bl', $item->no_bl)->value('coupe');
-
+                
                 // Fetch `sortie` from BonSortie
                 $item->sortie = BonSortie::where('no_bl', $item->no_bl)->value('sortie');
+                
+                $coupef = BonCoupe::where('no_bl', $item->no_bl)->first();
+                // Calculate time difference in **hours**
+                // Initialize default value
+                $item->time_difference = 'pas encore';
+
+                // **Ensure $coupef is not null before accessing properties**
+                if ($coupef && $coupef->print_date && $coupef->date_coupe) {
+                    $printDate = Carbon::parse($coupef->print_date);
+                    $dateCoupe = Carbon::parse($coupef->date_coupe);
+                    $diffHours = floor($printDate->diffInHours($dateCoupe));
+                    $diffMinutes = $printDate->diffInMinutes($dateCoupe) % 60;
+                    $item->time_difference = "{$diffHours}h {$diffMinutes}min";
+                }
             });
 
             return DataTables::of($data)

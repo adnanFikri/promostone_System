@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Sale;
 use App\Models\Client;
 use App\Models\BonCoupe;
@@ -53,6 +54,17 @@ class BonCoupeController extends Controller
     
                 // Convert the products to a unique, comma-separated string
                 $productsString = $products->unique()->implode(', ');
+
+                // Calculate time difference in **hours**
+                $printDate = $bon->print_date ? Carbon::parse($bon->print_date) : null;
+                $dateCoupe = $bon->date_coupe ? Carbon::parse($bon->date_coupe) : null;
+                $timeDifference = 'pas encore';
+
+                if ($printDate && $dateCoupe) {
+                    $diffHours = floor($printDate->diffInHours($dateCoupe));
+                    $diffMinutes = $printDate->diffInMinutes($dateCoupe) % 60;
+                    $timeDifference = "{$diffHours}h {$diffMinutes}min";
+                }
     
                 return [
                     'id' => $bon->id,
@@ -69,21 +81,9 @@ class BonCoupeController extends Controller
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
                     'created_at' => $bon->created_at, // Add created_at for sorting
                     'isAdmin' => $isAdmin,
+                    'time_difference' => $timeDifference
                 ];
             });
-    
-
-            // $bons = $bons->sortBy(function ($item) {
-            //     $coupeOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2];
-            //     $finitionOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2, 'Sans' => 3];
-            
-            //     return [
-            //         $coupeOrder[$item['coupe']] ?? 3, // Default to last if not found
-            //         $finitionOrder[$item['finition']] ?? 4, // Default to last if not found
-            //         $item['created_at'] // Sort by date, oldest first
-            //     ];
-            // });
-
             $bons = $bons->sort(function ($a, $b) {
                 $coupeOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2];
                 $finitionOrder = ['Non' => 0, 'En cours' => 1, 'Oui' => 2, 'Sans' => 3];
@@ -162,19 +162,19 @@ class BonCoupeController extends Controller
     
     public function updateCoupe(Request $request, $id)
     {
+        $bon = BonCoupe::findOrFail($id);
+
         if($request->input('coupe') === 'Oui'){
-            $bon = BonCoupe::findOrFail($id);
             $bon->coupe = $request->input('coupe');
             $bon->date_coupe= now();
             $bon->userName = Auth::user()->name;
-            $bon->save();
         }else{
-            $bon = BonCoupe::findOrFail($id);
             $bon->coupe = $request->input('coupe');
             $bon->date_coupe= null;
             $bon->userName = null;
-            $bon->save();
         }
+        $bon->save();
+
     
         return response()->json(['message' => 'Coupe status updated successfully.']);
     }
@@ -191,14 +191,16 @@ class BonCoupeController extends Controller
     {
         // Retrieve the BonCoupe record based on the no_bl value
         $bonCoupe = BonCoupe::where('no_bl', $no_bl)->first();
-    
 
-        if ($bonCoupe ) {
+        if ($bonCoupe) {
             // if (!auth()->user()->can('create users')) {
                 // Increment the print_nbr field
                 $bonCoupe->print_nbr = $bonCoupe->print_nbr + 1;
                 // add other date for imprement and let this for select of coupr
-                $bonCoupe->print_date = now();
+                if (!$bonCoupe->print_date) {
+                    $bonCoupe->print_date = now();
+                }
+                // $bonCoupe->print_date = now();
                 $bonCoupe->save();
             // }
     

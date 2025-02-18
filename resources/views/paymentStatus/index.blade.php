@@ -436,6 +436,7 @@
                                     <th scope="col" class="px-6 py-3">DATE de BL</th>
                                     <th scope="col" class="px-6 py-3">Coupe Statut</th>
                                     <th scope="col" class="px-6 py-3">Sortie Statut</th>
+                                    <th scope="col" class="px-6 py-3">Duree</th>
                                     <th scope="col" class="px-6 py-3">MONTANT TOTAL ($)</th>
                                     <th scope="col" class="px-6 py-3">MONTAT PAYé ($)</th>
                                     <th scope="col" class="px-6 py-3">Solde Rest ($)</th>
@@ -838,6 +839,10 @@
                             </p>
                         `;
                     }
+                },
+                { 
+                    data: 'time_difference', 
+                    name: 'time_difference', 
                 },
                 {
                     data: 'montant_total',

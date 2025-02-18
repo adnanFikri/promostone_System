@@ -7,12 +7,13 @@ use App\Models\Reglement;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
 use App\Imports\ClientsImport;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Sale;  // Import the Sale model
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Models\Permission;
 // use Illuminate\Routing\Controller;
 
 class ClientController extends Controller
@@ -40,7 +41,22 @@ class ClientController extends Controller
     public function index(Request $request)
     {
             if ($request->ajax()) {
-                $clients = Client::select(['id', 'code_client', 'name', 'category', 'phone', 'type', 'user-name']);
+                // $clients = Client::select(['id', 'code_client', 'name', 'category', 'phone', 'type', 'user-name']);
+                $clients = Client::select([
+                    'clients.id', 
+                    'clients.code_client', 
+                    'clients.name', 
+                    'clients.category', 
+                    'clients.phone', 
+                    'clients.type', 
+                    'clients.user-name',
+                    DB::raw('COALESCE(SUM(payment_statuses.montant_total), 0) as total_sales'),
+                    DB::raw('COALESCE(SUM(payment_statuses.montant_payed), 0) as total_paid')
+                ])
+                ->leftJoin('payment_statuses', 'clients.code_client', '=', 'payment_statuses.code_client')
+                ->groupBy('clients.id', 'clients.code_client', 'clients.name', 'clients.category', 'clients.phone', 'clients.type', 'clients.user-name');
+    
+                
                 return DataTables::of($clients)
                     ->addColumn('actions', function ($client) {
                         $actions = '<div id="div-actions1" class="bg-gray-100" style="background-color:transparent;display:flex;">';

@@ -146,6 +146,7 @@ select.rounded-md.w-md {
                                 <th>Coupe Par</th>
                                 <th>N°print</th>
                                 <th>print date</th>
+                                <th>DUREE</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -165,7 +166,6 @@ select.rounded-md.w-md {
         serverSide: true,
         ajax: '{{ route("listBonCoupe.index") }}',
         responsive: true,  // Add this line to enable responsive table
-        //  order: [[0, 'desc']],
         order: [
             // [5, 'asc'],  // Sort by Coupe column first
             // [6, 'asc'],  // Then by Finition column
@@ -228,6 +228,10 @@ select.rounded-md.w-md {
             
             { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
             { data: 'print_date', name: 'print_date' }, // Commercant column
+            { 
+                data: 'time_difference', 
+                name: 'time_difference', 
+            },
             { 
                 data: 'actions', 
                 name: 'actions', 

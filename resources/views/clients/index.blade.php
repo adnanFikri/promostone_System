@@ -123,6 +123,10 @@
                                 <th scope="col" class="px-6 py-3">Téléphone</th>
                                 <th scope="col" class="px-6 py-3">Type</th>
                                 <th scope="col" class="px-6 py-3">creé par</th>
+                                @if(in_array(auth()->user()->role, ['Admin', 'SAdmin']))
+                                    <th scope="col" class="px-6 py-3">Chiffre d'affaire</th>
+                                    <th scope="col" class="px-6 py-3">Montant Paye</th>
+                                @endif
                                 <th scope="col" class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
@@ -268,25 +272,60 @@
     
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Function to format numbers with spaces as thousands separators
+    function formatNumberWithSpaces(number) {
+        if (number == null) return '';
+        return number
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+   var isAdminOrSuperAdmin = @json(in_array(auth()->user()->role, ['Admin', 'SAdmin']));
+
+    var columns = [
+        { data: 'code_client', name: 'code_client' },
+        { data: 'category', name: 'category' },
+        { data: 'name', name: 'name' },
+        { data: 'phone', name: 'phone' },
+        { data: 'type', name: 'type' },
+        { data: 'user-name', name: 'user-name' }
+    ];
+
+    // Only add total_sales and total_paid if the user is Admin or SAdmin
+    if (isAdminOrSuperAdmin) {
+        columns.push(
+            { 
+                data: 'total_sales', 
+                name: 'total_sales',
+                searchable: false,
+                render: function (data) {
+                    return formatNumberWithSpaces(data);
+                } 
+            },
+            { 
+                data: 'total_paid', 
+                name: 'total_paid',
+                searchable: false,
+                render: function (data) {
+                    return formatNumberWithSpaces(data);
+                } 
+            }
+        );
+    }
+
+    // Add actions column
+    columns.push({
+        data: 'actions',
+        name: 'actions',
+        orderable: false,
+        searchable: false
+    });
+
     $('#clients-table').DataTable({
         processing: true,
         serverSide: true,
         ajax: '{{ route('clients.index') }}',
-        columns: [
-            // { data: 'id', name: 'id' },
-            { data: 'code_client', name: 'code_client' },
-            { data: 'category', name: 'category' },
-            { data: 'name', name: 'name' },
-            { data: 'phone', name: 'phone' },
-            { data: 'type', name: 'type' },
-            { data: 'user-name', name: 'user-name' },
-            {
-                data: 'actions',
-                name: 'actions',
-                orderable: false,
-                searchable: false
-            }
-        ],
+        columns: columns,
         responsive: true,
         order: [[0, 'desc']],
         lengthMenu: [10, 5, 25, 50],
