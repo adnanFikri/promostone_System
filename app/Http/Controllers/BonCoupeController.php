@@ -55,16 +55,37 @@ class BonCoupeController extends Controller
                 // Convert the products to a unique, comma-separated string
                 $productsString = $products->unique()->implode(', ');
 
-                // Calculate time difference in **hours**
                 $printDate = $bon->print_date ? Carbon::parse($bon->print_date) : null;
                 $dateCoupe = $bon->date_coupe ? Carbon::parse($bon->date_coupe) : null;
                 $timeDifference = 'pas encore';
 
                 if ($printDate && $dateCoupe) {
-                    $diffHours = floor($printDate->diffInHours($dateCoupe));
+                    $diffDays = floor($printDate->diffInDays($dateCoupe));
+                    $diffHours = $printDate->diffInHours($dateCoupe) % 24; // Get remaining hours after full days
                     $diffMinutes = $printDate->diffInMinutes($dateCoupe) % 60;
-                    $timeDifference = "{$diffHours}h {$diffMinutes}min";
+
+                    // Build the time difference string based on non-zero values
+                    if ($diffDays > 0) {
+                        if ($diffHours > 0) {
+                            $timeDifference = "{$diffDays}j {$diffHours}h";
+                        } else {
+                            $timeDifference = "{$diffDays}j"; // Show only days if hours are 0
+                        }
+
+                        if ($diffMinutes > 0) {
+                            $timeDifference .= " {$diffMinutes}min"; // Append minutes only if > 0
+                        }
+                    } elseif ($diffHours > 0) {
+                        $timeDifference = "{$diffHours}h";
+                        if ($diffMinutes > 0) {
+                            $timeDifference .= " {$diffMinutes}min"; // Append minutes if > 0
+                        }
+                    } elseif ($diffMinutes > 0) {
+                        $timeDifference = "{$diffMinutes}min"; // Show only minutes if hours are 0
+                    }
                 }
+
+
     
                 return [
                     'id' => $bon->id,

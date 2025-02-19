@@ -104,6 +104,7 @@ Route::post('/avance/update', [ReglementController::class, 'updateAvance'])->nam
 
 // -=-=-= 00 Products ROUTES 00 -=-=-=-
 Route::get('/products/search', [ProductController::class, 'searchProducts'])->name('products.search');
+Route::post('/products/{id}/update-price', [ProductController::class, 'updatePrice'])->name('products.updatePrice');
 Route::resource('products', ProductController::class);
 // Route::get('/products/search', [ProductController::class, 'searchProducts'])->name('products.search');
 
