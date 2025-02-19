@@ -506,11 +506,11 @@
     
                         <div id="div-chq" >
                             <div class="mb-1 ">
-                                <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-1">N Reference </label>
-                                <input type="number" name="reference_chq" id="reference_chq" placeholder="Montant" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-1">Numéro de Référence</label>
+                                <input type="number" name="reference_chq" id="reference_chq" placeholder="N° Reference" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                             </div>
                             <div class="mb-1">
-                                <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-1">Date Expiration</label>
+                                <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-1">Date D'échéance</label>
                                 <input type="date" name="date_chq" id="date_chq" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                             </div>
                         </div>

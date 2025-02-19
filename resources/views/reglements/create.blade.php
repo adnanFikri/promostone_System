@@ -185,12 +185,12 @@
 
                         <div class="div-selectBl">
                             <div class="mb-6">
-                                <label for="montant" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Montant Reglment</label>
+                                <label for="montant" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Montant Reglement</label>
                                 <input type="number" name="montant" id="montant" placeholder="Montant" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                             </div>
 
                             <div class="mb-6 dateInput">
-                                <label for="date_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Expiration</label>
+                                <label for="date_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Reglement</label>
                                 <input type="date" name="date" id="date_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                             </div>
                         </div>
@@ -207,8 +207,8 @@
                             </div>
                             <div id="div-chq">
                                 <div class="mb-6">
-                                    <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">N Reference </label>
-                                    <input type="number" name="reference_chq" id="reference_chq" placeholder="Montant" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                    <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Numéro de Référence</label>
+                                    <input type="number" name="reference_chq" id="reference_chq" placeholder="N° Reference" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                                 </div>
                                 <div class="mb-6 dateInput">
                                     <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date d'échéance</label>
