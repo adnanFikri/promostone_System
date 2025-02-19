@@ -100,6 +100,7 @@
                                 <th scope="col" class="px-6 py-3">mode</th>
                                 <th scope="col" class="px-6 py-3">Date</th>
                                 <th scope="col" class="px-6 py-3">Mode Paiement</th>
+                                <th scope="col" class="px-6 py-3">Créé par</th>
                                 <th scope="col" class="px-6 py-3">Action</th>
                             </tr>
                         </thead>
@@ -158,6 +159,7 @@ $(document).ready(function() {
             },
             { data: 'date', name: 'date' },
             { data: 'type_pay', name: 'type_pay' },
+            { data: 'user-name', name: 'user-name' },
             {
                 data: 'actions',
                 name: 'actions',

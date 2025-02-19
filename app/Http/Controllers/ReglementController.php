@@ -48,7 +48,8 @@ class ReglementController extends Controller
                 'reglements.date',
                 'reglements.type_pay',
                 'reglements.reference_chq', 
-                'reglements.date_chq'
+                'reglements.date_chq',
+                'reglements.user-name'
             )
             ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client') // LEFT JOIN with clients table
             ->where('reglements.montant', '>', 0)
@@ -102,25 +103,25 @@ class ReglementController extends Controller
         try {
             $override = $request->input('override', false); // Get override flag
 
-$existingReglement = Reglement::where([
-    ['no_bl', $request->no_bl],
-    ['montant', $request->montant],
-    ['mode', $request->mode],
-])->first();
+            $existingReglement = Reglement::where([
+                ['no_bl', $request->no_bl],
+                ['montant', $request->montant],
+                ['mode', $request->mode],
+            ])->first();
 
-if ($existingReglement && !$override) { // If override is false, ask for confirmation
-    if ($request->mode == 'reglement') {
-        return response()->json([
-            'success' => 'confirm', 
-            'message' => 'Un règlement avec le même montant existe déjà pour cette BL. Voulez-vous continuer et enregistrer quand même ?',
-        ]);
-    }
+            if ($existingReglement && !$override) { // If override is false, ask for confirmation
+                if ($request->mode == 'reglement') {
+                    return response()->json([
+                        'success' => 'confirm', 
+                        'message' => 'Un règlement avec le même montant existe déjà pour cette BL. Voulez-vous continuer et enregistrer quand même ?',
+                    ]);
+                }
 
-    return response()->json([
-        'success' => false,
-        'message' => 'Ce paiement a déjà été enregistré pour cette BL avec ce montant.',
-    ]);
-}
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ce paiement a déjà été enregistré pour cette BL avec ce montant.',
+                ]);
+            }
             
             
             $paymentStatus = PaymentStatus::where('no_bl', $request->no_bl)->first();
