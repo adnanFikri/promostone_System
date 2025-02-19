@@ -102,58 +102,59 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'type' => 'required|string|max:255',
-        'category' => 'required|string|max:255',
-        'unit_price' => 'required|numeric',
-        'quantity' => 'required|integer',
-        'color' => 'required|string|max:50',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-    ]);
-
-    // Generate the product code
-    $category = $request->category;
-   // Generate the product code safely
-    $categoryInitial = strtoupper(substr($category, 0, 1));
-
-    // Find the highest existing product code in this category
-    $maxProductCode = Product::where('category', $request->category)
-        ->where('product_code', 'like', $categoryInitial . '%')
-        ->max('product_code');
-
-    if ($maxProductCode) {
-        $lastNumber = (int) substr($maxProductCode, 1);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'unit_price' => 'required|numeric',
+            'quantity' => 'required|integer',
+            'color' => 'required|string|max:50',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
+    
+        // Generate the product code
+        $category = $request->category;
+        $categoryInitial = strtoupper(substr($category, 0, 1));
+    
+        // Find the highest existing product code in this category
+        $maxProductCode = Product::where('category', $request->category)
+            ->where('product_code', 'like', $categoryInitial . '%')
+            ->max('product_code');
+    
+        // Initialize lastNumber properly
+        $lastNumber = 0;
+        if ($maxProductCode) {
+            $lastNumber = (int) substr($maxProductCode, 1);
+        }
+    
         $productCode = $categoryInitial . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-    } else {
-        $productCode = $categoryInitial . '001';
+    
+        // Ensure uniqueness (prevent race conditions)
+        while (Product::where('product_code', $productCode)->exists()) {
+            $lastNumber++;
+            $productCode = $categoryInitial . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+        }
+    
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+    
+        Product::create([
+            'name' => $request->name,
+            'type' => $request->type,
+            'category' => $request->category,
+            'unit_price' => $request->unit_price,
+            'quantity' => $request->quantity,
+            'color' => $request->color,
+            'product_code' => $productCode, // Use the generated product code
+            'image_path' => $imagePath,
+        ]);
+    
+        return redirect()->route('products.index')->with('success', 'Produit créé avec succès !');
     }
-
-    // Ensure uniqueness (prevent race conditions)
-    while (Product::where('product_code', $productCode)->exists()) {
-        $lastNumber++;
-        $productCode = $categoryInitial . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
-    }
-
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('products', 'public');
-    }
-
-    Product::create([
-        'name' => $request->name,
-        'type' => $request->type,
-        'category' => $request->category,
-        'unit_price' => $request->unit_price,
-        'quantity' => $request->quantity,
-        'color' => $request->color,
-        'product_code' => $productCode, // Use the generated product code
-        'image_path' => $imagePath,
-    ]);
-
-    return redirect()->route('products.index')->with('success', 'Produit créé avec succès !');
-}
+    
 
 
     /**
@@ -249,5 +250,18 @@ class ProductController extends Controller
         return response()->json($products);
     }
     
+    public function updatePrice(Request $request, $id)
+    {
+        $request->validate([
+            'unit_price' => 'required|numeric|min:0'
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->unit_price = $request->unit_price;
+        $product->save();
+
+        return response()->json(['message' => 'Price updated successfully']);
+    }
+
     
 }
