@@ -276,57 +276,60 @@
             }
         });
 
-        $('#products-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '{{ route('products.index') }}',
-            columns: columns,
-            responsive: true,
-            order: [[0, 'desc']],
-            language: {
-                paginate: {
-                    previous: "&laquo;",
-                    next: "&raquo;"
-                }
-            }
-        });
 
-        // Handle click event to turn the price into an input field
-        $('#products-table tbody').on('click', '.editable-unit-price', function() {
-            let span = $(this);
-            let currentPrice = span.text();
-            let productId = span.data('id');
-    
-            let input = $(`<input type="text" class="unit-price-input w-16" value="${currentPrice}">`);
-            span.replaceWith(input);
-            input.focus();
-    
-            input.on('blur keydown', function(event) {
-                if (event.type === 'blur' || event.key === 'Enter') {
-                    let newPrice = input.val().trim();
-                    
-                    if (newPrice !== currentPrice && $.isNumeric(newPrice)) {
-                        // Send AJAX request to update the price
-                        $.ajax({
-                            url: `/products/${productId}/update-price`, // Adjust route as needed
-                            type: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                unit_price: newPrice
-                            },
-                            success: function(response) {
-                                input.replaceWith(`<span class="editable-unit-price" data-id="${productId}">${newPrice}</span>`);
-                            },
-                            error: function() {
-                                input.replaceWith(`<span class="editable-unit-price" data-id="${productId}">${currentPrice}</span>`);
-                            }
-                        });
-                    } else {
-                        input.replaceWith(`<span class="editable-unit-price" data-id="${productId}">${currentPrice}</span>`);
+            $('#products-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('products.index') }}',
+                columns: columns,
+                responsive: true,
+                order: [[0, 'desc']],
+                language: {
+                    paginate: {
+                        previous: "&laquo;",
+                        next: "&raquo;"
                     }
                 }
             });
-        });
+
+        if (isAdminOrSuperAdmin) {
+            // Handle click event to turn the price into an input field
+            $('#products-table tbody').on('click', '.editable-unit-price', function() {
+                let span = $(this);
+                let currentPrice = span.text();
+                let productId = span.data('id');
+        
+                let input = $(`<input type="text" class="unit-price-input w-16" value="${currentPrice}">`);
+                span.replaceWith(input);
+                input.focus();
+        
+                input.on('blur keydown', function(event) {
+                    if (event.type === 'blur' || event.key === 'Enter') {
+                        let newPrice = input.val().trim();
+                        
+                        if (newPrice !== currentPrice && $.isNumeric(newPrice)) {
+                            // Send AJAX request to update the price
+                            $.ajax({
+                                url: `/products/${productId}/update-price`, // Adjust route as needed
+                                type: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    unit_price: newPrice
+                                },
+                                success: function(response) {
+                                    input.replaceWith(`<span class="editable-unit-price" data-id="${productId}">${newPrice}</span>`);
+                                },
+                                error: function() {
+                                    input.replaceWith(`<span class="editable-unit-price" data-id="${productId}">${currentPrice}</span>`);
+                                }
+                            });
+                        } else {
+                            input.replaceWith(`<span class="editable-unit-price" data-id="${productId}">${currentPrice}</span>`);
+                        }
+                    }
+                });
+            });
+        }
 
 });
 
