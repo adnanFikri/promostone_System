@@ -81,6 +81,19 @@
         border: 1px solid #4c4949;
         transform: scale(505%);
     }
+     /* button of alert */
+     .my-alert-button {
+        background-color: #28a745 !important; /* Green button color */
+        color: white !important; /* Text color */
+        border: none !important;
+        padding: 10px 20px !important;
+        border-radius: 5px !important;
+        font-size: 16px !important;
+        cursor: pointer !important;
+    }
+    .my-alert-button:hover {
+        background-color: #218838 !important; /* Slightly darker green on hover */
+    }
 </style>
 
 @can("view products")

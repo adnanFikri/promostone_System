@@ -192,17 +192,17 @@ function closeChequeModal() {
     $('#chequeModal').addClass('hidden'); // Hide modal
 }
 
-$(document).on('click', '.delete', function (e) {
-    e.preventDefault(); // Prevent the default link action
+// $(document).on('click', '.delete', function (e) {
+//     e.preventDefault(); // Prevent the default link action
 
-    const reglementId = $(this).data('id'); // Get the ID of the item
-    const deleteForm = $('#delete-form-' + reglementId); // Select the corresponding form
+//     const reglementId = $(this).data('id'); // Get the ID of the item
+//     const deleteForm = $('#delete-form-' + reglementId); // Select the corresponding form
 
-    // Show a confirmation dialog
-    if (confirm('Are you sure you want to delete this record?')) {
-        deleteForm.submit(); // Submit the form only if confirmed
-    }
-});
+//     // Show a confirmation dialog
+//     if (confirm('Are you sure you want to delete this record?')) {
+//         deleteForm.submit(); // Submit the form only if confirmed
+//     }
+// });
 
 
 </script>
