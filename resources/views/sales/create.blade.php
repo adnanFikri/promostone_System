@@ -129,7 +129,7 @@
                             <div id="mesure-item" class="mesure-item w-full w-4/4 flex flex-wrap gap-4 items-center">
 
                                 <div class="w-full md:w-1/5">
-                                    <label for="longueur" class="block text-sm font-medium text-gray-700">Longueur</label>
+                                    <label for="longueur" class="block text-sm font-medium text-gray-700">Longeur</label>
                                     <input type="number" step="0.001" name="products[0][mesures][0][longueur]" class="longueur mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
                                 </div>
             
@@ -166,7 +166,7 @@
                             </svg>
                         </button>
 
-                        <button type="button" onclick="addMesure(0)" class="block w-full md:w-auto text-center bg-gray-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                        <button type="button" onclick="addMesure(0)" class=" addMesure block w-full md:w-auto text-center bg-gray-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                             Ajouter un mesure
                         </button>
                     </div>
@@ -182,7 +182,7 @@
                 </div>
 
                     <!-- Add Service Button -->
-                    <button type="button" onclick="addService()" class="block w-full md:w-auto text-center bg-purple-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                    <button type="button" onclick="addService()" class=" block w-full md:w-auto text-center bg-purple-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                         Ajouter un service
                     </button>
 
@@ -207,15 +207,15 @@
             <h3 class="text-xl font-semibold mb-4">New Client</h3>
             <form id="clientForm" method="POST" action="{{ route('clients.store') }}">
                 @csrf
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="code_clientFormCreate" class="block text-gray-700 font-medium">Client Code</label>
                     <input type="text" id="code_clientFormCreate" name="code_client"  readonly 
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                 </div>
 
-                <div class="mb-6">
-                    <label for="category" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Categorie Client </label>
-                    <select name="category" id="category" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
+                <div class="mb-2">
+                    <label for="category" class="block text-gray-700 font-medium">Categorie Client </label>
+                    <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                         <option value="MONSIEUR">MONSIEUR</option>
                         <option value="MADAME">MADAME</option>
                         <option value="SOCIÉTÉ">SOCIÉTÉ</option>
@@ -228,18 +228,26 @@
                         <small class="text-red-600">{{ $message }}</small>
                     @enderror
                 </div>
+
+                <div class="mb-2 hidden" id="ice-container">
+                    <label for="ice" class="block text-gray-700 font-medium">ICE</label>
+                    <input type="text" name="ice" id="ice" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300">
+                    @error('ice')
+                        <small class="text-red-600"> {{ $message }} </small>
+                    @enderror
+                </div>
                 
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="name" class="block text-gray-700 font-medium">Name</label>
                     <input type="text" id="name" name="name" 
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                 </div>
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="phone" class="block text-gray-700 font-medium">Phone</label>
                     <input type="text" id="phone" name="phone" 
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                 </div>
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="type" class="block text-gray-700 font-medium">Type</label>
                     <select id="type" name="type" 
                             class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
@@ -264,6 +272,45 @@
     </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent form submission
+
+                let activeElement = document.activeElement;
+
+                if (activeElement.classList.contains("longueur")) {
+                    // Move to largeur
+                    let largeurInput = activeElement.closest("div").nextElementSibling.querySelector(".largeur");
+                    if (largeurInput) largeurInput.focus();
+                } else if (activeElement.classList.contains("largeur")) {
+                    // Move to quantite
+                    let quantiteInput = activeElement.closest("div").nextElementSibling.querySelector(".quantite");
+                    if (quantiteInput) quantiteInput.focus();
+                } else if (activeElement.classList.contains("quantite")) {
+                    // Click on addMesure button
+                    let addButton = document.querySelector(".addMesure");
+                    if (addButton) {
+                        addButton.click();
+                        setTimeout(() => {
+                            focusOnNewLongueur();
+                        }, 100); // Delay to ensure new input is added to the DOM
+                    }
+                }
+            }
+        });
+
+        // Function to focus on the first longueur input of the newly added mesure
+        function focusOnNewLongueur() {
+            let allLongueurInputs = document.querySelectorAll(".longueur");
+            if (allLongueurInputs.length > 0) {
+                allLongueurInputs[allLongueurInputs.length - 1].focus(); // Focus on the last added longueur input
+            }
+        }
+    });
+
+
+
 $(document).ready(function () {
     $('#code_client').select2({
         placeholder: "Choisir le client",
@@ -664,7 +711,6 @@ $(document).ready(function () {
             closeModal(); // Close the modal
              // Add the new client to Select2
              let $clientSelect = $('#code_client');
-             console.log("hejejfgejg");
              
 
             // Create a new option and append it to Select2
@@ -686,5 +732,27 @@ $(document).ready(function () {
             closeModal(); // Close the modal
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const categorySelect = document.getElementById("category");
+        const iceContainer = document.getElementById("ice-container");
+        const iceInput = document.getElementById("ice");
+
+        categorySelect.addEventListener("change", function () {
+            if (this.value === "SOCIÉTÉ") {
+                iceContainer.classList.remove("hidden"); // Show ICE input
+                iceInput.removeAttribute("disabled"); // Enable the input
+                iceInput.setAttribute("required", "required"); // Make it required
+            } else {
+                iceContainer.classList.add("hidden"); // Hide ICE input
+                iceInput.removeAttribute("required"); // Remove required
+                iceInput.setAttribute("disabled", "disabled"); // Disable the input
+            }
+        });
+    });
+
+
+
+    
 </script>
 @endsection
