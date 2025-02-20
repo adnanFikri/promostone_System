@@ -51,7 +51,8 @@ class ClientController extends Controller
                     'clients.type', 
                     'clients.user-name',
                     DB::raw('COALESCE(SUM(payment_statuses.montant_total), 0) as total_sales'),
-                    DB::raw('COALESCE(SUM(payment_statuses.montant_payed), 0) as total_paid')
+                    DB::raw('COALESCE(SUM(payment_statuses.montant_payed), 0) as total_paid'),
+                    DB::raw('COALESCE(SUM(payment_statuses.montant_restant), 0) as total_restant'),
                 ])
                 ->leftJoin('payment_statuses', 'clients.code_client', '=', 'payment_statuses.code_client')
                 ->groupBy('clients.id', 'clients.code_client', 'clients.name', 'clients.category', 'clients.phone', 'clients.type', 'clients.user-name');
@@ -73,7 +74,7 @@ class ClientController extends Controller
                         if (auth()->user()->can('delete clients')) {
                             $deleteUrl = route('clients.destroy', $client->id);
                             $actions .= '
-                                <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Are you sure?\');">
+                                <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Etes-vous sûr de vouloir supprimer ce client?\');">
                                     ' . csrf_field() . method_field('DELETE') . '
                                     <button type="submit" class="text-red-500 hover:underline">
                                         <svg class="w-6 h-6 text-red-400 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
