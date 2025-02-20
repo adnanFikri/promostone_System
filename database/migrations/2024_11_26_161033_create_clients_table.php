@@ -18,6 +18,7 @@ return new class extends Migration
         $table->string('name')->nullable();
         $table->string('phone')->nullable();
         $table->string('type')->nullable();
+        $table->string('ice')->nullable();
         $table->string('user-name')->nullable(); 
         $table->timestamps();
     });
