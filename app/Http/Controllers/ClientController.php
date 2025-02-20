@@ -249,16 +249,16 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'required|string',
-                'phone' => 'nullable|string',
-                'type' => 'required|string',
-            ]);
+            // $validated = $request->validate([
+            //     'name' => 'required|string',
+            //     'phone' => 'nullable|string',
+            //     'type' => 'required|string',
+            // ]);
 
-            $validated['name'] = strtoupper($validated['name']);
+            $request['name'] = strtoupper($request['name']);
 
             // Update the client
-            $client->update($validated);
+            $client->update($request->all());
 
             return response()->json(['message' => 'Client updated successfully']);
         } catch (ValidationException $e) {

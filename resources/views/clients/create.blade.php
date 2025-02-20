@@ -73,7 +73,7 @@
 
                         <div class="mb-4 hidden" id="ice-container">
                             <label for="ice" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">ICE</label>
-                            <input type="text" name="ice" id="ice" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg focus:outline-none bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" value="{{ old('name') }}" required>
+                            <input type="text" name="ice" id="ice" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg focus:outline-none bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"  >
                             @error('ice')
                                 <small class="text-red-600">{{ $message }}</small>
                             @enderror
@@ -155,12 +155,17 @@
         document.addEventListener("DOMContentLoaded", function () {
             const categorySelect = document.getElementById("category");
             const iceContainer = document.getElementById("ice-container");
+            const iceInput = document.getElementById("ice");
 
             categorySelect.addEventListener("change", function () {
                 if (this.value === "SOCIÉTÉ") {
                     iceContainer.classList.remove("hidden"); // Show ICE input
+                    iceInput.removeAttribute("disabled"); // Enable the input
+                    // iceInput.setAttribute("required", "required"); // Make it required
                 } else {
                     iceContainer.classList.add("hidden"); // Hide ICE input
+                    iceInput.removeAttribute("required"); // Remove required
+                    iceInput.setAttribute("disabled", "disabled"); // Disable the input
                 }
             });
         });

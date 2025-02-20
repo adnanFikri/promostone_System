@@ -742,7 +742,7 @@ $(document).ready(function () {
             if (this.value === "SOCIÉTÉ") {
                 iceContainer.classList.remove("hidden"); // Show ICE input
                 iceInput.removeAttribute("disabled"); // Enable the input
-                iceInput.setAttribute("required", "required"); // Make it required
+                // iceInput.setAttribute("required", "required"); // Make it required
             } else {
                 iceContainer.classList.add("hidden"); // Hide ICE input
                 iceInput.removeAttribute("required"); // Remove required

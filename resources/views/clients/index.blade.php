@@ -184,7 +184,7 @@
 
                 <div class="mb-2 hidden" id="ice-container">
                     <label for="ice" class="block text-gray-700 font-medium">ICE</label>
-                    <input type="text" name="ice" id="ice" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300"  required>
+                    <input type="text" name="ice" id="ice" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" >
                     @error('ice')
                         <small class="text-red-600"> {{ $message }} </small>
                     @enderror
@@ -254,7 +254,7 @@
 
                 <div class="mb-4 hidden" id="updateIceContainer">
                     <label for="updateIce" class="block text-sm font-medium text-gray-700">ICE</label>
-                    <input type="text" name="ice" id="updateIce" class="w-full mt-1 p-2 border border-gray-300 rounded" value="{{ old('updateIce') }}" required>
+                    <input type="text" name="ice" id="updateIce" class="w-full mt-1 p-2 border border-gray-300 rounded" value="{{ old('updateIce') }}" >
                     @error('ice')
                         <small class="text-red-600"> {{ $message }} </small>
                     @enderror
@@ -445,36 +445,79 @@
         document.getElementById('clientModal').classList.add('hidden');
     }
 
-    // show ICE input when Sosciete options is selceted from category select
+    // // show ICE input when Sosciete options is selceted from category select
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     // Handle ICE field visibility in Add Client Form
+    //     const categorySelect = document.getElementById("category");
+    //     const iceContainer = document.getElementById("ice-container");
+
+    //     if (categorySelect) {
+    //         categorySelect.addEventListener("change", function () {
+    //             if (this.value === "SOCIÉTÉ") {
+    //                 iceContainer.classList.remove("hidden"); // Show ICE input
+    //             } else {
+    //                 iceContainer.classList.add("hidden"); // Hide ICE input
+    //             }
+    //         });
+    //     }
+
+    //     // Handle ICE field visibility in Update Client Modal
+    //     const updateCategorySelect = document.getElementById("updateCategory");
+    //     const updateIceContainer = document.getElementById("updateIceContainer");
+
+    //     if (updateCategorySelect) {
+    //         updateCategorySelect.addEventListener("change", function () {
+    //             if (this.value === "SOCIÉTÉ") {
+    //                 updateIceContainer.classList.remove("hidden"); // Show ICE input
+    //             } else {
+    //                 updateIceContainer.classList.add("hidden"); // Hide ICE input
+    //             }
+    //         });
+    //     }
+    // });
+
     document.addEventListener("DOMContentLoaded", function () {
-        // Handle ICE field visibility in Add Client Form
-        const categorySelect = document.getElementById("category");
-        const iceContainer = document.getElementById("ice-container");
+    // Handle ICE field visibility in Add Client Form
+    const categorySelect = document.getElementById("category");
+    const iceContainer = document.getElementById("ice-container");
+    const iceInput = document.getElementById("ice");
 
-        if (categorySelect) {
-            categorySelect.addEventListener("change", function () {
-                if (this.value === "SOCIÉTÉ") {
-                    iceContainer.classList.remove("hidden"); // Show ICE input
-                } else {
-                    iceContainer.classList.add("hidden"); // Hide ICE input
-                }
-            });
-        }
+    if (categorySelect && iceContainer && iceInput) {
+        categorySelect.addEventListener("change", function () {
+            if (this.value === "SOCIÉTÉ") {
+                iceContainer.classList.remove("hidden"); // Show ICE input
+                iceInput.removeAttribute("disabled"); // Enable the input
+                // iceInput.setAttribute("required", "required"); // Make it required
+            } else {
+                iceContainer.classList.add("hidden"); // Hide ICE input
+                iceInput.removeAttribute("required"); // Remove required
+                iceInput.setAttribute("disabled", "disabled"); // Disable the input
+                iceInput.value = ""; // Clear the value to avoid submission issues
+            }
+        });
+    }
 
-        // Handle ICE field visibility in Update Client Modal
-        const updateCategorySelect = document.getElementById("updateCategory");
-        const updateIceContainer = document.getElementById("updateIceContainer");
+    // Handle ICE field visibility in Update Client Modal
+    const updateCategorySelect = document.getElementById("updateCategory");
+    const updateIceContainer = document.getElementById("updateIceContainer");
+    const updateIceInput = document.getElementById("updateIce");
 
-        if (updateCategorySelect) {
-            updateCategorySelect.addEventListener("change", function () {
-                if (this.value === "SOCIÉTÉ") {
-                    updateIceContainer.classList.remove("hidden"); // Show ICE input
-                } else {
-                    updateIceContainer.classList.add("hidden"); // Hide ICE input
-                }
-            });
-        }
-    });
+    if (updateCategorySelect && updateIceContainer && updateIceInput) {
+        updateCategorySelect.addEventListener("change", function () {
+            if (this.value === "SOCIÉTÉ") {
+                updateIceContainer.classList.remove("hidden"); // Show ICE input
+                updateIceInput.removeAttribute("disabled"); // Enable the input
+                updateIceInput.setAttribute("required", "required"); // Make it required
+            } else {
+                updateIceContainer.classList.add("hidden"); // Hide ICE input
+                updateIceInput.removeAttribute("required"); // Remove required
+                updateIceInput.setAttribute("disabled", "disabled"); // Disable the input
+                updateIceInput.value = ""; // Clear the value to avoid submission issues
+            }
+        });
+    }
+});
+
        
     
     document.querySelector('#clientForm').addEventListener('submit', function (e) {
