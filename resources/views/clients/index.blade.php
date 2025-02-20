@@ -88,6 +88,19 @@
         #updateType{
             padding: 7px;
         }
+         /* button of alert */
+    .my-alert-button {
+        background-color: #28a745 !important; /* Green button color */
+        color: white !important; /* Text color */
+        border: none !important;
+        padding: 10px 20px !important;
+        border-radius: 5px !important;
+        font-size: 16px !important;
+        cursor: pointer !important;
+    }
+    .my-alert-button:hover {
+        background-color: #218838 !important; /* Slightly darker green on hover */
+    }
     </style>
   
   @can('view clients')
@@ -123,10 +136,11 @@
                                 <th scope="col" class="px-6 py-3">Téléphone</th>
                                 <th scope="col" class="px-6 py-3">Type</th>
                                 <th scope="col" class="px-6 py-3">creé par</th>
-                                {{-- @if(in_array(auth()->user()->role, ['Admin', 'SAdmin']))
+                                @if(in_array(auth()->user()->role, ['Admin', 'SAdmin']))
                                     <th scope="col" class="px-6 py-3">Chiffre d'affaire</th>
                                     <th scope="col" class="px-6 py-3">Montant Paye</th>
-                                @endif --}}
+                                    <th scope="col" class="px-6 py-3">Montant Restant</th>
+                                @endif
                                 <th scope="col" class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
@@ -146,15 +160,15 @@
             <h3 class="text-xl font-semibold mb-4">New Client</h3>
             <form id="clientForm" method="POST" action="{{ route('clients.store') }}">
                 @csrf
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="code_client" class="block text-gray-700 font-medium">Client Code</label>
                     <input type="text" id="code_client" name="code_client"  readonly 
                            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                 </div>
 
-                <div class="mb-6">
-                    <label for="category" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Categorie Client </label>
-                    <select name="category" id="category" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
+                <div class="mb-2">
+                    <label for="category" class="block text-gray-700 font-medium">Categorie Client </label>
+                    <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                         <option value="MONSIEUR">MONSIEUR</option>
                         <option value="MADAME">MADAME</option>
                         <option value="SOCIÉTÉ">SOCIÉTÉ</option>
@@ -167,18 +181,26 @@
                         <small class="text-red-600">{{ $message }}</small>
                     @enderror
                 </div>
+
+                <div class="mb-2 hidden" id="ice-container">
+                    <label for="ice" class="block text-gray-700 font-medium">ICE</label>
+                    <input type="text" name="ice" id="ice" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300"  required>
+                    @error('ice')
+                        <small class="text-red-600"> {{ $message }} </small>
+                    @enderror
+                </div>
                 
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="name" class="block text-gray-700 font-medium">Name</label>
                     <input type="text" id="name" name="name" 
                            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                 </div>
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="phone" class="block text-gray-700 font-medium">Phone</label>
                     <input type="text" id="phone" name="phone" 
                            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
                 </div>
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="type" class="block text-gray-700 font-medium">Type</label>
                     <select id="type" name="type" 
                             class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
@@ -216,9 +238,9 @@
                     <input type="text" id="updateCodeClient" name="code_client" class="w-full mt-1 p-2 border border-gray-300 rounded" readonly>
                 </div>
 
-                <div class="mb-6">
-                    <label for="category" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Categorie Client </label>
-                    <select name="category" id="category" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
+                <div class="mb-4">
+                    <label for="updateCategory" class="block text-sm font-medium text-gray-700">Categorie Client </label>
+                    <select name="category" id="updateCategory" class="w-full mt-1 p-2 border border-gray-300 rounded" required>
                         <option value="MONSIEUR">MONSIEUR</option>
                         <option value="MADAME">MADAME</option>
                         <option value="SOCIÉTÉ">SOCIÉTÉ</option>
@@ -227,6 +249,14 @@
                     </select>
                     @error('category')
                         <small class="text-red-600">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <div class="mb-4 hidden" id="updateIceContainer">
+                    <label for="updateIce" class="block text-sm font-medium text-gray-700">ICE</label>
+                    <input type="text" name="ice" id="updateIce" class="w-full mt-1 p-2 border border-gray-300 rounded" value="{{ old('updateIce') }}" required>
+                    @error('ice')
+                        <small class="text-red-600"> {{ $message }} </small>
                     @enderror
                 </div>
                 
@@ -241,11 +271,11 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="type" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Client Type</label>
+                    <label for="type" class="block text-sm font-medium text-gray-700">Client Type</label>
                     <select 
                         name="type" 
                         id="updateType" 
-                        class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" 
+                        class="w-full mt-1 p-2 border border-gray-300 rounded" 
                         required
                     >
                         <option value="PARTICULIER">PARTICULIER</option>
@@ -292,26 +322,34 @@
     ];
 
     // Only add total_sales and total_paid if the user is Admin or SAdmin
-    // if (isAdminOrSuperAdmin) {
-    //     columns.push(
-    //         { 
-    //             data: 'total_sales', 
-    //             name: 'total_sales',
-    //             searchable: false,
-    //             render: function (data) {
-    //                 return formatNumberWithSpaces(data);
-    //             } 
-    //         },
-    //         { 
-    //             data: 'total_paid', 
-    //             name: 'total_paid',
-    //             searchable: false,
-    //             render: function (data) {
-    //                 return formatNumberWithSpaces(data);
-    //             } 
-    //         }
-    //     );
-    // }
+    if (isAdminOrSuperAdmin) {
+        columns.push(
+            { 
+                data: 'total_sales', 
+                name: 'total_sales',
+                searchable: false,
+                render: function (data) {
+                    return formatNumberWithSpaces(data);
+                } 
+            },
+            { 
+                data: 'total_paid', 
+                name: 'total_paid',
+                searchable: false,
+                render: function (data) {
+                    return formatNumberWithSpaces(data);
+                } 
+            },
+            { 
+                data: 'total_restant', 
+                name: 'total_restant',
+                searchable: false,
+                render: function (data) {
+                    return formatNumberWithSpaces(data);
+                } 
+            }
+        );
+    }
 
     // Add actions column
     columns.push({
@@ -353,7 +391,6 @@
             return response.json();
         })
         .then(data => {
-            console.log('Success:', data.message);
             // Optionally update the UI to reflect the change
             // Example:
             // let typeCell = document.querySelector(`#client-${clientId} .type-cell`); // Add a class to your type cell
@@ -407,6 +444,37 @@
     function closeModal() {
         document.getElementById('clientModal').classList.add('hidden');
     }
+
+    // show ICE input when Sosciete options is selceted from category select
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle ICE field visibility in Add Client Form
+        const categorySelect = document.getElementById("category");
+        const iceContainer = document.getElementById("ice-container");
+
+        if (categorySelect) {
+            categorySelect.addEventListener("change", function () {
+                if (this.value === "SOCIÉTÉ") {
+                    iceContainer.classList.remove("hidden"); // Show ICE input
+                } else {
+                    iceContainer.classList.add("hidden"); // Hide ICE input
+                }
+            });
+        }
+
+        // Handle ICE field visibility in Update Client Modal
+        const updateCategorySelect = document.getElementById("updateCategory");
+        const updateIceContainer = document.getElementById("updateIceContainer");
+
+        if (updateCategorySelect) {
+            updateCategorySelect.addEventListener("change", function () {
+                if (this.value === "SOCIÉTÉ") {
+                    updateIceContainer.classList.remove("hidden"); // Show ICE input
+                } else {
+                    updateIceContainer.classList.add("hidden"); // Hide ICE input
+                }
+            });
+        }
+    });
        
     
     document.querySelector('#clientForm').addEventListener('submit', function (e) {
@@ -446,21 +514,23 @@
             document.getElementById('updateCodeClient').value = data.code_client; // Set the client code (readonly)
             document.getElementById('updateName').value = data.name;
             document.getElementById('updatePhone').value = data.phone;
+            document.getElementById('updateCategory').value = data.category;
+            document.getElementById('updateType').value = data.type;
+            document.getElementById('updateIce').value = data.ice;
 
-            console.log(data.type);
-            
-            // Set the selected type in the dropdown
-            const typeDropdown = document.getElementById('updateType');
-            const options = typeDropdown.options;
 
-            for (let i = 0; i < 3; i++) {
-                if (options[i].value === data.type) {
-                    options[i].selected = true;
-                    break;
-                }
+            // Show ICE input if category is "SOCIÉTÉ"
+            const updateIceContainer = document.getElementById("updateIceContainer");
+            if (data.category === "SOCIÉTÉ") {
+                updateIceContainer.classList.remove("hidden");
+            } else {
+                updateIceContainer.classList.add("hidden");
             }
             
             document.getElementById('updateClientModal').classList.remove('hidden');
+
+            
+
         })
         .catch(error => {
             console.error('Error fetching client data:', error);
