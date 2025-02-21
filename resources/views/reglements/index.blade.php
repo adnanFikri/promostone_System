@@ -100,6 +100,7 @@
                                 <th scope="col" class="px-6 py-3">mode</th>
                                 <th scope="col" class="px-6 py-3">Date</th>
                                 <th scope="col" class="px-6 py-3">Mode Paiement</th>
+                                <th scope="col" class="px-6 py-3">échéance</th>
                                 <th scope="col" class="px-6 py-3">Créé par</th>
                                 <th scope="col" class="px-6 py-3">Action</th>
                             </tr>
@@ -159,6 +160,7 @@ $(document).ready(function() {
             },
             { data: 'date', name: 'date' },
             { data: 'type_pay', name: 'type_pay' },
+            { data: 'date_chq', name: 'date_chq' },
             { data: 'user-name', name: 'user-name' },
             {
                 data: 'actions',
@@ -191,18 +193,6 @@ $(document).on('click', '.view-cheque', function () {
 function closeChequeModal() {
     $('#chequeModal').addClass('hidden'); // Hide modal
 }
-
-// $(document).on('click', '.delete', function (e) {
-//     e.preventDefault(); // Prevent the default link action
-
-//     const reglementId = $(this).data('id'); // Get the ID of the item
-//     const deleteForm = $('#delete-form-' + reglementId); // Select the corresponding form
-
-//     // Show a confirmation dialog
-//     if (confirm('Are you sure you want to delete this record?')) {
-//         deleteForm.submit(); // Submit the form only if confirmed
-//     }
-// });
 
 
 </script>

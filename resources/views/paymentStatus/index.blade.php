@@ -816,8 +816,8 @@
                     render: function(data, type, row) {
 
                         return `
-                            <p onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 
-                                ${data === 'Oui' ? 'bg-green-400 text-gray-200' : data === 'Non' ? 'bg-red-400 text-gray-200' : 'bg-orange-400 text-gray-200'}" 
+                            <p  class="rounded-md w-md border border-gray-300 px-2 py-1 
+                                ${data === 'Oui' ? 'bg-green-400 text-gray-200' : data === 'Non' ? 'bg-red-400 text-gray-200' : data === 'En cours' ? 'bg-orange-400 text-gray-200' : data === 'Sans' ? 'bg-blue-400 text-gray-200' : ''}"
                             >
                                 ${data}
                                 
@@ -831,8 +831,8 @@
                     render: function(data, type, row) {
 
                         return `
-                            <p onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 text-medium
-                                ${data === 'Oui' ? 'bg-green-400 text-gray-200' : data === 'Non' ? 'bg-red-400 text-gray-200' : 'bg-orange-400 text-gray-200'}" 
+                            <p  class="rounded-md w-md border border-gray-300 px-2 py-1 text-medium
+                                ${data === 'Oui' ? 'bg-green-400 text-gray-200' : data === 'Non' ? 'bg-red-400 text-gray-200' : data === 'En cours' ? 'bg-orange-400 text-gray-200' : data === 'Sans' ? 'bg-blue-400 text-gray-200' : ''}"
                             >
                                 ${data}
                                 

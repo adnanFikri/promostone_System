@@ -30,11 +30,11 @@
         <div class="flex space-x-4">
             <div>
                 <label for="date_from" class="block text-sm font-medium text-gray-700">Date Début</label>
-                <input type="date" id="date_from" name="date_from" required class="mt-1 p-2 w-full border rounded-lg" value="{{ request('date_from') }}">
+                <input type="date" id="date_from" name="date_from" required class="mt-1 p-2 w-full border rounded-lg"  value="{{ request('date_from', now()->toDateString()) }}">
             </div>
             <div>
                 <label for="date_to" class="block text-sm font-medium text-gray-700">Date Fin</label>
-                <input type="date" id="date_to" name="date_to" required class="mt-1 p-2 w-full border rounded-lg" value="{{ request('date_to') }}">
+                <input type="date" id="date_to" name="date_to" required class="mt-1 p-2 w-full border rounded-lg" value="{{ request('date_from', now()->toDateString()) }}">
             </div>
             <div class="flex items-end">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Filtrer</button>
