@@ -295,31 +295,93 @@
             cancelButtonText: "Annuler"
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: '/bon-livraison/' + no_bl,  // Adjust the route as needed
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}'  // Ensure CSRF token is included
+                Swal.fire({
+                    title: "Confirmation requise",
+                    text: "Veuillez entrer le mot de passe pour confirmer la suppression.",
+                    input: "password",
+                    inputPlaceholder: "Entrez le mot de passe",
+                    inputAttributes: {
+                        autocapitalize: "off"
                     },
-                    success: function(response) {
-                        Swal.fire({
-                            title: "Supprimé !",
-                            text: response.message,
-                            icon: "success"
-                        });
-                        table.ajax.reload();  // Reload DataTable after deletion
-                    },
-                    error: function(xhr) {
-                        Swal.fire({
-                            title: "Erreur",
-                            text: xhr.responseJSON.message,
-                            icon: "error"
+                    showCancelButton: true,
+                    confirmButtonText: "Confirmer",
+                    cancelButtonText: "Annuler",
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    preConfirm: (password) => {
+                        if (password !== "pr222") {
+                            Swal.showValidationMessage("Mot de passe incorrect !");
+                        }
+                        return password;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && result.value === "pr222") {
+                        $.ajax({
+                            url: '/bon-livraison/' + no_bl,  // Adjust the route as needed
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'  // Ensure CSRF token is included
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    title: "Supprimé !",
+                                    text: response.message,
+                                    icon: "success"
+                                });
+                                table.ajax.reload();  // Reload DataTable after deletion
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    title: "Erreur",
+                                    text: xhr.responseJSON.message,
+                                    icon: "error"
+                                });
+                            }
                         });
                     }
                 });
             }
         });
     }
+
+
+    // function deleteBon(no_bl) {
+    //     Swal.fire({
+    //         title: "Êtes-vous sûr ?",
+    //         text: "Voulez-vous vraiment supprimer ce Bon de Livraison ?",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#d33",
+    //         cancelButtonColor: "#3085d6",
+    //         confirmButtonText: "Oui, supprimer",
+    //         cancelButtonText: "Annuler"
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             $.ajax({
+    //                 url: '/bon-livraison/' + no_bl,  // Adjust the route as needed
+    //                 type: 'DELETE',
+    //                 data: {
+    //                     _token: '{{ csrf_token() }}'  // Ensure CSRF token is included
+    //                 },
+    //                 success: function(response) {
+    //                     Swal.fire({
+    //                         title: "Supprimé !",
+    //                         text: response.message,
+    //                         icon: "success"
+    //                     });
+    //                     table.ajax.reload();  // Reload DataTable after deletion
+    //                 },
+    //                 error: function(xhr) {
+    //                     Swal.fire({
+    //                         title: "Erreur",
+    //                         text: xhr.responseJSON.message,
+    //                         icon: "error"
+    //                     });
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
 
 
 
