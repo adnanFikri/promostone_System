@@ -121,6 +121,7 @@ Route::get('/sale-check/{id}', [SaleCheckController::class, 'showSaleCheck'])->n
 Route::get('/listBonLivraison', [BonLivraisonController::class, 'index'])->name('listBonLivraison.index'); // DataTable
 Route::get('/bon-livraison/{no_bl}', [BonLivraisonController::class, 'showBonLivraison'])->name('bon_livraison');
 Route::post('/bonLivraison/{id}/update-livree', [BonLivraisonController::class, 'updateLivree']);
+Route::delete('/bon-livraison/{no_bl}', [BonLivraisonController::class, 'destroy'])->name('bonLivraison.destroy');
 
 // -=-=-= 00 BON DE COUPE ROUTES 00 -=-=-=-
 Route::get('/listBonCoupe', [BonCoupeController::class, 'index'])->name('listBonCoupe.index'); // DataTable

@@ -126,7 +126,7 @@
                     { data: 'no_bl', name: 'sales.no_bl' },
                     // { data: 'annee', name: 'sales.annee' },
                     { data: 'date', name: 'sales.date' }, 
-                    { data: 'morocco_time', name: 'morocco_time' },
+                    { data: 'morocco_time', name: 'morocco_time',searchable: false, },
                     { data: 'code_client', name: 'sales.code_client' },
                     { data: 'client_name', name: 'clients.name' },
                     { data: 'ref_produit', name: 'sales.ref_produit' },

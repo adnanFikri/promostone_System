@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BonCoupe;
+use App\Models\BonSortie;
 use App\Models\Sale;
 use App\Models\Client;
 use App\Models\Reglement;
@@ -117,6 +119,21 @@ class BonLivraisonController extends Controller
         return response()->json(['message' => 'Livrée status updated successfully.']);
     }
     
+    public function destroy($no_bl)
+    {
+         // Find and delete related records by no_bl
+        BonLivraison::where('no_bl', $no_bl)->delete();
+        BonSortie::where('no_bl', $no_bl)->delete();
+        BonCoupe::where('no_bl', $no_bl)->delete();
+        PaymentStatus::where('no_bl', $no_bl)->delete();
+        
+        // Delete all sales rows with the same no_bl
+        Sale::where('no_bl', $no_bl)->delete();
+        Reglement::where('no_bl', $no_bl)->delete();
+
+        return response()->json(['message' => 'La vente et les enregistrements associés ont été supprimés avec succès']);
+    }
+
 
 
 }
