@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('no_bl')->nullable(); 
             $table->string('coupe')->nullable()->default('Non'); 
             $table->dateTime('date_coupe')->nullable(); 
+            $table->dateTime('date_encours')->nullable(); 
             $table->string('finition')->nullable()->default('Non'); 
             $table->integer('print_nbr')->nullable()->default(0); 
             $table->dateTime('print_date')->nullable(); 

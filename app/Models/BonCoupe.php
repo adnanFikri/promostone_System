@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BonCoupe extends Model
 {
-    protected $fillable = ['no_bl','coupe','finition', 'date_coupe','print_nbr','userName'];
+    protected $fillable = ['no_bl','coupe','finition', 'date_coupe', 'date_encours','print_nbr','userName'];
     
     public function sales()
     {
