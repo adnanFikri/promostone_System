@@ -117,6 +117,11 @@ select.rounded-md.w-md {
     border: rgb(173, 170, 170) 1px solid;
 }
 
+.bg-light-blue {
+    background-color: #dee2e531; 
+    /* border: 1px solid #ddd; */
+}
+
 
     </style>
   
@@ -146,7 +151,9 @@ select.rounded-md.w-md {
                                 <th>Coupe Par</th>
                                 <th>N°print</th>
                                 <th>print date</th>
-                                <th>DUREE</th>
+                                <th>delay-1</th>
+                                <th>delay-2</th>
+                                <th>DUREE-T</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -186,11 +193,21 @@ select.rounded-md.w-md {
 
                     return `
                         <select onchange="updateCoupe(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 
-                            ${data === 'Oui' ? 'bg-green-300' : data === 'Non' ? 'bg-red-300' : 'bg-orange-300'}" ${disabled}
+                            ${data === 'Oui' ? 'bg-green-300' : data === 'Non' ? 'bg-red-300' : data === 'En cours' ? 'bg-orange-300' : data === 'Sans' ? 'bg-blue-300' : ''}" ${disabled}
+                                title="${data === 'En cours' && row.date_encours ? new Date(row.date_encours).toLocaleString('fr-FR', { 
+                                    year: 'numeric', 
+                                    month: '2-digit', 
+                                    day: '2-digit', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit', 
+                                    second: '2-digit', 
+                                    hour12: false 
+                                }) : ''}"
                         >
                             <option class="bg-gray-100 text-red-400" value="Non" ${data === 'Non' ? 'selected' : ''}>Non</option>
                             <option class="bg-gray-100 text-orange-400" value="En cours" ${data === 'En cours' ? 'selected' : ''}>En cours</option>
                             <option class="bg-gray-100 text-green-400" value="Oui" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
+                            <option class="bg-gray-100 text-blue-400" value="Sans" ${data === 'Sans' ? 'selected' : ''}>Sans</option>
                             
                         </select>
                     `;
@@ -229,8 +246,28 @@ select.rounded-md.w-md {
             { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
             { data: 'print_date', name: 'print_date' }, // Commercant column
             { 
+                data: 'dureeBeforeCommence', 
+                name: 'dureeBeforeCommence',
+                createdCell: function(td, cellData, rowData, row, col) {
+                    // Add a CSS class to this column
+                    $(td).addClass('bg-light-blue'); // Use a CSS class for background color
+                }
+            },
+            { 
+                data: 'delayCoupe', 
+                name: 'delayCoupe',
+                createdCell: function(td, cellData, rowData, row, col) {
+                    // Add a background color to this column
+                    $(td).addClass('bg-light-blue'); // Use a CSS class for background color
+                }
+            },
+            { 
                 data: 'time_difference', 
-                name: 'time_difference', 
+                name: 'time_difference',
+                createdCell: function(td, cellData, rowData, row, col) {
+                    // Add a background color to this column
+                    $(td).addClass('bg-light-blue'); // Use a CSS class for background color
+                }
             },
             { 
                 data: 'actions', 

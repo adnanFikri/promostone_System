@@ -180,8 +180,9 @@
                     
                     let disabled = (!canModiflivree) ? 'disabled' : '';
                     return `
-                        <select onchange="updateLivree(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1" ${disabled}>
-                            <option value="Non" class="text-red-400" ${data === 'non' ? 'selected' : ''}>Non</option>
+                        <select onchange="updateLivree(${row.id}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 
+                            ${data === 'Oui' ? 'bg-green-300' : data === 'Non' ? 'bg-red-300' : 'bg-orange-300'}" ${disabled}>
+                            <option value="Non" class="text-red-400" ${data === 'Non' ? 'selected' : ''}>Non</option>
                             <option value="Oui" class="text-green-400" ${data === 'Oui' ? 'selected' : ''}>Oui</option>
                         </select>
                     `;
