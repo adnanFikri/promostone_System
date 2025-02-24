@@ -129,14 +129,14 @@ select.rounded-md.w-md {
     <div class="py-5">
         <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
             <div class="p-6 bg-white rounded-lg shadow-md">
-                {{-- @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('ChefAtelier') || auth()->user()->hasRole('SuperAdmin'))
+                @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('ChefAtelier') || auth()->user()->hasRole('SuperAdmin'))
                     <button id="openModalBtn" 
                         class="px-2 py-1 bg-blue-50 text-white font-semibold rounded-md hover:bg-blue-100 focus:outline-none">
                         <svg class="w-[24px] h-[24px] text-blue-800 hover:text-blue-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z"/>
                         </svg>
                     </button>
-                @endif --}}
+                @endif
                 <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Coupe</h2>
                 <!-- Button to open modal -->
 
