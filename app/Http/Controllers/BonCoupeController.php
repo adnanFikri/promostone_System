@@ -10,6 +10,7 @@ use App\Models\BonCoupe;
 use App\Models\Reglement;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,36 +63,6 @@ class BonCoupeController extends Controller
 
                 // Convert the products to a unique, comma-separated string
                 $productsString = $products->unique()->implode(', ');
-
-                // $printDate = $bon->print_date ? Carbon::parse($bon->print_date) : null;
-                // $dateCoupe = $bon->date_coupe ? Carbon::parse($bon->date_coupe) : null;
-                // $timeDifference = 'pas encore';
-
-                // if ($printDate && $dateCoupe) {
-                //     $diffDays = floor($printDate->diffInDays($dateCoupe));
-                //     $diffHours = $printDate->diffInHours($dateCoupe) % 24; // Get remaining hours after full days
-                //     $diffMinutes = $printDate->diffInMinutes($dateCoupe) % 60;
-
-                //     // Build the time difference string based on non-zero values
-                //     if ($diffDays > 0) {
-                //         if ($diffHours > 0) {
-                //             $timeDifference = "{$diffDays}j {$diffHours}h";
-                //         } else {
-                //             $timeDifference = "{$diffDays}j"; // Show only days if hours are 0
-                //         }
-
-                //         if ($diffMinutes > 0) {
-                //             $timeDifference .= " {$diffMinutes}min"; // Append minutes only if > 0
-                //         }
-                //     } elseif ($diffHours > 0) {
-                //         $timeDifference = "{$diffHours}h";
-                //         if ($diffMinutes > 0) {
-                //             $timeDifference .= " {$diffMinutes}min"; // Append minutes if > 0
-                //         }
-                //     } elseif ($diffMinutes > 0) {
-                //         $timeDifference = "{$diffMinutes}min"; // Show only minutes if hours are 0
-                //     }
-                // }
 
                 $printDate = $bon->print_date ? Carbon::parse($bon->print_date) : null;
                 $dateCoupe = $bon->date_coupe ? Carbon::parse($bon->date_coupe) : null;
@@ -150,12 +121,17 @@ class BonCoupeController extends Controller
                     }
                 }
 
+                // 00000000000000000000000000000000000
+                // 0000 coupeur 00000
+                // 000000000000000000000000000000000000
+                $coupeur = $group->first()->sales->first()->coupeur ?? null; // Get coupeur from first sale
     
                 return [
                     'id' => $bon->id,
                     'client' => $client->name, // Add client name
                     'no_bl' => $bon->no_bl,
                     'coupe' => $bon->coupe,
+                    'coupeur' => $coupeur, // Add coupeur here
                     'print_nbr' => $bon->print_nbr,
                     'finition' => $bon->finition,
                     'print_date' => $bon->print_date,
@@ -248,6 +224,44 @@ class BonCoupeController extends Controller
 
         return view('sales.bonC', $data);
     }
+
+    public function getCoupeursStats()
+    {
+        // Get total sum of qte for each coupeur excluding products with 'finition' in the name
+        // and excluding products with certain types.
+        $coupeurs = Sale::select('coupeur', DB::raw('SUM(qte) as total_m2'))
+                        ->whereNotNull('coupeur') // Exclude null coupeurs
+                        ->join('products', 'sales.produit', '=', 'products.name') // Join with products table
+                        ->where('produit', 'not like', '%finition%') // Exclude products with 'finition' in their name
+                        ->whereNotIn('products.type', ['TRANCHE', 'CARREAUX', 'ESCALIER']) // Exclude certain types
+                        ->groupBy('coupeur')
+                        ->orderByDesc('total_m2')
+                        ->get();
+    
+        return response()->json($coupeurs);
+    }
+    
+
+
+
+    public function updateCoupeur(Request $request, $no_bl)
+    {
+        // Validate the request
+        $request->validate([
+            'coupeur' => 'required|string'
+        ]);
+
+        // Update all sales records with the same no_bl
+        $updated = Sale::where('no_bl', $no_bl)->update(['coupeur' => $request->coupeur]);
+
+        // Check if any rows were updated
+        if ($updated) {
+            return response()->json(['success' => true, 'message' => 'Coupeur mis à jour avec succès.']);
+        } else {
+            return response()->json(['error' => 'Aucune mise à jour effectuée.'], 404);
+        }
+    }
+
     
     public function updateCoupe(Request $request, $id)
     {

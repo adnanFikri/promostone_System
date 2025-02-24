@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Models\Sale;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SalesController;
@@ -126,6 +127,8 @@ Route::delete('/bon-livraison/{no_bl}', [BonLivraisonController::class, 'destroy
 // -=-=-= 00 BON DE COUPE ROUTES 00 -=-=-=-
 Route::get('/listBonCoupe', [BonCoupeController::class, 'index'])->name('listBonCoupe.index'); // DataTable
 Route::get('/bon-coup/{no_bl}', [BonCoupeController::class, 'showBonCoup'])->name('bon_coup');
+Route::post('/bonCoupe/{id}/update-coupeur', [BonCoupeController::class, 'updateCoupeur'])->name('update.coupeur');
+Route::get('/bonCoupe/coupeurs-stats', [BonCoupeController::class, 'getCoupeursStats']);
 Route::post('/bonCoupe/{id}/update-coupe', [BonCoupeController::class, 'updateCoupe']);
 Route::post('/bonCoupe/{id}/update-finition', [BonCoupeController::class, 'updateFinition']);
 Route::post('/bonCoupe/increment-print/{id}', [BonCoupeController::class, 'incrementPrintNbr'])->name('bon_coupe.increment_print');
@@ -205,14 +208,12 @@ Route::get('/maintenanceNow', function () {
 
 
 
-
-
-
 Route::get('/journal-caisse', [JournaleCaisseController::class, 'journalCaisse'])->name('journal.caisse');
 Route::post('/journal-caisse/filter', [JournaleCaisseController::class, 'filterJournalCaisse'])->name('journal.caisse.filter');
 
 
 
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 
 

@@ -129,7 +129,39 @@ select.rounded-md.w-md {
     <div class="py-5">
         <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
             <div class="p-6 bg-white rounded-lg shadow-md">
+                {{-- @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('ChefAtelier') || auth()->user()->hasRole('SuperAdmin'))
+                    <button id="openModalBtn" 
+                        class="px-2 py-1 bg-blue-50 text-white font-semibold rounded-md hover:bg-blue-100 focus:outline-none">
+                        <svg class="w-[24px] h-[24px] text-blue-800 hover:text-blue-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z"/>
+                        </svg>
+                    </button>
+                @endif --}}
                 <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Coupe</h2>
+                <!-- Button to open modal -->
+
+                <!-- Modal -->
+                <div id="modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-lg shadow-lg w-96">
+                        <!-- Modal Header -->
+                        <div class="px-4 py-3 bg-gray-100 border-b flex justify-between">
+                            <h2 class="text-lg font-semibold">Détails des Coupeurs</h2>
+                            <button id="closeModalBtn" class="text-gray-500 hover:text-red-500">&times;</button>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="p-4 max-h-64 overflow-y-auto">
+                            <ul id="coupeursList" class="space-y-2"></ul>
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="px-4 py-3 bg-gray-100 text-right">
+                            <button id="closeFooterBtn" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Bons Table -->
                 <div id="container-searchBL" >
@@ -145,11 +177,12 @@ select.rounded-md.w-md {
                                 <th>Produits</th>
                                 <th>date</th>
                                 <th>commercant</th>
+                                <th>coupeur</th>
                                 <th>Coupe</th>
                                 <th>Finition</th>
                                 <th>Date Coupe</th>
                                 <th>Coupe Par</th>
-                                <th>N°print</th>
+                                {{-- <th>N°print</th> --}}
                                 <th>print date</th>
                                 <th>delay-1</th>
                                 <th>delay-2</th>
@@ -164,8 +197,8 @@ select.rounded-md.w-md {
         </div>
     </div>
 {{-- @endcan --}}
-
 <script>
+    var userRoles = @json(auth()->user()->getRoleNames());
     var canModifCoupe = @json(auth()->user()->can('update coupe bon coup'));
     var table;
     table = $('#bons-table').DataTable({
@@ -185,6 +218,30 @@ select.rounded-md.w-md {
             { data: 'products', name: 'products' }, // This column corresponds to products
             { data: 'date', name: 'date' }, // Sale date column
             { data: 'commercant', name: 'commercant' }, // Commercant column
+            {
+                data: 'coupeur',
+                name: 'coupeur',
+                render: function(data, type, row) {
+                    // let disabled = (!row.isAdmin || !canModifCoupe) ? 'disabled' : ''; 
+                    let userHasRole = userRoles.includes('Admin') || userRoles.includes('ChefAtelier') || userRoles.includes('SuperAdmin');
+                    let bgColor = data ? 'bg-blue-300' : 'bg-blue-100'; // Blue-200 if null, Blue-400 if not null
+                    
+                    // Disabled condition based on user role
+                    let disabled = userHasRole ? '' : 'disabled';
+                    return `
+                        <select onchange="updateCoupeur(${row.no_bl}, this.value)" class="rounded-md w-md border border-gray-300 px-2 py-1 ${bgColor}"  ${disabled}
+                            title="${data ? data : 'aucun coupeur'}">
+                            <option class="bg-gray-100 text-gray-500" value="" ${!data ? 'selected' : ''}>choisir</option>
+                            <option class="bg-gray-100 text-black" value="Zghaid Lahcen" ${data === 'Zghaid Lahcen' ? 'selected' : ''}>Zghaid Lahcen</option>
+                            <option class="bg-gray-100 text-black" value="Rachid Saadan" ${data === 'Rachid Saadan' ? 'selected' : ''}>Rachid Saadan</option>
+                            <option class="bg-gray-100 text-black" value="Blaise" ${data === 'Blaise' ? 'selected' : ''}>Blaise</option>
+                            <option class="bg-gray-100 text-black" value="Jamal" ${data === 'Jamal' ? 'selected' : ''}>Jamal</option>
+                            <option class="bg-gray-100 text-black" value="Samba" ${data === 'Samba' ? 'selected' : ''}>Samba</option>
+                            <option class="bg-gray-100 text-black" value="Kamely Mbarek" ${data === 'Kamely Mbarek' ? 'selected' : ''}>Kamely Mbarek</option>
+                        </select>
+                    `;
+                }
+            },
             { 
                 data: 'coupe', 
                 name: 'coupe', 
@@ -218,7 +275,6 @@ select.rounded-md.w-md {
                 name: 'finition', 
                 render: function(data, type, row) {
                     let disabled = (( (data === 'Oui' || data === 'Sans') && !row.isAdmin) || !canModifCoupe) ? 'disabled' : '';
-                    console.log(data);
                     
 
                     return `
@@ -243,8 +299,12 @@ select.rounded-md.w-md {
             { data: 'userName', name: 'userName' }, // Commercant column
             
             
-            { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
-            { data: 'print_date', name: 'print_date' }, // Commercant column
+            // { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
+            { data: 'print_date', name: 'print_date',
+                render: function(data, type, row) {
+                    return `<span title="nombre d'impression : ${row.print_nbr}" >${data ? data : 'pas encore'}</span>`;
+                }
+             }, // Commercant column
             { 
                 data: 'dureeBeforeCommence', 
                 name: 'dureeBeforeCommence',
@@ -296,6 +356,67 @@ select.rounded-md.w-md {
             table.column(0).search("^" + value + "$", true, false).draw();
         }
     });
+
+
+    function updateCoupeur(no_bl, value) {
+        // Show confirmation dialog
+        Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: 'Voulez-vous vraiment modifier le Coupeur de ce bon ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Oui, confirmer',
+            cancelButtonText: 'Annuler',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the update if the user confirms
+                fetch(`/bonCoupe/${no_bl}/update-coupeur`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ coupeur: value })
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Mis à jour avec succès !',
+                            text: 'Le Coupeur a été mis à jour.',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur lors de la mise à jour.',
+                            text: 'Un problème est survenu lors de la mise à jour du Coupeur.',
+                            confirmButtonText: 'Réessayer',
+                            confirmButtonColor: '#d33',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    }
+                }).catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur réseau',
+                        text: 'Il y a eu un problème avec la requête. Veuillez réessayer plus tard.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#d33',
+                    });
+                    $('#bons-table').DataTable().ajax.reload();
+                });
+            } else {
+                // User canceled, no action needed
+                $('#bons-table').DataTable().ajax.reload();
+            }
+        });
+    }
+
+    
  
     function updateCoupe(id, value) {
         // Show confirmation dialog
@@ -350,7 +471,6 @@ select.rounded-md.w-md {
                 });
             } else {
                 // User canceled, no action needed
-                console.log('Modification annulée');
                 $('#bons-table').DataTable().ajax.reload();
             }
         });
@@ -410,12 +530,40 @@ select.rounded-md.w-md {
                 });
             } else {
                 // User canceled, no action needed
-                console.log('Modification annulée');
                 $('#bons-table').DataTable().ajax.reload();
             }
         });
     }
 
+
+    // 00000000000000000000000000000000000
+    // 0000 coupeur details 00000
+    // 000000000000000000000000000000000000
+    
+    document.getElementById('openModalBtn').addEventListener('click', function () {
+    document.getElementById('modal').classList.remove('hidden');
+    fetch('/bonCoupe/coupeurs-stats')
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById('coupeursList');
+            list.innerHTML = '';
+            data.forEach(coupeur => {
+                let li = document.createElement('li');
+                li.classList.add("flex", "justify-between", "border-b", "py-2", "px-2");
+                li.innerHTML = `<span class="font-medium">${coupeur.coupeur}</span>
+                                <span class="text-blue-600 font-bold">${coupeur.total_m2} m²</span>`;
+                list.appendChild(li);
+            });
+        })
+        .catch(error => console.error('Erreur lors de la récupération des coupeurs:', error));
+});
+
+// Close modal
+['closeModalBtn', 'closeFooterBtn'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function () {
+        document.getElementById('modal').classList.add('hidden');
+    });
+});
 
 </script>
 

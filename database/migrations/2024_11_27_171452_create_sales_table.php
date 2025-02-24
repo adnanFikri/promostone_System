@@ -50,6 +50,7 @@ public function up()
         $table->decimal('prix_unitaire', 10, 2)->nullable();
         $table->decimal('montant', 10, 2)->nullable();
         $table->string('user-name')->nullable(); 
+        $table->string('coupeur')->nullable(); 
         $table->timestamps();
     
         // Define foreign key constraint
