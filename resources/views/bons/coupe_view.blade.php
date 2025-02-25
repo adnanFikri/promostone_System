@@ -223,7 +223,7 @@ select.rounded-md.w-md {
                 name: 'coupeur',
                 render: function(data, type, row) {
                     // let disabled = (!row.isAdmin || !canModifCoupe) ? 'disabled' : ''; 
-                    let userHasRole = userRoles.includes('Admin') || userRoles.includes('ChefAtelier') || userRoles.includes('SuperAdmin');
+                    let userHasRole = userRoles.includes('Admin') || userRoles.includes('ChefAtelier') || userRoles.includes('SuperAdmin') || userRoles.includes('Controleur');
                     let bgColor = data ? 'bg-blue-300' : 'bg-blue-100'; // Blue-200 if null, Blue-400 if not null
                     
                     // Disabled condition based on user role
@@ -293,24 +293,29 @@ select.rounded-md.w-md {
                 data: 'date_coupe', 
                 name: 'date_coupe',
                 render: function(data, type, row) {
-                    return data ? data : 'pas encore';
+                    return `<span class="${!data ? 'text-gray-400' : ''}" >${data ? data : 'pas encore'}</span>`;
                 }
             },
             { data: 'userName', name: 'userName' }, // Commercant column
             
             
             // { data: 'print_nbr', name: 'print_nbr' }, // Commercant column
-            { data: 'print_date', name: 'print_date',
+            {
+                data: 'print_date', 
+                name: 'print_date',
                 render: function(data, type, row) {
-                    return `<span title="nombre d'impression : ${row.print_nbr}" >${data ? data : 'pas encore'}</span>`;
+                    return `<span class="${!data ? 'text-gray-400' : ''}" title="nombre d'impression : ${row.print_nbr}" >${data ? data : 'pas encore'}</span>`;
                 }
-             }, // Commercant column
+            }, 
             { 
                 data: 'dureeBeforeCommence', 
                 name: 'dureeBeforeCommence',
                 createdCell: function(td, cellData, rowData, row, col) {
                     // Add a CSS class to this column
                     $(td).addClass('bg-light-blue'); // Use a CSS class for background color
+                    if (cellData === 'pas encore') {
+                        $(td).addClass('text-gray-400'); // Apply text color class
+                    }
                 }
             },
             { 
@@ -319,6 +324,9 @@ select.rounded-md.w-md {
                 createdCell: function(td, cellData, rowData, row, col) {
                     // Add a background color to this column
                     $(td).addClass('bg-light-blue'); // Use a CSS class for background color
+                    if (cellData === 'pas encore') {
+                        $(td).addClass('text-gray-400'); // Apply text color class
+                    }
                 }
             },
             { 
@@ -327,6 +335,9 @@ select.rounded-md.w-md {
                 createdCell: function(td, cellData, rowData, row, col) {
                     // Add a background color to this column
                     $(td).addClass('bg-light-blue'); // Use a CSS class for background color
+                    if (cellData === 'pas encore') {
+                        $(td).addClass('text-gray-400'); // Apply text color class
+                    }
                 }
             },
             { 
