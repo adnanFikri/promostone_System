@@ -54,7 +54,7 @@ class SalesController extends Controller
                     'sales.montant',
                     'clients.name as client_name' // Include client name in query
                 ])
-                ->leftJoin('clients', 'sales.code_client', '=', 'clients.code_client') // Join the clients table
+                ->leftJoin('clients', 'sales.code_client', '=', 'clients.code_client')->distinct() // Join the clients table
                 ->orderBy('sales.created_at', 'desc');
     
             return DataTables::of($sales)

@@ -46,7 +46,7 @@ class PaymentStatusController extends Controller
                 'payment_statuses.montant_restant',
                 'clients.type as client_type' 
             )
-            ->join('clients', 'payment_statuses.code_client', '=', 'clients.code_client'); // Join with clients table
+            ->join('clients', 'payment_statuses.code_client', '=', 'clients.code_client')->distinct(); // Join with clients table
 
             // Apply date range filter if both dates are provided
             if ($request->filled('date_from') && $request->filled('date_to')) {

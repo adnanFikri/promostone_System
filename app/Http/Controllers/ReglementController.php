@@ -51,7 +51,7 @@ class ReglementController extends Controller
                 'reglements.date_chq',
                 'reglements.user-name'
             )
-            ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client') // LEFT JOIN with clients table
+            ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client')->distinct() // LEFT JOIN with clients table
             ->where('reglements.montant', '>', 0)
             ->get();
 
