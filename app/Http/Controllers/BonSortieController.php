@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Sale;
 use App\Models\Client;
+use App\Models\BonCoupe;
 use App\Models\BonSortie;
 use App\Models\Reglement;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class BonSortieController extends Controller
@@ -50,6 +53,56 @@ class BonSortieController extends Controller
             
                 // Convert the products to a unique, comma-separated string
                 $productsString = $products->unique()->implode(', ');
+
+// 000000000000000000000000 duree de stockage de vente 00000000000000000000000
+// 000000000000000000000000000000000000000000000000000000000000000000000000000
+                $coupe = BonCoupe::where('no_bl', $bon->no_bl)->first();
+
+                $dateCoupe = $coupe && $coupe->date_coupe ? Carbon::parse($coupe->date_coupe) : null;
+                $dateSortie = $bon->date_sortie ? Carbon::parse($bon->date_sortie) : null;
+                
+                $timeDifference = 'pas encore';
+                
+                if (!$dateCoupe) {
+                    $timeDifference = 'Pas coupé'; // If dateCoupe is null, return 'pas coupe'
+                } else {
+                    $endDate = $dateSortie ?? Carbon::now(); // Use dateSortie if available, else use current time
+                
+                    $diffDays = floor($dateCoupe->diffInDays($endDate));
+                    $diffHours = $dateCoupe->diffInHours($endDate) % 24;
+                    $diffMinutes = $dateCoupe->diffInMinutes($endDate) % 60;
+                
+                    if ($diffDays > 0) {
+                        $timeDifference = "{$diffDays}j" . ($diffHours > 0 ? " {$diffHours}h" : "");
+                        $timeDifference .= $diffMinutes > 0 ? " {$diffMinutes}min" : "";
+                    } elseif ($diffHours > 0) {
+                        $timeDifference = "{$diffHours}h" . ($diffMinutes > 0 ? " {$diffMinutes}min" : "");
+                    } elseif ($diffMinutes > 0) {
+                        $timeDifference = "{$diffMinutes}min";
+                    } else {
+                        $timeDifference = "0min";
+                    }
+                }
+                if($dateSortie && !$dateCoupe){
+                    $timeDifference = 'Sans Coupe';
+                }
+                
+                // Calculate difference from dateBon to dateSortie
+                // if ($dateBon && $dateSortie) {
+                //     $diffDaysBonSortie = floor($dateBon->diffInDays($dateSortie));
+                //     $diffHoursBonSortie = $dateBon->diffInHours($dateSortie) % 24;
+                //     $diffMinutesBonSortie = $dateBon->diffInMinutes($dateSortie) % 60;
+
+                //     if ($diffDaysBonSortie > 0) {
+                //         $timeDifferenceBonSortie = "{$diffDaysBonSortie}j" . ($diffHoursBonSortie > 0 ? " {$diffHoursBonSortie}h" : "");
+                //         $timeDifferenceBonSortie .= $diffMinutesBonSortie > 0 ? " {$diffMinutesBonSortie}min" : "";
+                //     } elseif ($diffHoursBonSortie > 0) {
+                //         $timeDifferenceBonSortie = "{$diffHoursBonSortie}h" . ($diffMinutesBonSortie > 0 ? " {$diffMinutesBonSortie}min" : "");
+                //     } elseif ($diffMinutesBonSortie > 0) {
+                //         $timeDifferenceBonSortie = "{$diffMinutesBonSortie}min";
+                //     }
+                // }
+                
             
                 return [
                     'id' => $bon->id,
@@ -63,7 +116,9 @@ class BonSortieController extends Controller
                     'date' => $group->first()->sales->first()->date ?? 'N/A',  // Access the first item in the sales collection
                     'commercant' => $group->first()->paymentStatuses->first()->commerçant ?? 'N/A',  // Access the first item in the paymentStatuses collection
                     'isAdmin' => $isAdmin,
-                    'created_at' => $bon->created_at
+                    'created_at' => $bon->created_at,
+                    'time_difference' => $timeDifference,
+                    // 'time_difference_bon_sortie' => $timeDifferenceBonSortie, // New value added
                 ];
             });
     

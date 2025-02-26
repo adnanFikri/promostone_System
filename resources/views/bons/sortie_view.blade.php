@@ -145,6 +145,8 @@ select.rounded-md.w-md {
                             <th>Date Sortie</th>
                             <th>Sortie Par</th>
                             <th>print_nbr</th>
+                            <th>DUREE stock</th>
+                            {{-- <th>DUREE T</th> --}}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -201,6 +203,33 @@ table = $('#bons-table').DataTable({
          { data: 'userName', name: 'userName' }, 
          
          { data: 'print_nbr', name: 'print_nbr' }, 
+         {
+            data: 'time_difference', 
+            name: 'time_difference',
+            createdCell: function(td, cellData, rowData, row, col) {
+                // Remove any existing classes
+                $(td).removeClass('text-orange-400 text-red-300 text-green-300');
+
+                if (cellData === 'Pas coupé') {
+                    $(td).addClass('text-gray-400'); // Orange if "pas coupe"
+                } else if (rowData.date_sortie === null) {
+                    $(td).addClass('text-red-600'); // Red if "date_sortie" is NULL (not set)
+                } else if (cellData === 'Sans Coupe') {
+                    $(td).addClass('text-blue-600'); // Red if "date_sortie" is NULL (not set)
+                } else {
+                    // $(td).addClass('text-green-700'); // Green if "date_sortie" is set (oui)
+                    $(td).css("color", "green"); // Green if "date_sortie" is set (oui)
+                }
+            }
+        },
+        //  { 
+        //     data: 'time_difference_bon_sortie', 
+        //     name: 'time_difference_bon_sortie',
+        //     createdCell: function(td, cellData, rowData, row, col) {
+        //         // Add a background color to this column
+        //         $(td).addClass('bg-light-blue'); // Use a CSS class for background color
+        //     }
+        // },
          { 
              data: 'actions', 
              name: 'actions', 
