@@ -34,8 +34,13 @@ class BonLivraisonController extends Controller
                 
             $bons = $bons->map(function ($group) {
 
-                $client = Client::where('code_client',$group->first()->paymentStatuses->first()->code_client)->first();
-                $client_raison = $client->category . ' ' .$client->name;
+                // $client = Client::where('code_client',$group->first()->paymentStatuses->first()->code_client)->first();
+                $paymentStatus = $group->first()->paymentStatuses->first();
+                $codeClient = $paymentStatus ? $paymentStatus->code_client : null;
+                $client = $codeClient ? Client::where('code_client', $codeClient)->first() : null;
+                $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
+
+                // $client_raison = $client->category . ' ' .$client->name;
 
                 $bon = $group->first();  // Get the first bon for this group
                 
