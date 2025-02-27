@@ -991,11 +991,11 @@
                 updateSum();
             },
             createdRow: function (row, data, dataIndex) {
-            // Check if ChangeCount > 0 and add a red background
-            if (canModifDetails && data.changeCount > 0) {
-                $('td', row).eq(0).css('background-color', '#ffd0d0'); // Change the background of the specific cell (index 7)
-            }
-        },
+                // Check if ChangeCount > 0 and add a red background
+                if (canModifDetails && data.changeCount > 0) {
+                    $('td', row).eq(0).css('background-color', '#ffd0d0'); // Change the background of the specific cell (index 7)
+                }
+            },
             dom: '<"row mb-3"<"col-md-6"l><"col-md-6 text-end"B>>' +
             '<"row mb-3"<"col-md-6"f>>' +
                  '<"row"<"col-md-12"tr>>' +

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Models\Sale;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\ClientController;
@@ -214,6 +213,8 @@ Route::post('/journal-caisse/filter', [JournaleCaisseController::class, 'filterJ
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/dashboard/payment-status-data', [DashboardController::class, 'paymentStatusData'])->name('dashboard.paymentStatusData');
+
 
 
 
