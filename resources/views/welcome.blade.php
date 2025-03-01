@@ -18,7 +18,12 @@
         <p class="text-gray-600 mt-2">
             Explorez les outils et fonctionnalités mis à votre disposition pour gérer efficacement vos activités et améliorer la productivité de votre équipe.
         </p>
-        @if(auth()->user()->can('view payment statuses'))
+        @if(auth()->user()->hasRole(['Admin', 'SuperAdmin']) )
+            <a href="{{ route('dashboard.index') }}" 
+               class="mt-6 inline-block bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
+               Aller au Dashboard
+            </a>
+        @elseif(auth()->user()->can('view payment statuses'))
             <a href="{{ route('paymentStatus.index') }}" 
                class="mt-6 inline-block bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
                Aller au tableau des statuts de paiement

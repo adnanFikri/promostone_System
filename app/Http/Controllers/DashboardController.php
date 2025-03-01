@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Sale;
+use App\Models\Client;
 use App\Models\BonCoupe;
 use App\Models\BonSortie;
 use App\Models\Reglement;
-
 use App\Models\SaleCheck;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
@@ -16,6 +16,12 @@ use App\Models\Achat\Achatreglement;
 
 class DashboardController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth'); // Ensure the user is authenticated
+        
+        // Define permission-based middleware for each method
+    }
     public function index()
     {
     
@@ -23,9 +29,9 @@ class DashboardController extends Controller
         $dateFrom = Carbon::now()->startOfDay()->toDateString();
         $dateTo = Carbon::now()->endOfDay()->toDateString();
 
-        // 000000000000000000000000000000000000000000000000
-        // 0000000000 {START JOURANL CAISSE PART 0000000000
-        // 000000000000000000000000000000000000000000000000
+    // 000000000000000000000000000000000000000000000000
+    // 0000000000 {START JOURANL CAISSE PART 0000000000
+    // 000000000000000000000000000000000000000000000000
 
         // sold de bon reglements not avance
         $filteredReglements = Reglement::whereBetween('created_at', [
@@ -66,15 +72,15 @@ class DashboardController extends Controller
         $totalReglement = array_sum($totalByType);
         // $totalSalesMontantRestant = $totalChiffreAffaire - $totalReglement;
 
-        // 000000000000000000000000000000000000000000000000
-        // 00000000000 }END JOURANL CAISSE PART 00000000000
-        // 000000000000000000000000000000000000000000000000
+    // ~00000000000000000000000000000000000000000000000
+    // ~0000000000 }END JOURANL CAISSE PART 00000000000
+    // ~00000000000000000000000000000000000000000000000
 // ====================================================================
 // ====================================================================
-        
-        // 000000000000000000000000000000000000000000000000
-        // 00000000000 {START DATE CHEQUE PART 00000000000
-        // 000000000000000000000000000000000000000000000000
+    
+    // 000000000000000000000000000000000000000000000000
+    // 00000000000 {START DATE CHEQUE PART 00000000000
+    // 000000000000000000000000000000000000000000000000
 
         // Fetch reglements with date_chq within 24h before today or today
         // $date24hAgo = Carbon::now()->subDay()->startOfDay();
@@ -107,25 +113,138 @@ class DashboardController extends Controller
             ])
             ->get();
 
-        // 000000000000000000000000000000000000000000000000
-        // 00000000000 {END DATE CHEQUE PART 00000000000
-        // 000000000000000000000000000000000000000000000000
+    // ~00000000000000000000000000000000000000000000000
+    // ~0000000000 {END DATE CHEQUE PART 00000000000
+    // ~00000000000000000000000000000000000000000000000
 // ====================================================================
 // ====================================================================
 
-        // 000000000000000000000000000000000000000000000000
-        // 00000000 {START PAYMENT STATUS CHECK PART 000000
-        // 000000000000000000000000000000000000000000000000
+    // 000000000000000000000000000000000000000000000000
+    // 00000000 {START PAYMENT STATUS CHECK PART 000000
+    // 000000000000000000000000000000000000000000000000
 
         $lastSaleCheck = SaleCheck::select('no_bl', 'user_name', DB::raw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+00:00'), '%Y-%m-%d %H:%i:%s') as created_at"))
         ->orderBy('created_at', 'desc')
         ->first();
 
-        // 000000000000000000000000000000000000000000000000
-        // 00000000 {END PAYMENT STATUS CHECK PART 00000000
-        // 000000000000000000000000000000000000000000000000
+    // ~00000000000000000000000000000000000000000000000
+    // ~0000000 {END PAYMENT STATUS CHECK PART 00000000
+    // ~00000000000000000000000000000000000000000000000
 // ====================================================================
 // ====================================================================
+
+    // 000000000000000000000000000000000000000000000000
+    // 00000 {START BON COUPE EN COURE CHECK PART 00000
+    // 000000000000000000000000000000000000000000000000
+        // Get Bons with 'En cours' in coupe
+        $bonsCoupe = BonCoupe::where('coupe', 'En cours')
+            ->whereHas('sales', function ($query) {
+                $query->join('products', 'sales.produit', '=', 'products.name')
+                    ->whereNotIn('products.type', ['TRANCHE', 'CARREAUX', 'ESCALIER']);
+            })
+            ->with(['sales', 'paymentStatuses'])
+            ->get()
+            ->groupBy('no_bl');
+
+        // Get Bons with 'En cours' in finition
+        $bonsFinition = BonCoupe::where('finition', 'En cours')
+            ->whereHas('sales', function ($query) {
+                $query->join('products', 'sales.produit', '=', 'products.name')
+                    ->whereNotIn('products.type', ['TRANCHE', 'CARREAUX', 'ESCALIER']);
+            })
+            ->with(['sales', 'paymentStatuses'])
+            ->get()
+            ->groupBy('no_bl');
+
+        // Transform data
+        $bonsCoupe = $bonsCoupe->map(function ($group) {
+            $bon = $group->first();
+            $code_client = $bon->paymentStatuses->first()->code_client ?? null;
+            $client_raison = 'N/A';
+
+            if ($code_client) {
+                $client = Client::where('code_client', $code_client)->first();
+                $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
+            }
+
+            return [
+                'no_bl' => $bon->no_bl,
+                'dateCommence' => $bon->date_encours,
+                'produit' => $bon->sales->first()->produit ?? 'N/A',
+                'nom_client' => $client_raison,
+                'coupe' => $bon->coupe,
+            ];
+        });
+
+        $bonsFinition = $bonsFinition->map(function ($group) {
+            $bon = $group->first();
+            $code_client = $bon->paymentStatuses->first()->code_client ?? null;
+            $client_raison = 'N/A';
+
+            if ($code_client) {
+                $client = Client::where('code_client', $code_client)->first();
+                $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
+            }
+
+            return [
+                'no_bl' => $bon->no_bl,
+                'produit' => $bon->sales->first()->produit ?? 'N/A',
+                'nom_client' => $client_raison,
+                'finition' => $bon->finition,
+            ];
+        });
+
+    // ~00000000000000000000000000000000000000000000000
+    // ~00000 {END BON COUPE EN COURE CHECK PART 000000
+    // ~00000000000000000000000000000000000000000000000
+// ====================================================================
+// ====================================================================
+
+    // 000000000000000000000000000000000000000000000000
+    // 000000000000 {START BON SORITE PART 000000000000
+    // 000000000000000000000000000000000000000000000000
+
+        // Get Bons from BonSortie with 'Oui' in sortie and today's date
+        $bonsSortie = BonSortie::where('sortie', 'Oui')
+        ->whereDate('date_sortie', now()->toDateString())
+        ->with(['sales', 'paymentStatuses'])
+        ->get()
+        ->groupBy('no_bl');
+
+        // Transform data
+        $bonsSortie = $bonsSortie->map(function ($group) {
+        $bon = $group->first();
+        $code_client = $bon->paymentStatuses->first()->code_client ?? null;
+        $client_raison = 'N/A';
+
+        if ($code_client) {
+            $client = Client::where('code_client', $code_client)->first();
+            $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
+        }
+
+        return [
+            'no_bl' => $bon->no_bl,
+            'dateSortie' => $bon->date_sortie,
+            'produit' => $bon->sales->first()->produit ?? 'N/A',
+            'nom_client' => $client_raison,
+            'sortie' => $bon->sortie,
+        ];
+        });
+
+
+    // ~00000000000000000000000000000000000000000000000
+    // ~000000000000 {END BON SORITE PART 0000000000000
+    // ~00000000000000000000000000000000000000000000000
+// ====================================================================
+// ====================================================================
+
+
+
+// ========================================================
+// =>                                                    <=
+// ==>                   RETURN DATA                    <==
+// ===>                                                <===
+// ====>                                              <====
         return view('dashboard', compact(
             // JOURANL CAISSE PART
             'dateFrom',
@@ -141,13 +260,18 @@ class DashboardController extends Controller
 
             // PAYMENT STATUS PART
             'lastSaleCheck',
+
+            //BON COUPE EN COURE PART
+            'bonsCoupe', 'bonsFinition',
+
+            //BON BON SORITE PART
+            'bonsSortie',
         ));
     }
 
     public function paymentStatusData(Request $request)
 {
-   
-        
+    $today = Carbon::today();
     if ($request->ajax()) {
         $query = PaymentStatus::select(
             'payment_statuses.no_bl',       
@@ -161,7 +285,8 @@ class DashboardController extends Controller
             'clients.type as client_type' 
         )
         ->join('clients', 'payment_statuses.code_client', '=', 'clients.code_client')
-        ->distinct();
+        ->distinct()
+        ->whereDate('payment_statuses.date_bl', '=', $today);
 
         $lastSaleCheck = SaleCheck::select('no_bl', 'user_name',DB::raw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+00:00'), '%Y-%m-%d %H:%i:%s') as created_at"))
         ->orderBy('created_at', 'desc')
@@ -191,12 +316,7 @@ class DashboardController extends Controller
         return DataTables::of($data)
         ->make(true);
     }
-     // For the initial view, fetch last sale check.
-     $lastSaleCheck = SaleCheck::select('no_bl', 'user_name', DB::raw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+00:00'), '%Y-%m-%d %H:%i:%s') as created_at"))
-     ->orderBy('created_at', 'desc')
-     ->first();
- 
- return view('dashboard', compact('lastSaleCheck'));
+    
 }
 
 }

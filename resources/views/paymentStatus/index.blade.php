@@ -373,7 +373,7 @@
 
                 @endcan
                 
-                <div class="bg-white w-min-full dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white w-min-full dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg overflow-x-auto">
                     <div class="p-6 pt-4 text-gray-900 dark:text-gray-100 ">
                         <h2 class="font-serif text-center rounded-lg text-gray-600 bg-gray-10 p-2 underline mb-12 text-2xl font-bold ">VENTE STATUS PAIEMENT</h2>
                      
@@ -426,7 +426,7 @@
     
                         </div>
                         
-                        <table id="payment-status-table" class="w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
+                        <table id="payment-status-table" class="w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border ">
                             <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                                 <tr>
                                     {{-- <th scope="col" class="px-6 py-3">ID</th> --}}
