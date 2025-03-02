@@ -289,7 +289,7 @@
     
     
 
-    {{-- <div class="mx-12 mt-6 bg-white p-4 rounded-lg shadow-md">
+    <div class="mx-12 mt-6 bg-white p-4 rounded-lg shadow-md">
         <div class="flex justify-between">
             <a href="{{ route('paymentStatus.index') }}">
                 <h2 class="text-lg font-bold text-gray-800  uppercase border-l-4 border-b-4 border-blue-300 px-3 pb-1 rounded-xl shadow-md pt-2 mt-1">
@@ -324,103 +324,103 @@
             </table>
         </div>
         
-    </div> --}}
+    </div>
 
 @endcan
 
 <script>
     // display paymentStatus table
-    // $(document).ready(function () {
-    //     $('#dashboard-payment-status-table').DataTable({
-    //         processing: true,
-    //         serverSide: true,
-    //         // pageLength: 5, // Set default number of entries to show
-    //         lengthMenu : [5,10,25,50,100],
-    //         ajax: {
-    //             url: '{{ route('dashboard.paymentStatusData') }}',
-    //             type: 'GET',
-    //         },
-    //         order : [[0,'desc']],
-    //         columns: [
-    //             { data: 'no_bl', name: 'no_bl' },
-    //             { data: 'code_client', name: 'code_client' },
-    //             { 
-    //                 data: 'name_client', 
-    //                 name: 'name_client',
-    //                 render: function (data, type, row) {
-    //                     return `<a href="#" class="client-name" data-client-code="${row.code_client}">${data}</a>`;
-    //                 }
-    //             },
-    //             { data: 'date_bl', name: 'date_bl' },
-    //             { 
-    //                 data: 'coupe', 
-    //                 name: 'coupe',
-    //                 render: function (data) {
-    //                     return `<p class="rounded-md px-2 py-1 border ${getStatusClass(data)}">${data}</p>`;
-    //                 }
-    //             },
-    //             { 
-    //                 data: 'sortie', 
-    //                 name: 'sortie',
-    //                 render: function (data) {
-    //                     return `<p class="rounded-md px-2 py-1 border ${getStatusClass(data)}">${data}</p>`;
-    //                 }
-    //             },
-    //             { data: 'time_difference', name: 'time_difference' },
-    //             { 
-    //                 data: 'montant_total', 
-    //                 name: 'montant_total', 
-    //                 render: function (data) {
-    //                     return formatNumberWithSpaces(data);
-    //                 }
-    //             },
-    //             { 
-    //                 data: 'montant_payed', 
-    //                 name: 'montant_payed', 
-    //                 render: function (data) {
-    //                     return formatNumberWithSpaces(data);
-    //                 }
-    //             },
-    //             { 
-    //                 data: 'montant_restant', 
-    //                 name: 'montant_restant', 
-    //                 render: function (data) {
-    //                     return `<span class="${getColorClass(data)}">${formatNumberWithSpaces(data)}</span>`;
-    //                 }
-    //             },
+    $(document).ready(function () {
+        $('#dashboard-payment-status-table').DataTable({
+            processing: true,
+            serverSide: true,
+            // pageLength: 5, // Set default number of entries to show
+            lengthMenu : [5,10,25,50,100],
+            ajax: {
+                url: '{{ route('dashboard.paymentStatusData') }}',
+                type: 'GET',
+            },
+            order : [[0,'desc']],
+            columns: [
+                { data: 'no_bl', name: 'no_bl' },
+                { data: 'code_client', name: 'code_client' },
+                { 
+                    data: 'name_client', 
+                    name: 'name_client',
+                    render: function (data, type, row) {
+                        return `<a href="#" class="client-name" data-client-code="${row.code_client}">${data}</a>`;
+                    }
+                },
+                { data: 'date_bl', name: 'date_bl' },
+                { 
+                    data: 'coupe', 
+                    name: 'coupe',
+                    render: function (data) {
+                        return `<p class="rounded-md px-2 py-1 border ${getStatusClass(data)}">${data}</p>`;
+                    }
+                },
+                { 
+                    data: 'sortie', 
+                    name: 'sortie',
+                    render: function (data) {
+                        return `<p class="rounded-md px-2 py-1 border ${getStatusClass(data)}">${data}</p>`;
+                    }
+                },
+                { data: 'time_difference', name: 'time_difference' },
+                { 
+                    data: 'montant_total', 
+                    name: 'montant_total', 
+                    render: function (data) {
+                        return formatNumberWithSpaces(data);
+                    }
+                },
+                { 
+                    data: 'montant_payed', 
+                    name: 'montant_payed', 
+                    render: function (data) {
+                        return formatNumberWithSpaces(data);
+                    }
+                },
+                { 
+                    data: 'montant_restant', 
+                    name: 'montant_restant', 
+                    render: function (data) {
+                        return `<span class="${getColorClass(data)}">${formatNumberWithSpaces(data)}</span>`;
+                    }
+                },
                 
                 
-    //         ],
-    //         createdRow: function (row, data, dataIndex) {
-    //         // Check if changeCount > 0 and add a red background
-    //         if (data.changeCount > 0) {
-    //             $('td', row).eq(0).css('background-color', '#ffd0d0'); // Change the background of the first cell
-    //         }
-    //     }
+            ],
+            createdRow: function (row, data, dataIndex) {
+            // Check if changeCount > 0 and add a red background
+            if (data.changeCount > 0) {
+                $('td', row).eq(0).css('background-color', '#ffd0d0'); // Change the background of the first cell
+            }
+        }
             
             
-    //     });
+        });
 
-    //     function getStatusClass(value) {
-    //         if (value === 'Oui') return 'bg-green-400 text-gray-200';
-    //         if (value === 'Non') return 'bg-red-400 text-gray-200';
-    //         if (value === 'En cours') return 'bg-orange-400 text-gray-200';
-    //         if (value === 'Sans') return 'bg-blue-400 text-gray-200';
-    //         return '';
-    //     }
+        function getStatusClass(value) {
+            if (value === 'Oui') return 'bg-green-400 text-gray-200';
+            if (value === 'Non') return 'bg-red-400 text-gray-200';
+            if (value === 'En cours') return 'bg-orange-400 text-gray-200';
+            if (value === 'Sans') return 'bg-blue-400 text-gray-200';
+            return '';
+        }
 
-    //     function getColorClass(value) {
-    //         if (value >= 1 && value < 5) return 'text-blue';
-    //         if (value >= 5 && value < 10) return 'text-yellow';
-    //         if (value >= 10 && value < 25) return 'text-orange';
-    //         if (value >= 25) return 'text-red';
-    //         return '';
-    //     }
+        function getColorClass(value) {
+            if (value >= 1 && value < 5) return 'text-blue';
+            if (value >= 5 && value < 10) return 'text-yellow';
+            if (value >= 10 && value < 25) return 'text-orange';
+            if (value >= 25) return 'text-red';
+            return '';
+        }
 
-    //     function formatNumberWithSpaces(number) {
-    //         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    //     }
-    // });
+        function formatNumberWithSpaces(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+    });
 
 
 </script>
