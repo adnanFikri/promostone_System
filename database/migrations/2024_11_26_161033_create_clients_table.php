@@ -20,9 +20,12 @@ return new class extends Migration
         $table->string('type')->nullable();
         $table->string('ice')->nullable();
         $table->string('user-name')->nullable(); 
+        
+    // adding after merge for reglemnt multi bls logique 
+        $table->decimal('solde_restant', 10, 2)->default(0);
+
         $table->timestamps();
     });
-    
     
 }
 

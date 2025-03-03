@@ -25,6 +25,11 @@ return new class extends Migration
             $table->string('user-name')->nullable(); 
             $table->timestamps();
 
+        // adding after merge for reglemnt multi bls logique 
+            $table->integer('bls_count')->default(1);
+            $table->decimal('montant_total', 10, 2);
+            $table->text('bls_list')->nullable();
+
             // Foreign key constraint (assuming clients table has a column 'code_client')
             $table->foreign('code_client')->references('code_client')->on('clients')->onDelete('cascade');
         });
