@@ -16,6 +16,7 @@ class Client extends Model
         'user-name',
         'category',
         'ice',
+        'solde_restant',
     ];
 
     public function sales()

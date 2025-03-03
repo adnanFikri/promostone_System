@@ -24,6 +24,9 @@ class Reglement extends Model
         'reference_chq',
         'date_chq',
         'user-name',
+        'bls_count',
+        'montant_total',
+        'bls_list',
     ];
 
     // Defining the relationship with the Client model (assuming a Client model exists)
