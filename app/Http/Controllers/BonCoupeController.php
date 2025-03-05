@@ -209,9 +209,9 @@ class BonCoupeController extends Controller
         // Group sales data by product name
         $groupedSales = $sales->groupBy('produit');
 
-        BonCoupe::firstOrCreate(
-            ['no_bl' => $no_bl]
-        );
+        // BonCoupe::firstOrCreate(
+        //     ['no_bl' => $no_bl]
+        // );
         
         // Prepare data for the view
         $data = [
