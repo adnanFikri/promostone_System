@@ -142,6 +142,7 @@
                             <select name="type_pay" id="mode_reglement" required
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                                 <option value="Chèque">Chèque</option>
+                                <option value="Crédit">Crédit</option>
                                 <option value="Espèce">Espèce</option>
                                 <option value="Virement">Virement</option>
                             </select>
