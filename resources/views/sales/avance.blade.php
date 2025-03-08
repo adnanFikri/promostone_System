@@ -99,7 +99,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-md sm:rounded-lg">
             <div class="p-6 text-gray-900 dark:text-gray-100">
-                <h2 class="text-center mb-4 text-2xl font-bold">Ajouter nouveau Règlement</h2>
+                <h2 class="text-center mb-4 text-2xl font-bold uppercase">saisir avance détail</h2>
 
                 
                 <div class="bg-white p-4 mb-4 rounded-lg shadow-md flex items-center justify-between border border-gray-200">
