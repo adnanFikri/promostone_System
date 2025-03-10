@@ -635,7 +635,26 @@
     
     @endcan
     
-
+    <div id="multiReglementModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-500 bg-opacity-75">
+        <div class="bg-white p-6 rounded-lg max-w-lg w-full shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-xl font-semibold">Détails Multi Règlement</h5>
+                <button type="button" class="text-gray-500 hover:text-gray-700" onclick="closeMultiReglementModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div>
+                <p><strong>Nombre de BLs :</strong> <span id="multi-bls-count"></span></p>
+                <p><strong>Montant Total :</strong> <span id="multi-montant-total"></span> DH</p>
+                <div class="mt-4">
+                    <p class="font-semibold">Liste des BLs :</p>
+                    <ul id="multi-bls-list" class="mt-2 space-y-2"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         
 // 00000000000000000000000000000000000000000000000000000000
@@ -854,7 +873,10 @@
                 {
                     data: 'montant_payed',
                     name: 'montant_payed',
-                    render: function (data) {
+                    render: function (data, type, row) {
+                        if(row.bls_count > 0){
+                            return `<span class="text-green-500 ">${formatNumberWithSpaces(data)}</span>` ;
+                        }
                         return formatNumberWithSpaces(data);
                     }
                 },
@@ -1428,13 +1450,25 @@
 
                 // Populate the table with the reglements data
                 response.reglements.forEach(function (reglement) {
+                    let montantContent = reglement.montant;
+
+                // If bls_count > 1, make montant a button
+                if (reglement.bls_count > 0) {
+                    montantContent = `<button class="view-multi-reglement text-green-500 hover:text-green-300" 
+                                            data-bls-count="${reglement.bls_count}" 
+                                            data-montant-total="${reglement.montant_total}" 
+                                            data-bls-list="${reglement.bls_list}">
+                                        ${reglement.montant}
+                                    </button>`;
+                }
+
                     reglementsTableBody.append(`
                         <tr>
-                            <td class="px-4 py-2 border">${reglement.id}</td>
+                            <td class="px-4 py-2 border ${reglement.bls_count > 0 ? 'bg-green-300' : ''}">${reglement.id}</td>
                             <td class="px-4 py-2 border">${reglement.no_bl}</td>
                             <td class="px-4 py-2 border">${reglement.code_client}</td>
                             <td class="px-4 py-2 border">${reglement.nom_client}</td>
-                            <td class="px-4 py-2 border">${reglement.montant}</td>
+                            <td class="px-4 py-2 border">${montantContent}</td>
                             <td class="px-4 py-2 border">${reglement.date}</td>
                             <td class="px-4 py-2 border">${reglement.type_pay}</td>
                         </tr>
@@ -1454,6 +1488,30 @@
     function closeReglementsModal() {
         $('#reglementsModal').addClass('hidden'); // Hide the modal
     }
+
+//000 ===> ===> ===> show details of multi bl reglement 
+$(document).on('click', '.view-multi-reglement', function () {
+    const blsCount = $(this).data('bls-count');
+    const montantTotal = $(this).data('montant-total');
+    const blsList = $(this).data('bls-list').replace(/^"|"$/g, '').split(', '); // Format list
+
+    $('#multi-bls-count').text(blsCount);
+    $('#multi-montant-total').text(montantTotal);
+
+    let listHTML = '';
+    blsList.forEach(bl => {
+        listHTML += `<li class="bg-gray-100 p-2 rounded-md shadow-sm">${bl}</li>`;
+    });
+
+    $('#multi-bls-list').html(listHTML);
+    $('#multiReglementModal').removeClass('hidden');
+});
+
+function closeMultiReglementModal() {
+    $('#multiReglementModal').addClass('hidden');
+}
+
+
     
     // 0000000 get client data phone and type 00000000
     $(document).on('click', '.client-name', function (e) {

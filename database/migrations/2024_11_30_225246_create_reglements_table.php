@@ -26,8 +26,8 @@ return new class extends Migration
             $table->timestamps();
 
         // adding after merge for reglemnt multi bls logique 
-            $table->integer('bls_count')->default(1);
-            $table->decimal('montant_total', 10, 2);
+            $table->integer('bls_count')->default(0);
+            $table->decimal('montant_total', 10, 2)->nullable();
             $table->text('bls_list')->nullable();
 
             // Foreign key constraint (assuming clients table has a column 'code_client')

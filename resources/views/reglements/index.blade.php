@@ -131,6 +131,30 @@
         </div>
     </div>
     
+
+        <div id="multiReglementModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-500 bg-opacity-75">
+            <div class="bg-white p-6 rounded-lg max-w-lg w-full shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h5 class="text-xl font-semibold">Détails Multi Règlement</h5>
+                    <button type="button" class="text-gray-500 hover:text-gray-700" onclick="closeMultiReglementModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div>
+                    <p><strong>Nombre de BLs :</strong> <span id="multi-bls-count"></span></p>
+                    <p><strong>Montant Total :</strong> <span id="multi-montant-total"></span> DH</p>
+                    <div class="mt-4">
+                        <p class="font-semibold">Liste des BLs :</p>
+                        <ul id="multi-bls-list" class="mt-2 space-y-2"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    
+    
     @endcan
 
 <script>
@@ -141,7 +165,17 @@ $(document).ready(function() {
         ajax: '{{ route('reglements.index') }}',
         columns: [
             // { data: 'id', name: 'id' },
-            { data: 'no_bl', name: 'no_bl' },
+            { data: 'no_bl', name: 'no_bl',
+                render: function(data, type, row) {
+                    if (row.bls_count > 0) {
+                        // console.log(row.montant_total);
+                        console.log(row.bls_list);
+                        return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
+                        
+                    }
+                    return data;
+                }
+             },
             { data: 'code_client', name: 'code_client' },
             { data: 'name_client', name: 'name_client' },
             { data: 'montant', name: 'montant' },
@@ -182,18 +216,39 @@ $(document).ready(function() {
 
 });
 
-$(document).on('click', '.view-cheque', function () {
-    const ref = $(this).data('ref');
-    const date = $(this).data('date');
-    $('#cheque-ref').text(ref || 'N/A');
-    $('#cheque-date').text(date || 'N/A');
-    $('#chequeModal').removeClass('hidden'); // Show modal
-});
+    $(document).on('click', '.view-cheque', function () {
+        const ref = $(this).data('ref');
+        const date = $(this).data('date');
+        $('#cheque-ref').text(ref || 'N/A');
+        $('#cheque-date').text(date || 'N/A');
+        $('#chequeModal').removeClass('hidden'); // Show modal
+    });
 
-function closeChequeModal() {
-    $('#chequeModal').addClass('hidden'); // Hide modal
-}
+    function closeChequeModal() {
+        $('#chequeModal').addClass('hidden'); // Hide modal
+    }
 
+    $(document).on('click', '.view-multi-reglement', function () {
+        const blsCount = $(this).data('bls-count');
+        const montantTotal = $(this).data('montant-total');
+        // const blsList = $(this).data('bls-list').split(', ');
+        const blsList = $(this).data('bls-list').replace(/^"|"$/g, '').split(', ');
+
+        $('#multi-bls-count').text(blsCount);
+        $('#multi-montant-total').text(montantTotal);
+
+        let listHTML = '';
+        blsList.forEach(bl => {
+            listHTML += `<li class="bg-gray-100 p-2 rounded-md shadow-sm">${bl}</li>`;
+        });
+
+        $('#multi-bls-list').html(listHTML);
+        $('#multiReglementModal').removeClass('hidden');
+    });
+
+    function closeMultiReglementModal() {
+        $('#multiReglementModal').addClass('hidden');
+    }
 
 </script>
 @endsection

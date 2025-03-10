@@ -49,7 +49,10 @@ class ReglementController extends Controller
                 'reglements.type_pay',
                 'reglements.reference_chq', 
                 'reglements.date_chq',
-                'reglements.user-name'
+                'reglements.user-name',
+                'reglements.bls_count',
+                'reglements.montant_total',
+                'reglements.bls_list',
             )
             ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client')->distinct() // LEFT JOIN with clients table
             ->where('reglements.montant', '>', 0)
@@ -78,6 +81,19 @@ class ReglementController extends Controller
                                     </button>
                                 </form>';
                 }
+
+                if ($row->bls_count > 0) {
+                    $btn .= '<button style="float:left;" class="btn btn-info btn-sm view-multi-reglement" 
+                                data-bls-count="' . $row->bls_count . '" 
+                                data-montant-total="' . $row->montant_total . '" 
+                                data-bls-list=\'' . json_encode($row->bls_list) . '\'>
+                                <svg class="w-6 h-6 text-green-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                                </svg>
+
+                            </button>';
+                }
+                
             
                 return $btn;
             })
@@ -97,6 +113,7 @@ class ReglementController extends Controller
     public function store(Request $request)
     {
         try {
+        // {{{{{check existing reglement
             $override = $request->input('override', false); // Get override flag
 
             $existingReglement = Reglement::where([
@@ -118,99 +135,202 @@ class ReglementController extends Controller
                     'message' => 'Ce paiement a déjà été enregistré pour cette BL avec ce montant.',
                 ]);
             }
-            
-            
-            $paymentStatus = PaymentStatus::where('no_bl', $request->no_bl)->first();
+        // check existing reglement }}}}
 
-            if (!$paymentStatus) {
+            $client = Client::where('code_client', $request->code_client)->first();
+
+            if (!$client) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No BL found for the given client and BL number.',
+                    'message' => 'Client not found.',
                 ], 404);
             }
-            // Fetch client name from `clients` table if `name_client` is missing
-            if (is_null($paymentStatus->name_client)) {
-                $client = Client::where('code_client', $request->code_client)->first();
-                if ($client) {
-                    $paymentStatus->update(['name_client' => $client->name]);
-                } else {
+            $totalAmount = $request->montant;
+            $blsList = [];
+            $blsCount = 0;
+            $reglements = [];
+
+            if ($request->no_bl === 'multi') {
+                // Fetch all unpaid BLs
+                $paymentStatuses = PaymentStatus::where('code_client', $request->code_client)
+                    ->where('montant_restant', '>', 0)
+                    ->orderBy('date_bl', 'asc')
+                    ->get();
+
+                foreach ($paymentStatuses as $paymentStatus) {
+                    if ($totalAmount <= 0) break;
+
+                    $amountToPay = min($totalAmount, $paymentStatus->montant_restant);
+                    $rest = $paymentStatus->montant_restant - $amountToPay;
+                    $blsList[] = "no_bl: {$paymentStatus->no_bl} => Montant Paye: {$amountToPay}dh => Rest: $rest ";
+
+                    // Update payment status
+                    $paymentStatus->update([
+                        'montant_payed' => $paymentStatus->montant_payed + $amountToPay,
+                        'montant_restant' => $paymentStatus->montant_restant - $amountToPay,
+                    ]);
+
+                    // Create a separate Reglement for each BL
+                    $reglements[] = Reglement::create([
+                        'no_bl' => $paymentStatus->no_bl,
+                        'code_client' => $request->code_client,
+                        'nom_client' => $client->name,
+                        'montant' => $amountToPay,
+                        'mode' => $request->mode,
+                        'date' => now(),
+                        'type_pay' => $request->type_pay,
+                        'reference_chq' => $request->reference_chq,
+                        'date_chq' => $request->date_chq,
+                        'user-name' => Auth::user()->name,
+                        'bls_count' => 0, // Will be updated later
+                        'montant_total' => $request->montant,
+                        'bls_list' => '', // Will be updated later
+                    ]);
+
+                    $totalAmount -= $amountToPay;
+                    $blsCount++;
+                }
+
+                // Now update all created Reglements with the correct bls_count and bls_list
+                $blsListStr = implode(', ', $blsList);
+                foreach ($reglements as $reglement) {
+                    $reglement->update([
+                        'bls_count' => $blsCount,
+                        'bls_list' => $blsListStr,
+                    ]);
+                }
+
+                // If there's remaining money, store it in client's solde_restant
+                // if ($totalAmount > 0) {
+                //     $client->update(['solde_restant' => $client->solde_restant + $totalAmount]);
+                // }
+
+                if ($totalAmount > 0) {
+                    // Ensure solde_restant is a valid JSON array or initialize an empty array
+                    $soldeRestant = is_string($client->solde_restant) && json_decode($client->solde_restant, true)
+                        ? json_decode($client->solde_restant, true)
+                        : [];
+                
+                    // Ensure it's an array
+                    if (!is_array($soldeRestant)) {
+                        $soldeRestant = [];
+                    }
+                
+                    // Add the new remaining amount with the corresponding BL
+                    $soldeRestant[] = [
+                        'montant_rest' => $totalAmount,
+                        'no_bl' => $blsListStr, // Or use a specific BL if only one
+                    ];
+                
+                    // Update the client with the new JSON-encoded solde_restant
+                    $client->update(['solde_restant' => json_encode($soldeRestant)]);
+                }
+                
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Règlement enregistré avec succès.',
+                    'reglement' => $reglements, // Returns all created reglements
+                    'updatedPaymentStatus' => $paymentStatus,
+                    'client' => $client,
+                    'bls_list' => $blsListStr,
+                    'bls_count' => $blsCount,
+                ]);
+            } else {
+                $paymentStatus = PaymentStatus::where('no_bl', $request->no_bl)->first();
+
+                if (!$paymentStatus) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Client not found for the given client code.',
+                        'message' => 'Aucun BL trouvé pour le client et le numéro BL donnés.',
                     ], 404);
                 }
-            }
-            // Fetch date_bl from `sales` table if missing
-        if (is_null($paymentStatus->date_bl)) {
-            $sale = Sale::where('no_bl', $request->no_bl)->first();
-            if ($sale) {
-                $paymentStatus->update(['date_bl' => $sale->date]);
-            } else {
+                // Fetch client name from `clients` table if `name_client` is missing
+                if (is_null($paymentStatus->name_client)) {
+                    $client = Client::where('code_client', $request->code_client)->first();
+                    if ($client) {
+                        $paymentStatus->update(['name_client' => $client->name]);
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Client not found for the given client code.',
+                        ], 404);
+                    }
+                }
+                // Fetch date_bl from `sales` table if missing
+                if (is_null($paymentStatus->date_bl)) {
+                    $sale = Sale::where('no_bl', $request->no_bl)->first();
+                    if ($sale) {
+                        $paymentStatus->update(['date_bl' => $sale->date]);
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Sale not found for the given BL number.',
+                        ], 404);
+                    }
+                }
+                // Create the Reglement entry
+                $reglement = Reglement::create([
+                    'no_bl' => $request->no_bl,
+                    'code_client' => $request->code_client,
+                    'nom_client' => $paymentStatus->name_client ,
+                    'montant' => $request->montant,
+                    'mode' => $request->mode,
+                    'date' =>  $request->has('destination') ? now() : $request->date, 
+                    'type_pay' => $request->type_pay,
+                    'reference_chq' => $request->reference_chq, 
+                    'date_chq' => $request->date_chq,          
+                    'user-name' => Auth::user()->name
+                ]);
+
+
+                $rest = $paymentStatus->montant_total - ($paymentStatus->montant_payed + $request->montant);
+                // Prepare data to update PaymentStatus
+                $paymentStatusData = [
+                    'montant_payed' => $paymentStatus->montant_payed + $request->montant,
+                    'montant_restant' => $rest ,
+                ];
+            
+                if ($request->has('chefAtelier') && $request->chefAtelier !== null) {
+                    $paymentStatusData['chef-atelier'] = $request->chefAtelier;
+                    BonLivraison::firstOrCreate(
+                        ['no_bl' => $request->no_bl, 'userName' => Auth::user()->name]
+                    );
+        
+                    BonCoupe::firstOrCreate(
+                        ['no_bl' => $request->no_bl]
+                    );
+                    
+                    BonSortie::firstOrCreate(
+                        ['no_bl' => $request->no_bl]
+                    );
+                    
+                }
+                
+                if ($request->has('destination') && $request->destination !== null) {
+                    $paymentStatusData['destination'] = $request->destination;
+                    $paymentStatusData['commerçant'] = Auth::user()->name;
+                }
+                
+                if ($request->has('date_echeance') && $request->date_echeance !== null) {
+                    $paymentStatusData['date-echeance'] = $request->date_echeance;
+                }
+
+                $paymentStatusData['user-name'] = Auth::user()->name;
+
+                // Update the PaymentStatus
+                $paymentStatus->update($paymentStatusData);
+
+                // Success response
                 return response()->json([
-                    'success' => false,
-                    'message' => 'Sale not found for the given BL number.',
-                ], 404);
-            }
-        }
-            // Create the Reglement entry
-            $reglement = Reglement::create([
-                'no_bl' => $request->no_bl,
-                'code_client' => $request->code_client,
-                'nom_client' => $paymentStatus->name_client ,
-                'montant' => $request->montant,
-                'mode' => $request->mode,
-                'date' =>  $request->has('destination') ? now() : $request->date, 
-                'type_pay' => $request->type_pay,
-                'reference_chq' => $request->reference_chq, 
-                'date_chq' => $request->date_chq,          
-                'user-name' => Auth::user()->name
-            ]);
-
-
-            $rest = $paymentStatus->montant_total - ($paymentStatus->montant_payed + $request->montant);
-            // Prepare data to update PaymentStatus
-            $paymentStatusData = [
-                'montant_payed' => $paymentStatus->montant_payed + $request->montant,
-                'montant_restant' => $rest ,
-            ];
-           
-            if ($request->has('chefAtelier') && $request->chefAtelier !== null) {
-                $paymentStatusData['chef-atelier'] = $request->chefAtelier;
-                BonLivraison::firstOrCreate(
-                    ['no_bl' => $request->no_bl, 'userName' => Auth::user()->name]
-                );
-    
-                BonCoupe::firstOrCreate(
-                    ['no_bl' => $request->no_bl]
-                );
-                
-                BonSortie::firstOrCreate(
-                    ['no_bl' => $request->no_bl]
-                );
-                
+                    'success' => true,
+                    'message' => 'Règlement enregistré avec succès.',
+                    'reglement' => $reglement,
+                    'updatedPaymentStatus' => $paymentStatus,
+                ]);
             }
             
-            if ($request->has('destination') && $request->destination !== null) {
-                $paymentStatusData['destination'] = $request->destination;
-                $paymentStatusData['commerçant'] = Auth::user()->name;
-            }
-            
-            if ($request->has('date_echeance') && $request->date_echeance !== null) {
-                $paymentStatusData['date-echeance'] = $request->date_echeance;
-            }
-
-            $paymentStatusData['user-name'] = Auth::user()->name;
-
-            // Update the PaymentStatus
-            $paymentStatus->update($paymentStatusData);
-
-            // Success response
-            return response()->json([
-                'success' => true,
-                'message' => 'Règlement enregistré avec succès.',
-                'reglement' => $reglement,
-                'updatedPaymentStatus' => $paymentStatus,
-            ]);
+       
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -277,7 +397,10 @@ class ReglementController extends Controller
 
     public function getReglementsByBl(Request $request)
     {
-        $reglements = Reglement::where('no_bl', $request->no_bl)->get();
+        // $reglements = Reglement::where('no_bl', $request->no_bl)->get();
+        $reglements = Reglement::where('no_bl', $request->no_bl)
+                       ->where('montant', '>', 0)
+                       ->get();
         return response()->json(['reglements' => $reglements]);
     }
 

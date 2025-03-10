@@ -22,7 +22,8 @@ return new class extends Migration
         $table->string('user-name')->nullable(); 
         
     // adding after merge for reglemnt multi bls logique 
-        $table->decimal('solde_restant', 10, 2)->default(0);
+        // $table->decimal('solde_restant', 10, 2)->default(0);
+        $table->json('solde_restant')->nullable()->change();
 
         $table->timestamps();
     });

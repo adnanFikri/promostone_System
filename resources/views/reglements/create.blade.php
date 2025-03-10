@@ -147,11 +147,11 @@
                             <div class="flex gap-4">
                                 <label>
                                     <input type="radio" name="selection_mode" value="client" checked>
-                                    Select by Client
+                                    Sélectionner par client
                                 </label>
                                 <label>
                                     <input type="radio" name="selection_mode" value="bl">
-                                    Select by BL
+                                    Sélectionner par BL
                                 </label>
                             </div>
                         </div>
@@ -168,7 +168,7 @@
                         </div>
 
                         {{-- existiiiiiiiing select --}}
-                        <div class="div-selectBl " id="ha">
+                        <div class="div-selectBl" id="ha">
                             <div class="mb-6 ">
                                 <label for="code_client" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Client</label>
                                 <select name="code_client" id="code_client" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
@@ -191,7 +191,7 @@
 
                             <div class="mb-6 dateInput">
                                 <label for="date_reglement" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date Reglement</label>
-                                <input type="date" name="date" id="date_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                                <input type="date" name="date" id="date_reglement" required value="{{ request('date_from', now()->toDateString()) }}" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                             </div>
                         </div>
 
@@ -208,7 +208,7 @@
                             <div id="div-chq">
                                 <div class="mb-6">
                                     <label for="reference_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Numéro de Référence</label>
-                                    <input type="number" name="reference_chq" id="reference_chq" placeholder="N° Reference" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
+                                    <input type="text" name="reference_chq" id="reference_chq" placeholder="N° Reference" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                                 </div>
                                 <div class="mb-6 dateInput">
                                     <label for="date_chq" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Date d'échéance</label>
@@ -271,7 +271,6 @@
         }
     });
 
-    // Handle payment status and BL fetching when a client is selected
     $('#code_client').on('change', function () {
         const selectedClient = $(this).val();
         $('#bls').html('<option>Loading...</option>');
@@ -281,10 +280,15 @@
             .then(response => response.json())
             .then(data => {
                 $('#bls').empty();
+
+                // Add "Multi Bls" option first
+                $('#bls').append('<option value="multi">Multi Bls</option>');
+
                 if (!data.length) {
                     $('#bls').append('<option disabled>No BLs available</option>');
                     return;
                 }
+
                 data.forEach(bl => {
                     $('#bls').append(
                         `<option value="${bl.no_bl}">BL: ${bl.no_bl} --- Restant: ${bl.montant_restant} DH</option>`
@@ -307,207 +311,125 @@
             .catch(error => console.error('Error:', error));
     });
 
-// // Save form data
-// $('#save-button').on('click', function (e) {
-//     e.preventDefault();
 
-//     const selectionMode = $('input[name="selection_mode"]:checked').val();
-//     let bl, client;
+    $('#save-button').on('click', function (e) {
+        e.preventDefault();
 
-//     if (selectionMode === 'client') {
-//         client = $('#code_client').val();
-//         bl = $('#bls').val();
-//     } else if (selectionMode === 'bl') {
-//         const selectedBL = $('#search_bls').select2('data')[0]; // Get the selected option's data
-//         if (selectedBL) {
-//             bl = selectedBL.id;
-//             client = selectedBL.code_client; // Access code_client from the custom data
-//         }
-//     }
 
-//     if (!bl) {
-//         alert('Please select a BL.');
-//         return;
-//     }
+        const selectionMode = $('input[name="selection_mode"]:checked').val();
+        let bl, client;
 
-//     const formData = {
-//         no_bl: bl,
-//         code_client: client,
-//         montant: $('#montant').val(), 
-//         date: $('#date_reglement').val(), 
-//         type_pay: $('#mode_reglement').val(), 
-//         reference_chq: $('#reference_chq').val(), 
-//         date_chq: $('#date_chq').val(), 
-//         mode: $('#mode').val(), 
-//         _token: '{{ csrf_token() }}'
-//     };
-
-//     fetch('{{ route('reglements.store') }}', {
-//         method: 'POST',
-//         body: new URLSearchParams(formData),
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded',
-//         },
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
-            
-//             // Show SweetAlert with the updated balance
-//             Swal.fire({
-//                 title: 'Solde restant mis à jour',
-//                 text: `Le solde restant mis à jour est : ${updatedBalance}`,
-//                 icon: 'success',
-//                 confirmButtonText: 'OK',
-//                 customClass: {
-//                     confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-//                 }
-//             }).then(() => {
-//                 window.location.href = '{{ route("reglements.index") }}';
-//             });
-//         } else {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Erreur!',
-//                 text: data.message,
-//                 confirmButtonText: 'OK',
-//                 customClass: {
-//                     confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-//                 }
-//             }).then((result) => {
-//                 if (result.isConfirmed && data.nextRoute) {
-//                     window.location.replace(data.nextRoute); // Redirect after error message
-//                 }
-//             });
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Erreur!',
-//             text: 'Une erreur s\'est produite lors de la sauvegarde.',
-//             confirmButtonText: 'OK',
-//             customClass: {
-//                 confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-//             }
-//         });
-//     });
-// });
-$('#save-button').on('click', function (e) {
-    e.preventDefault();
-
-    const selectionMode = $('input[name="selection_mode"]:checked').val();
-    let bl, client;
-
-    if (selectionMode === 'client') {
-        client = $('#code_client').val();
-        bl = $('#bls').val();
-    } else if (selectionMode === 'bl') {
-        const selectedBL = $('#search_bls').select2('data')[0]; 
-        if (selectedBL) {
-            bl = selectedBL.id;
-            client = selectedBL.code_client;
-        }
-    }
-
-    if (!bl) {
-        alert('Please select a BL.');
-        return;
-    }
-
-    const formData = {
-        no_bl: bl,
-        code_client: client,
-        montant: $('#montant').val(),
-        date: $('#date_reglement').val(),
-        type_pay: $('#mode_reglement').val(),
-        reference_chq: $('#reference_chq').val(),
-        date_chq: $('#date_chq').val(),
-        mode: $('#mode').val(),
-        _token: '{{ csrf_token() }}'
-    };
-
-    function submitForm(override = false) {
-        if (override) {
-            formData.override = true; // Send override flag
+        if (selectionMode === 'client') {
+            client = $('#code_client').val();
+            bl = $('#bls').val();
+        } else if (selectionMode === 'bl') {
+            const selectedBL = $('#search_bls').select2('data')[0]; 
+            if (selectedBL) {
+                bl = selectedBL.id;
+                client = selectedBL.code_client;
+            }
         }
 
-        fetch('{{ route('reglements.store') }}', {
-            method: 'POST',
-            body: new URLSearchParams(formData),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success === true) {
-                const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
-                
-                Swal.fire({
-                    title: 'Succès!',
-                    text: `Le solde restant mis à jour est : ${updatedBalance}`,
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-                    },
-                }).then(() => {
-                    window.location.href = '{{ route("reglements.index") }}';
-                });
+        if (!bl) {
+            alert('Please select a BL.');
+            return;
+        }
 
-            } else if (data.success === 'confirm' && !override) { 
-                // Show confirmation alert only if override is false
-                Swal.fire({
-                    title: 'Confirmation',
-                    text: data.message,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Oui, enregistrer',
-                    customClass: {
-                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-                    },
-                    cancelButtonText: 'Non, annuler',
-                    customClass: {
-                        confirmButton: 'my-alert-button',
-                        cancelButton: 'alert-button-cancel' // Applique votre classe personnalisée
-                    },
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        submitForm(true); // ✅ Send override = true on retry
-                    }
-                });
+        const formData = {
+            no_bl: bl,
+            code_client: client,
+            montant: $('#montant').val(),
+            date: $('#date_reglement').val(),
+            type_pay: $('#mode_reglement').val(),
+            reference_chq: $('#reference_chq').val(),
+            date_chq: $('#date_chq').val(),
+            mode: $('#mode').val(),
+            _token: '{{ csrf_token() }}'
+        };
 
-            } else {
+
+        function submitForm(override = false) {
+            if (override) {
+                formData.override = true; // Send override flag
+            }
+
+            fetch('{{ route('reglements.store') }}', {
+                method: 'POST',
+                body: new URLSearchParams(formData),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success === true) {
+                    console.log(data);
+                    
+                    
+                    const updatedBalance = parseFloat(data.updatedPaymentStatus.montant_restant).toFixed(2);
+                    
+                    Swal.fire({
+                        title: 'Succès!',
+                        text: `Le solde restant mis à jour est : ${updatedBalance}`,
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                        },
+                    }).then(() => {
+                        window.location.href = '{{ route("reglements.index") }}';
+                    });
+
+                } else if (data.success === 'confirm' && !override) { 
+                    // Show confirmation alert only if override is false
+                    Swal.fire({
+                        title: 'Confirmation',
+                        text: data.message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Oui, enregistrer',
+                        customClass: {
+                            confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                        },
+                        cancelButtonText: 'Non, annuler',
+                        customClass: {
+                            confirmButton: 'my-alert-button',
+                            cancelButton: 'alert-button-cancel' // Applique votre classe personnalisée
+                        },
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            submitForm(true); // ✅ Send override = true on retry
+                        }
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur!',
+                        text: data.message,
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                        },
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur!',
-                    text: data.message,
+                    text: 'Une erreur s\'est produite lors de la sauvegarde.',
                     confirmButtonText: 'OK',
-                    customClass: {
-                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-                    },
+                        customClass: {
+                            confirmButton: 'my-alert-button' // Applique votre classe personnalisée
+                        },
                 });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Erreur!',
-                text: 'Une erreur s\'est produite lors de la sauvegarde.',
-                confirmButtonText: 'OK',
-                    customClass: {
-                        confirmButton: 'my-alert-button' // Applique votre classe personnalisée
-                    },
             });
-        });
-    }
+        }
 
-    submitForm(); // First submission
-});
+        submitForm(); // First submission
+    });
 
 
 // -=-==-=-= end save data -=-=-==- 

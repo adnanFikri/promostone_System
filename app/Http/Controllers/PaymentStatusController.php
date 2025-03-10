@@ -10,6 +10,7 @@ use App\Models\BonSortie;
 use App\Models\SaleCheck;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
+use App\Models\Reglement;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 // use Illuminate\Routing\Controller;
@@ -93,7 +94,7 @@ class PaymentStatusController extends Controller
                 
                 // Fetch `sortie` from BonSortie
                 $item->sortie = BonSortie::where('no_bl', $item->no_bl)->value('sortie');
-                
+
                 $coupef = BonCoupe::where('no_bl', $item->no_bl)->first();
                 // Calculate time difference in **hours**
                 // Initialize default value
@@ -107,6 +108,11 @@ class PaymentStatusController extends Controller
                     $diffMinutes = $printDate->diffInMinutes($dateCoupe) % 60;
                     $item->time_difference = "{$diffHours}h {$diffMinutes}min";
                 }
+
+                // $item->bls_count = Reglement::where('no_bl', $item->no_bl)->value('bls_count');
+                $item->bls_count = Reglement::where('no_bl', $item->no_bl)
+                ->where('bls_count', '>', 0)
+                ->exists() ? 1 : 0;
             });
 
             return DataTables::of($data)
