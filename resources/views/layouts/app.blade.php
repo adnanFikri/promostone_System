@@ -82,7 +82,7 @@
                         </button>
                         <a href="{{route('paymentStatus.index')}}" class="YRrCJSr_j5nopfm4duUc YcuQRAYEep0W4L0BFDfG">
                             <img src="{{asset('imgs/promologo.png')}}" class="R9nujHypnXyuHrBww9QK mWvJQyBFgwNGEt0h7bSP" alt="FlowBite Logo">
-                            <span class="_rCfAafI7lqYALljdSxM q1oXbofRCOhVhOSB8tiU yM_AorRf2jSON3pDsdrz BHrWGjM1Iab_fAz0_91H OyABRrnTV_kvHV7dJ0uE">Distristone</span>
+                            <span class="_rCfAafI7lqYALljdSxM q1oXbofRCOhVhOSB8tiU yM_AorRf2jSON3pDsdrz BHrWGjM1Iab_fAz0_91H OyABRrnTV_kvHV7dJ0uE">Promostone Industry</span>
                         </a>
                         
                     </div>

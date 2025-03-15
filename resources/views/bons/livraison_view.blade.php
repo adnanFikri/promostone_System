@@ -118,6 +118,23 @@
             border: rgb(173, 170, 170) 1px solid;
         }
 
+        #openCommercantModalBtn{
+            background-color: rgba(130, 46, 130, 0.122);
+        }
+        #openCommercantModalBtn:hover{
+            background-color: rgba(92, 91, 92, 0);
+        }
+        #openCommercantModalBtn svg{
+            color: rgba(186, 16, 186, 0.992);
+            transition: .3s;
+        }
+        #openCommercantModalBtn svg:hover{
+            color: rgba(247, 6, 247, 0.992);
+        }
+
+        .select_com{
+            background-color: rgba(195, 70, 195, 0.388);
+        }
     </style>
     
   
@@ -125,6 +142,44 @@
 <div class="py-5">
     <div class="max-w-12xl mx-auto sm:px-6 lg:px-8">
         <div class="p-6 bg-white rounded-lg shadow-md">
+
+            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('SuperAdmin'))
+                <button id="openCommercantModalBtn" 
+                        class="px-2 py-1 bg-blue-50 text-white font-semibold rounded-md hover:bg-blue-100 focus:outline-none">
+                    <svg class="w-[24px] h-[24px] text-blue-800 hover:text-blue-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z"/>
+                    </svg>
+                </button>
+            @endif
+
+            <!-- Modal -->
+            <div id="commercantModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50">
+                <div class="bg-white rounded-lg shadow-lg w-[95%] max-w-4xl p-6">
+                    <!-- Modal Header -->
+                    <div class="px-6 py-4 bg-gray-100 border-b flex justify-between items-center rounded-t-md">
+                        <h2 class="text-xl font-semibold text-gray-800">Détails des Commercants</h2>
+                        <button id="closeCommercantModalBtn" class="text-gray-500 hover:text-red-500 text-3xl">&times;</button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                        <ul id="commercantsList" class="space-y-4">
+                            <!-- Dynamic content will be inserted here -->
+                        </ul>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="px-6 py-3 bg-gray-100 rounded-b-md text-right">
+                        <button id="closeFooterBtn" class="px-6 py-2 bg-red-500 text-white text-md rounded-md hover:bg-red-600">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+
+            
             <h2 class="text-2xl font-bold font-mono mb-6 text-center pb-4 border-b-4 mx-12">List des Bons de Livraison</h2>
             
             <div id="container-searchBL" >
@@ -172,7 +227,33 @@
             //  { data: 'name_client', name: 'name_client' },
             { data: 'products', name: 'products' }, // This column corresponds to products
             { data: 'date', name: 'date' }, // Sale date column
-            { data: 'commercant', name: 'commercant' }, // Commercant column
+            // { data: 'commercant', name: 'commercant' }, // Commercant column
+            { 
+                data: 'commercant', 
+                name: 'commercant',
+                render: function(data, type, row) {
+                    let userHasRole = true;
+                    let bgColor = data ? 'bg-blue-300' : 'bg-blue-100';
+                    let disabled = userHasRole ? '' : 'disabled';
+
+                    return `
+                        <select onchange="updateCommercant(${row.no_bl}, this.value)" 
+                            class="select_com rounded-md w-md border border-gray-300 px-2 py-1 text-xl ${bgColor}" ${disabled} title="${data}">
+                            <option class="bg-gray-100 text-gray-500" value="" ${!data ? 'selected' : ''}>Choisir</option>
+                            <option class="bg-gray-100 text-black" value="Nourddine" ${data === 'Nourddine' ? 'selected' : ''}>Nourddine</option>
+                            <option class="bg-gray-100 text-black" value="Badr" ${data === 'Badr' ? 'selected' : ''}>Badr</option>
+                            <option class="bg-gray-100 text-black" value="Mahmoud" ${data === 'Mahmoud' ? 'selected' : ''}>Mahmoud</option>
+                            <option class="bg-gray-100 text-black" value="Laila Ettair" ${data === 'Laila Ettair' ? 'selected' : ''}>Laila Ettair</option>
+                            <option class="bg-gray-100 text-black" value="Hafida Ech Chaaraouy" ${data === 'Hafida Ech Chaaraouy' ? 'selected' : ''}>Hafida Ech Chaaraouy</option>
+                            <option class="bg-gray-100 text-black" value="Hidaya Arahmani" ${data === 'Hidaya Arahmani' ? 'selected' : ''}>Hidaya Arahmani</option>
+                            <option class="bg-gray-100 text-black" value="Fatima" ${data === 'Fatima' ? 'selected' : ''}>Fatima</option>
+                            <option class="bg-gray-100 text-black" value="Nawal Abli" ${data === 'Nawal Abli' ? 'selected' : ''}>Nawal Abli</option>
+                            <option class="bg-gray-100 text-black" value="Aya" ${data === 'Aya' ? 'selected' : ''}>Aya</option>
+                            <option class="bg-gray-100 text-black" value="Distristone_Hafida Ech" ${data === 'Distristone_Hafida Ech' ? 'selected' : ''}>Distristone_Hafida Ech</option>
+                        </select>
+                    `;
+                }
+            },
             { 
                 data: 'livree', 
                 name: 'livree', 
@@ -344,6 +425,135 @@
             }
         });
     }
+
+    function updateCommercant(no_bl, value) {
+        console.log(value);
+        
+        Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: `Voulez-vous vraiment modifier le Commerçant de ce bon à "${value}" ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Oui, confirmer',
+            cancelButtonText: 'Annuler',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/update-commercant/${no_bl}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ commercant: value })
+                    
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Mis à jour avec succès !',
+                            text: 'Le Commerçant a été mis à jour.',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur lors de la mise à jour.',
+                            text: 'Un problème est survenu lors de la mise à jour du Commerçant.',
+                            confirmButtonText: 'Réessayer',
+                            confirmButtonColor: '#d33',
+                        });
+                        $('#bons-table').DataTable().ajax.reload();
+                    }
+                }).catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur réseau',
+                        text: 'Il y a eu un problème avec la requête. Veuillez réessayer plus tard.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#d33',
+                    });
+                    $('#bons-table').DataTable().ajax.reload();
+                });
+            } else {
+                $('#bons-table').DataTable().ajax.reload();
+            }
+        });
+    }
+
+    // Function to format numbers with spaces as thousands separators
+    function formatNumberWithSpaces(number) {
+        if (number == null) return '';
+        return number
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+
+    document.getElementById('openCommercantModalBtn').addEventListener('click', function () {
+        document.getElementById('commercantModal').classList.remove('hidden');
+        
+        // Fetch the commercants data
+        fetch('/bonLivraison/commercants-stats')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('commercantsList');
+                list.innerHTML = '';  // Clear previous list
+                
+                data.forEach(commercant => {
+                    let li = document.createElement('li');
+                    li.classList.add("flex", "justify-between", "bg-gray-50", "p-4", "rounded-xl", "shadow-md", "items-center", "gap-4");
+
+                    // Create HTML structure for each commercant's data
+                    li.innerHTML = `
+                        <div class="flex-1">
+                            <span class="text-lg font-semibold text-gray-800">${commercant.commercant}</span>
+                            <div class="text-sm font-bold font-xl text-blue-700 mt-1">${formatNumberWithSpaces(commercant.total_chiffre_affaire)} MAD</div>
+                        </div>
+                        <div class="flex flex-col items-end w-52">
+                            <input type="number" class="commission-input px-4 py-2 w-full border border-gray-300 rounded-lg text-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                                placeholder="Comm. %" data-chiffre="${commercant.total_chiffre_affaire}" />
+                            <span class="text-sm text-green-600 font-semibold commission-result mt-2">Commission: 0 MAD</span>
+                        </div>
+                    `;
+
+                    // Event listener to calculate commission
+                    const input = li.querySelector('.commission-input');
+                    const result = li.querySelector('.commission-result');
+
+                    input.addEventListener('input', function () {
+                        const commissionPercentage = parseFloat(input.value);
+                        if (!isNaN(commissionPercentage)) {
+                            const chiffreAffaire = parseFloat(input.dataset.chiffre);
+                            const commission = (chiffreAffaire * commissionPercentage) / 100;
+                            result.textContent = `Commission: ${formatNumberWithSpacesCommission(commission)} MAD`;
+                        } else {
+                            result.textContent = `Commission: 0 MAD`;
+                        }
+                    });
+
+                    list.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Erreur lors de la récupération des commercants:', error));
+    });
+
+    // Format number with spaces (e.g., 1000 -> 1 000)
+    function formatNumberWithSpacesCommission(number) {
+        return number.toLocaleString('fr-FR');
+    }
+
+    // Close modal when clicking the close button or footer button
+    ['closeCommercantModalBtn', 'closeFooterBtn'].forEach(id => {
+        document.getElementById(id).addEventListener('click', function () {
+            document.getElementById('commercantModal').classList.add('hidden');
+        });
+    });
+
+
 
 
     // function deleteBon(no_bl) {

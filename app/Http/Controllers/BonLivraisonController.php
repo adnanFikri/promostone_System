@@ -115,6 +115,39 @@ class BonLivraisonController extends Controller
         return view('sales.bonL', $data);
     }
 
+    public function getCommercantsStats()
+    {
+        // Get the total chiffre d'affaire for each commercant
+        $commercants = DB::table('payment_statuses')
+                        ->select('commerçant as commercant', DB::raw('SUM(montant_total) as total_chiffre_affaire'))
+                        ->whereNotNull('commerçant') // Exclude null commercants
+                        ->groupBy('commerçant') // Group by commercant name
+                        ->orderByDesc('total_chiffre_affaire') // Order by total chiffre d'affaire
+                        ->get();
+
+        return response()->json($commercants);
+    }
+
+
+    public function updateCommercant(Request $request, $no_bl)
+    {
+        // Validate the request
+        $request->validate([
+            'commercant' => 'required|string'
+        ]);
+
+        // Update all sales records with the same no_bl
+        $updated = PaymentStatus::where('no_bl', $no_bl)->update(['commerçant' => $request->commercant]);
+
+        // Check if any rows were updated
+        if ($updated) {
+            return response()->json(['success' => true, 'message' => 'Commercant mis à jour avec succès.']);
+        } else {
+            return response()->json(['error' => 'Aucune mise à jour effectuée.'], 404);
+        }
+    }
+
+    
     public function updateLivree(Request $request, $id)
     {
         $bon = BonLivraison::findOrFail($id);

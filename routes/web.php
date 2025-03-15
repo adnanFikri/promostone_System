@@ -74,6 +74,8 @@ Route::get('/filter-bls', [ClientController::class, 'filterBLs'])->name('filter.
 Route::get('/clientsByCode/{code_client}', [ClientController::class, 'getClientData'])->name('clients.ByCode');
 Route::put('/clients/{client}/change-type/{type}', [ClientController::class, 'changeType'])->name('clients.changeType');
 
+Route::get('/get-solde-restant/{code_client}', [ClientController::class, 'getSoldeRestant'])->name('clients.soldeRestant');
+
 Route::resource('clients', ClientController::class); // This will handle the CRUD operations
 
 
@@ -122,6 +124,9 @@ Route::get('/listBonLivraison', [BonLivraisonController::class, 'index'])->name(
 Route::get('/bon-livraison/{no_bl}', [BonLivraisonController::class, 'showBonLivraison'])->name('bon_livraison');
 Route::post('/bonLivraison/{id}/update-livree', [BonLivraisonController::class, 'updateLivree']);
 Route::delete('/bon-livraison/{no_bl}', [BonLivraisonController::class, 'destroy'])->name('bonLivraison.destroy');
+
+Route::post('/update-commercant/{no_bl}', [BonLivraisonController::class, 'updateCommercant'])->name('update.commercant');
+Route::get('/bonLivraison/commercants-stats', [BonLivraisonController::class, 'getCommercantsStats']);
 
 // -=-=-= 00 BON DE COUPE ROUTES 00 -=-=-=-
 Route::get('/listBonCoupe', [BonCoupeController::class, 'index'])->name('listBonCoupe.index'); // DataTable
