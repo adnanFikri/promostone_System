@@ -805,15 +805,27 @@
     var canModifDetails = @json(auth()->user()->can('view index show modif details'));
     var table;
     $(document).ready(function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        var commercantFilter = urlParams.get("commercant"); // Get commercant name from URL
+        var fromDate = urlParams.get("fromDate"); // Get commercant name from URL
+        var toDate = urlParams.get("toDate"); // Get commercant name from URL
+        
         var table = $('#payment-status-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
                 url: '{{ route('paymentStatus.index') }}',
                 data: function (d) {
-                    d.date_from = $('#search-date-f').val(); // Add date_from to the request
-                    d.date_to = $('#search-date-t').val();   // Add date_to to the request
+                    d.date_from = $('#search-date-f').val(); 
+                    d.date_to = $('#search-date-t').val();  
                     d.client_type = $('#clientType').val();
+                    if (commercantFilter) {
+                        d.commercant = commercantFilter; // Send commercant filter in AJAX request
+                    }
+                    if(fromDate && toDate){
+                        d.date_from = fromDate; 
+                        d.date_to = toDate;  
+                    }
                 }
             },
             columns: [
@@ -1192,6 +1204,16 @@
         $('#clientType').on('change', function () {
             table.ajax.reload(); // Reload data based on the selected client type
         });
+
+        // if (commercantFilter) {
+        //     // Apply search filter in DataTable
+        //     table.search(commercantFilter).draw();
+        // }
+
+        if(fromDate && toDate){
+            $('#search-date-f').val(fromDate); 
+            $('#search-date-t').val(toDate); 
+        }
     
     });
     // 000000000000000000000000000000000000000000000000000

@@ -62,6 +62,10 @@ class PaymentStatusController extends Controller
                 $query->whereDate('payment_statuses.date_bl', '<=', $request->date_to);
             }
 
+            if ($request->has('commercant') && !empty($request->commercant)) {
+                $query->where('commerçant', $request->commercant);
+            }
+
             // Apply client type filter if provided
             if ($request->filled('client_type') && $request->client_type === 'modifs') {
                 // Filter by changeCount > 0

@@ -153,7 +153,7 @@
             @endif
 
             <!-- Modal -->
-            <div id="commercantModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50">
+            {{-- <div id="commercantModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50">
                 <div class="bg-white rounded-lg shadow-lg w-[95%] max-w-4xl p-6">
                     <!-- Modal Header -->
                     <div class="px-6 py-4 bg-gray-100 border-b flex justify-between items-center rounded-t-md">
@@ -175,7 +175,47 @@
                         </button>
                     </div>
                 </div>
+            </div> --}}
+
+            <div id="commercantModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50">
+                <div class="bg-white rounded-lg shadow-lg w-[95%] max-w-4xl p-6">
+                    <!-- Modal Header -->
+                    <div class="px-6 py-4 bg-gray-100 border-b flex justify-between items-center rounded-t-md">
+                        <h2 class="text-xl font-semibold text-gray-800">Détails des Commerçants</h2>
+                        <button id="closeCommercantModalBtn" class="text-gray-500 hover:text-red-500 text-3xl">&times;</button>
+                    </div>
+            
+                    <!-- Filter Section -->
+                    <div class="p-4 bg-gray-50 rounded-md flex flex-wrap items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <label for="fromDate" class="text-sm font-medium text-gray-700">Date De</label>
+                            <input type="date" id="fromDate" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label for="toDate" class="text-sm font-medium text-gray-700">Date À</label>
+                            <input type="date" id="toDate" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400">
+                        </div>
+                        <button id="filterBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                            Filtrer
+                        </button>
+                    </div>
+            
+                    <!-- Modal Body -->
+                    <div class="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                        <ul id="commercantsList" class="space-y-4">
+                            <!-- Dynamic content will be inserted here -->
+                        </ul>
+                    </div>
+            
+                    <!-- Modal Footer -->
+                    <div class="px-6 py-3 bg-gray-100 rounded-b-md text-right">
+                        <button id="closeFooterBtn" class="px-6 py-2 bg-red-500 text-white text-md rounded-md hover:bg-red-600">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
             </div>
+            
 
 
 
@@ -199,6 +239,7 @@
                             <th>date</th>
                             <th>commercant</th>
                             <th>Livrée</th>
+                            <th>Saisi par</th>
                             {{-- <th>Crée par</th> --}}
                             <th>Actions</th>
                         </tr>
@@ -213,6 +254,7 @@
 
 <script>
     var canModiflivree = @json(auth()->user()->can('update livree bon livraison'));
+    var userRoles = @json(auth()->user()->getRoleNames());
     var table;
     table = $('#bons-table').DataTable({
         processing: true,
@@ -232,7 +274,7 @@
                 data: 'commercant', 
                 name: 'commercant',
                 render: function(data, type, row) {
-                    let userHasRole = true;
+                    let userHasRole = userRoles.includes('Admin') ||  userRoles.includes('SuperAdmin');
                     let bgColor = data ? 'bg-blue-300' : 'bg-blue-100';
                     let disabled = userHasRole ? '' : 'disabled';
 
@@ -269,7 +311,7 @@
                     `;
                 }
             },
-            //  { data: 'userName', name: 'userName' }, // Commercant column
+             { data: 'userName', name: 'userName' }, // Commercant column
             { 
                 data: 'actions', 
                 name: 'actions', 
@@ -492,12 +534,25 @@
             .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
-
     document.getElementById('openCommercantModalBtn').addEventListener('click', function () {
         document.getElementById('commercantModal').classList.remove('hidden');
-        
-        // Fetch the commercants data
-        fetch('/bonLivraison/commercants-stats')
+        fetchCommercants(); // Fetch initial data
+    });
+
+    document.getElementById('filterBtn').addEventListener('click', function () {
+        fetchCommercants(); // Fetch filtered data
+    });
+
+    function fetchCommercants() {
+        const fromDate = document.getElementById('fromDate').value;
+        const toDate = document.getElementById('toDate').value;
+
+        let url = `/bonLivraison/commercants-stats`;
+        if (fromDate && toDate) {
+            url += `?fromDate=${fromDate}&toDate=${toDate}`;
+        }
+
+        fetch(url)
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('commercantsList');
@@ -507,11 +562,23 @@
                     let li = document.createElement('li');
                     li.classList.add("flex", "justify-between", "bg-gray-50", "p-4", "rounded-xl", "shadow-md", "items-center", "gap-4");
 
-                    // Create HTML structure for each commercant's data
+                    // Construct the URL with commercant, fromDate, and toDate parameters
+                    let commercantUrl = `/payment-status?commercant=${encodeURIComponent(commercant.commercant)}`;
+                    if (fromDate && toDate) {
+                        commercantUrl += `&fromDate=${fromDate}&toDate=${toDate}`;
+                    } ////////////fefke fefefjepfjepfjepifjeijf stoping here and will continue , add fromDate and toDate 
+                    
+                    console.log(commercantUrl);
+                    
                     li.innerHTML = `
                         <div class="flex-1">
-                            <span class="text-lg font-semibold text-gray-800">${commercant.commercant}</span>
-                            <div class="text-sm font-bold font-xl text-blue-700 mt-1">${formatNumberWithSpaces(commercant.total_chiffre_affaire)} MAD</div>
+                            <a href="${commercantUrl}" 
+                            class="text-lg font-semibold text-gray-800 hover:underline text-blue-600">
+                                ${commercant.commercant}
+                            </a>
+                            <div class="text-sm font-bold text-blue-700 mt-1">
+                                ${formatNumberWithSpaces(commercant.total_chiffre_affaire)} MAD
+                            </div>
                         </div>
                         <div class="flex flex-col items-end w-52">
                             <input type="number" class="commission-input px-4 py-2 w-full border border-gray-300 rounded-lg text-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
@@ -520,7 +587,6 @@
                         </div>
                     `;
 
-                    // Event listener to calculate commission
                     const input = li.querySelector('.commission-input');
                     const result = li.querySelector('.commission-result');
 
@@ -538,8 +604,9 @@
                     list.appendChild(li);
                 });
             })
-            .catch(error => console.error('Erreur lors de la récupération des commercants:', error));
-    });
+            .catch(error => console.error('Erreur lors de la récupération des commerçants:', error));
+    }
+
 
     // Format number with spaces (e.g., 1000 -> 1 000)
     function formatNumberWithSpacesCommission(number) {

@@ -115,18 +115,36 @@ class BonLivraisonController extends Controller
         return view('sales.bonL', $data);
     }
 
-    public function getCommercantsStats()
-    {
-        // Get the total chiffre d'affaire for each commercant
-        $commercants = DB::table('payment_statuses')
-                        ->select('commerçant as commercant', DB::raw('SUM(montant_total) as total_chiffre_affaire'))
-                        ->whereNotNull('commerçant') // Exclude null commercants
-                        ->groupBy('commerçant') // Group by commercant name
-                        ->orderByDesc('total_chiffre_affaire') // Order by total chiffre d'affaire
-                        ->get();
+    // public function getCommercantsStats()
+    // {
+    //     // Get the total chiffre d'affaire for each commercant
+    //     $commercants = DB::table('payment_statuses')
+    //                     ->select('commerçant as commercant', DB::raw('SUM(montant_total) as total_chiffre_affaire'))
+    //                     ->whereNotNull('commerçant') // Exclude null commercants
+    //                     ->groupBy('commerçant') // Group by commercant name
+    //                     ->orderByDesc('total_chiffre_affaire') // Order by total chiffre d'affaire
+    //                     ->get();
 
-        return response()->json($commercants);
+    //     return response()->json($commercants);
+    // }
+
+    public function getCommercantsStats(Request $request)
+{
+    $query = DB::table('payment_statuses')
+        ->select('commerçant as commercant', DB::raw('SUM(montant_total) as total_chiffre_affaire'))
+        ->whereNotNull('commerçant');
+
+    // Apply date filter if provided
+    if ($request->has('fromDate') && $request->has('toDate')) {
+        $query->whereBetween('date_bl', [$request->fromDate, $request->toDate]);
     }
+
+    $commercants = $query->groupBy('commerçant')
+        ->orderByDesc('total_chiffre_affaire')
+        ->get();
+
+    return response()->json($commercants);
+}
 
 
     public function updateCommercant(Request $request, $no_bl)
