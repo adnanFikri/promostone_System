@@ -116,6 +116,8 @@
                         <p class="font-bold text-lg">{{ $code_client }}</p>
                     </div>
                 </div>
+
+                <div id="soldeRestantContainer"></div>
                 
                 <form id="reglement-form" class="bg-white p-6 mb-6 rounded-lg shadow-md border border-gray-200">
                     @csrf
@@ -319,6 +321,47 @@ $('#save-button').on('click', function (e) {
         });
     });
 });
+
+
+// hendel logique for get soled REstant for client in reglement multi
+$(document).ready(function () {
+        let codeClient = "{{ $code_client }}"; // Get code_client from Blade
+
+        $.ajax({
+            url: "/get-solde-restant/" + codeClient, // Call API
+            type: "GET",
+            success: function (data) {
+                console.log(data);
+                
+                let soldeHtml = "";
+
+                if (data.length > 0) {
+                    soldeHtml += `<div class="bg-white p-4 mb-4 rounded-lg shadow-md border border-gray-200">
+                                    <h2 class="text-lg font-bold text-gray-700 mb-2">Montants Restants</h2>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+
+                    data.forEach((solde, index) => {
+                        soldeHtml += `<div class="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow">
+                                        <div>
+                                            <p class="text-gray-600 text-sm">Montant Restant:</p>
+                                            <p class="font-bold text-lg text-blue-600">${solde.montant_rest} MAD</p>
+                                            <p class="text-gray-500 text-sm">Date Reglement: ${new Date(solde.dateReglement).toLocaleString()}</p>
+                                            <p class="text-gray-500 text-sm">Montant Total de Reglement: <span class="text-blue-500">${solde.montantTotale} MAD </span></p>
+                                        </div>
+                                        <input type="checkbox" name="selected_soldes[]" value="${index}" class="w-5 h-5 text-blue-500 border-gray-300 rounded">
+                                      </div>`;
+                    });
+
+                    soldeHtml += `</div></div>`;
+                }
+
+                $("#soldeRestantContainer").html(soldeHtml);
+            },
+            error: function () {
+                $("#soldeRestantContainer").html(`<p class="text-red-500">Erreur lors du chargement des soldes restants.</p>`);
+            }
+        });
+    });
 
 </script>
 

@@ -134,7 +134,20 @@
                         @endforeach
 
                         <tr >
-                            <td class="border border-gray-300 p-3 bg-gray-200  text-orange-500 text-center align-middle font-semibold  text-right" colspan="7">TOTAUX</td>
+                            {{-- <td class="border border-gray-300 p-3 bg-gray-200  text-orange-500 text-center align-middle font-semibold  text-right" colspan="7">TOTAUX</td> --}}
+                            <td class="border border-gray-300 p-3 bg-gray-200 text-left align-middle font-semibold text-blue-800" colspan="4">
+                                <table class="w-full">
+                                    <tr>
+                                        <tr>
+                                            <td class="border-b border-gray-300 p-2 bg-gray-200 text-left align-middle font-semibold">Distristone / Caisse espèce <span style="color: transparent;">...</span>: <span class="text-green-600"> {{number_format($reglementsDistristoneMontant ?? 0, 2)}} </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border- border-gray-300 p-2 bg-gray-200 text-left align-middle font-semibold">Promostone / Caisse espèce <span style="color: transparent;">.</span> : <span class="text-green-600"> {{number_format($totalByType['Espèce'] - $reglementsDistristoneMontant ?? 0, 2)}} </span></td>
+                                        </tr>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="border border-gray-300 p-3 bg-gray-200  text-orange-500 text-center align-middle font-semibold  text-right" colspan="3">TOTAUX</td>
                             <td class="border border-gray-300 p-3 bg-gray-200 text-center align-middle font-semibold text-blue-800">{{ number_format($totalAllSales ?? 0, 2) }}</td>
                             <td class="border border-gray-300  bg-gray-200 text-center align-middle font-semibold " colspan="2">
                                 <table class="w-full">

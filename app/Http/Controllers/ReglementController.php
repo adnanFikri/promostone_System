@@ -219,6 +219,8 @@ class ReglementController extends Controller
                     // Add the new remaining amount with the corresponding BL
                     $soldeRestant[] = [
                         'montant_rest' => $totalAmount,
+                        'dateReglement'=> now(),
+                        'montantTotale'=> $request->montant,
                         'no_bl' => $blsListStr, // Or use a specific BL if only one
                     ];
                 

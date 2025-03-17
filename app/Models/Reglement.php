@@ -34,4 +34,10 @@ class Reglement extends Model
     {
         return $this->belongsTo(Client::class, 'code_client', 'code_client');
     }
+
+    public function paymentStatus()
+    {
+        return $this->hasOne(PaymentStatus::class, 'no_bl', 'no_bl');
+    }
+
 }
