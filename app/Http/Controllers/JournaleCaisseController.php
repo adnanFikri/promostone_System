@@ -159,6 +159,21 @@ class JournaleCaisseController extends Controller
     ])->get();
     // $totalChiffreAffaire = $reglements->sum('montant');
     $totalByType = $reglements->groupBy('type_pay')->map->sum('montant');
+
+    // 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    // 000000000 for showed reglemetns details diviese for distristone and promostone 0000000
+    // 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    $reglementsDistristone = Reglement::whereBetween('created_at', [
+        Carbon::parse($dateFrom)->startOfDay(),
+        Carbon::parse($dateTo)->endOfDay()
+    ])
+    ->where('type_pay', 'Espèce') // Filter only "Espèce" payments
+    ->whereHas('paymentStatus', function ($query) {
+        $query->where('commerçant', 'like', 'Distristone%'); // Ensure column name is correct
+    })
+    ->get();
+
+    $reglementsDistristoneMontant = $reglementsDistristone->sum('montant');
     
     // dd($filteredReglements);
     return view('journaleCaisse.show', [
@@ -174,7 +189,8 @@ class JournaleCaisseController extends Controller
         "filteredReglements" => $filteredReglements,
         "filteredReglementsSum" => $filteredReglementsSum,
 
-        'reglements' => $reglements, 'totalChiffreAffaire' => $totalChiffreAffaire, 'totalByType' => $totalByType
+        'reglements' => $reglements, 'totalChiffreAffaire' => $totalChiffreAffaire, 'totalByType' => $totalByType,
+        'reglementsDistristoneMontant' => $reglementsDistristoneMontant
     ]);
 
 }
