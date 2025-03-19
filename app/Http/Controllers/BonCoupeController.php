@@ -198,6 +198,10 @@ class BonCoupeController extends Controller
             return redirect()->back()->with('error', 'Bon de Livraison not found.');
         }
 
+        BonCoupe::firstOrCreate(
+            ['no_bl' => $no_bl]
+        );
+
         // Retrieve the sales details for the specific Bon de Livraison
         $sales = Sale::where('no_bl', $no_bl)->get();
 

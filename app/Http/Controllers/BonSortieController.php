@@ -157,8 +157,12 @@ class BonSortieController extends Controller
         $paymentStatus = PaymentStatus::where('no_bl', $no_bl)->first();
 
         if (!$paymentStatus) {
-            return redirect()->back()->with('error', 'Bon de Livraison not found.');
+            return redirect()->back()->with('error', 'Bon de Coupe not found.');
         }
+
+        BonSortie::firstOrCreate(
+            ['no_bl' => $no_bl]
+        );
 
         // Retrieve the sales details for the specific Bon de Livraison
         $sales = Sale::where('no_bl', $no_bl)->get();

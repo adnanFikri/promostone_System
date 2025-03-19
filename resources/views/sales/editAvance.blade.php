@@ -147,8 +147,8 @@
                             </select> --}}
                             <select name="type_pay" id="mode_reglement" required disabled
                                 class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-                                <option value="Chèque" {{ old('type_pay', $regelement->type_pay ?? '') == 'Chèque' ? 'selected' : '' }}>Chèque</option>
                                 <option value="Crédit" {{ old('type_pay', $regelement->type_pay ?? '') == 'Crédit' ? 'selected' : '' }}>Crédit</option>
+                                <option value="Chèque" {{ old('type_pay', $regelement->type_pay ?? '') == 'Chèque' ? 'selected' : '' }}>Chèque</option>
                                 <option value="Espèce" {{ old('type_pay', $regelement->type_pay ?? '') == 'Espèce' ? 'selected' : '' }}>Espèce</option>
                                 <option value="Virement" {{ old('type_pay', $regelement->type_pay ?? '') == 'Virement' ? 'selected' : '' }}>Virement</option>
                             </select>
