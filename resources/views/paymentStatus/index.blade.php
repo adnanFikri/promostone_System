@@ -375,7 +375,7 @@
                 
                 <div class="bg-white w-min-full dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg overflow-x-auto">
                     <div class="p-6 pt-4 text-gray-900 dark:text-gray-100 ">
-                        <h2 class="text-center text-xl mx-auto w-fit pt-2 font-bold text-gray-800 mb-2 uppercase border-b-4 border-blue-300 px-3 pb-1 shadow-md rounded-xl" style="border-color: rgb(113, 34, 177);" id="titre">VENTE STATUS PAIEMENT</h2>
+                        <h2 class="text-center text-xl mx-auto w-fit pt-2 font-bold text-gray-800 mb-2 uppercase border-b-4 border-blue-300 px-3 pb-1 shadow-md rounded-xl" style="border-color: rgb(113, 34, 177);" id="titre">STATUT DE PAIEMENT DES VENTES</h2>
                         {{-- <h2 class="font-serif text-center rounded-lg text-gray-600 bg-gray-10 p-2 underline mb-12 text-2xl font-bold" id="titre">VENTE STATUS PAIEMENT</h2> --}}
                      
                         {{-- <div class="dateInputsSearch">
@@ -499,6 +499,7 @@
                             {{-- <input type="text" name="type_pay" id="mode_reglement" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600"> --}}
                             <select name="type_pay" id="mode_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                                 <option value="Espèce ">espèce </option>
+                                <option value="Crédit">Crédit</option>
                                 <option value="Chèque">chèque</option>
                                 <option value="Virement">virement</option>
                                 <option value="remise">remise</option>

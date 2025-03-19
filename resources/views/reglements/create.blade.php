@@ -201,6 +201,7 @@
                                 {{-- <input type="text" name="type_pay" id="mode_reglement" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600"> --}}
                                 <select name="type_pay" id="mode_reglement" required class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600" required>
                                     <option value="Espèce ">espèce </option>
+                                    <option value="Crédit">Crédit</option>
                                     <option value="Chèque">chèque</option>
                                     <option value="Virement">virement</option>
                                 </select>
