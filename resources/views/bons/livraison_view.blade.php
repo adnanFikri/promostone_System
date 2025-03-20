@@ -292,6 +292,7 @@
                             <option class="bg-gray-100 text-black" value="Nawal Abli" ${data === 'Nawal Abli' ? 'selected' : ''}>Nawal Abli</option>
                             <option class="bg-gray-100 text-black" value="Aya" ${data === 'Aya' ? 'selected' : ''}>Aya</option>
                             <option class="bg-gray-100 text-black" value="Distristone_Hafida Ech" ${data === 'Distristone_Hafida Ech' ? 'selected' : ''}>Distristone_Hafida Ech</option>
+                            <option class="bg-gray-100 text-black" value="Admin" ${data === 'Admin' ? 'selected' : ''}>Admin</option>
                         </select>
                     `;
                 }
