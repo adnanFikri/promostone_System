@@ -2,17 +2,6 @@
 
 @section('content')
 
-    <style>
-        /* Custom DataTable styles */
-        .dataTables_wrapper .dataTables_length select {
-            background-color: #d3d3d34e;
-            width: 90px;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #6b6b77;
-            margin-bottom: 2px;
-        }
-    </style>
 
 @can('create users')
     
@@ -56,6 +45,22 @@
                         </tbody>
                     </table>
                 </div>
+
+{{-- ------------------ table of impayed out sales ---------------------------  --}}
+                <div class="mt-6 overflow-x-auto bg-white p-4 shadow-md rounded-lg" id="SalesImpayedOut">
+                    <a >
+                        <h3 class="text-lg font-semibold mb-2 text-red-900 uppercase border-l-4 border-red-900 pl-3">ventes Sortie Impayés</h3>
+                    </a>
+                    <table id="paymentsTable" class="min-w-full border border-gray-300 rounded-lg text-sm">
+                        <thead class="bg-gray-300 text-gray-900 text-sm">
+                            <tr>
+                                <th class="border border-gray-50 p-2 text-left font-semibold uppercase">Client</th>
+                                <th class="border border-gray-50 p-2 text-left font-semibold uppercase">Montant Rest</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
             </div>
 
             <!-- Recap de Journée Table -->
@@ -302,7 +307,8 @@
                 </div>
             @endif
         </div>
-        <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+        
+        <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200" id="paymentStatusContainer">
             <table id="dashboard-payment-status-table" class="min-w-full bg-white">
                 <thead class="bg-gradient-to-r from-blue-500 to-blue-800 sticky top-0">
                     <tr>
@@ -422,37 +428,114 @@
         }
     });
 
+// ===============================================================
+// PART OF IMPAYED SALES OUT WITH BON SORTIE STATUS 'OUI'
+
+    $(document).ready(function() {
+        $('#paymentsTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('payments.data') }}",
+            lengthMenu: [5, 10, 25, 50, 100],
+            columns: [
+                { data: 'name_client', name: 'name_client' },
+                { data: 'montant_restant', name: 'montant_restant', render: function(data, type, row) {
+                    return `<a href="#" class="text-red-600 font-bold">${data}</a>`;
+                }},
+            ],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/French.json' // If you want French translation
+            }
+        });
+    });
 
 </script>
 
 <style>
     /* Custom CSS for the table */
-#dashboard-payment-status-table {
-    border-collapse: separate;
-    border-spacing: 0;
-}
+    #dashboard-payment-status-table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
 
-#dashboard-payment-status-table th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(20px); /* Adds a blur effect to the sticky header */
-    font-size: 12px;
-}
+    #dashboard-payment-status-table th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(20px); /* Adds a blur effect to the sticky header */
+        font-size: 12px;
+    }
 
-#dashboard-payment-status-table td {
-    transition: background-color 0.2s ease; /* Smooth hover transition */
-    font-size: 12px;
+    #dashboard-payment-status-table td {
+        transition: background-color 0.2s ease; /* Smooth hover transition */
+        font-size: 12px;
 
-}
+    }
 
-#dashboard-payment-status-table tbody tr:hover td {
-    background-color: #f3f4f6; /* Light gray background on hover */
-}
+    #dashboard-payment-status-table tbody tr:hover td {
+        background-color: #f3f4f6; /* Light gray background on hover */
+    }
 
-#dashboard-payment-status-table tbody tr:nth-child(odd) {
-    background-color: #f9fafb; /* Light gray for odd rows */
-}
+    #dashboard-payment-status-table tbody tr:nth-child(odd) {
+        background-color: #f9fafb; /* Light gray for odd rows */
+    }
+    #paymentStatusContainer .dataTables_wrapper .dataTables_length select {
+        background-color: #d6d5d54e;
+        width: 90px;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #6b6b77;
+        margin-bottom: 2px;
+    }
+
+/* --------------------------==========------------------- */
+    /* table impayed bons was out   */
+
+    #SalesImpayedOut .dataTables_wrapper .dataTables_length select {
+        background-color: #e5e7eb;
+        width: 50px;
+        padding: 4px;
+        border-radius: 5px;
+        border: 1px solid #6b6b77;
+        margin-bottom: 2px;
+    }
+
+    #SalesImpayedOut #paymentsTable {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    #SalesImpayedOut #paymentsTable th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(20px); /* Adds a blur effect to the sticky header */
+        font-size: 12px;
+    }
+
+    #SalesImpayedOut #paymentsTable td {
+        transition: background-color 0.2s ease; /* Smooth hover transition */
+        font-size: 12px;
+
+    }
+
+    #SalesImpayedOut #paymentsTable tbody tr:hover td {
+        background-color: #ccced2; /* Light gray background on hover */
+    }
+
+    #SalesImpayedOut #paymentsTable tbody tr:nth-child(odd) {
+        background-color: #eaeff1e3; /* Light gray for odd rows */
+    }
+
+    #SalesImpayedOut .dataTables_wrapper .dataTables_paginate .paginate_button {
+        background-color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-left: 5px;
+    }
+    #SalesImpayedOut .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background-color: #c5c8cfce;
+    }
 </style>
 
 @endsection

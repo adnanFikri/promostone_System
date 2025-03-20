@@ -110,6 +110,9 @@ Route::post('/products/{id}/update-price', [ProductController::class, 'updatePri
 Route::resource('products', ProductController::class);
 // Route::get('/products/search', [ProductController::class, 'searchProducts'])->name('products.search');
 
+Route::get('/stock-status', [ProductController::class, 'stockStatus']);
+
+
 // -=-=-= 00 Users ROUTES 00 -=-=-=-
 Route::resource('users', UserController::class);
 
@@ -219,7 +222,7 @@ Route::post('/journal-caisse/filter', [JournaleCaisseController::class, 'filterJ
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/dashboard/payment-status-data', [DashboardController::class, 'paymentStatusData'])->name('dashboard.paymentStatusData');
-
+Route::get('/payments-out-impayed', [DashboardController::class, 'getPaymentsOutImpayed'])->name('payments.data');
 
 
 

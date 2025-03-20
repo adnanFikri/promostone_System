@@ -237,7 +237,7 @@ table = $('#bons-table').DataTable({
              searchable: false,
              render: function(data, type, row) {
                  return `
-                     <a href="{{ url('/bon-sortie/') }}/${row.no_bl}" class="btnA" title="Voir Bon de Livraison">
+                     <a href="{{ url('/bon-sortie/') }}/${row.no_bl}" class="btnA" title="Voir Bon de Sortie">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="print-icon">
                             <path d="M19 8H5v9h14V8zM5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 2H8v4h4V8zm0 6H8v4h4v-4z"/>
                         </svg>

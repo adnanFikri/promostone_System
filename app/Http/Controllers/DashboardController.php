@@ -206,39 +206,37 @@ class DashboardController extends Controller
 
         // Get Bons from BonSortie with 'Oui' in sortie and today's date
         $bonsSortie = BonSortie::where('sortie', 'Oui')
-        ->whereDate('date_sortie', now()->toDateString())
-        ->with(['sales', 'paymentStatuses'])
-        ->get()
-        ->groupBy('no_bl');
+            ->whereDate('date_sortie', now()->toDateString())
+            ->with(['sales', 'paymentStatuses'])
+            ->get()
+            ->groupBy('no_bl');
 
-        // Transform data
-        $bonsSortie = $bonsSortie->map(function ($group) {
-        $bon = $group->first();
-        $code_client = $bon->paymentStatuses->first()->code_client ?? null;
-        $client_raison = 'N/A';
+            // Transform data
+            $bonsSortie = $bonsSortie->map(function ($group) {
+                $bon = $group->first();
+                $code_client = $bon->paymentStatuses->first()->code_client ?? null;
+                $client_raison = 'N/A';
 
-        if ($code_client) {
-            $client = Client::where('code_client', $code_client)->first();
-            $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
-        }
+                if ($code_client) {
+                    $client = Client::where('code_client', $code_client)->first();
+                    $client_raison = $client ? ($client->category . ' ' . $client->name) : 'N/A';
+                }
 
-        return [
-            'no_bl' => $bon->no_bl,
-            'dateSortie' => $bon->date_sortie,
-            'produit' => $bon->sales->first()->produit ?? 'N/A',
-            'nom_client' => $client_raison,
-            'sortie' => $bon->sortie,
-        ];
-        });
+                return [
+                    'no_bl' => $bon->no_bl,
+                    'dateSortie' => $bon->date_sortie,
+                    'produit' => $bon->sales->first()->produit ?? 'N/A',
+                    'nom_client' => $client_raison,
+                    'sortie' => $bon->sortie,
+                ];
+            });
 
 
     // ~00000000000000000000000000000000000000000000000
     // ~000000000000 {END BON SORITE PART 0000000000000
     // ~00000000000000000000000000000000000000000000000
 // ====================================================================
-// ====================================================================
-
-
+// ===================================================================
 
 // ========================================================
 // =>                                                    <=
@@ -317,6 +315,26 @@ class DashboardController extends Controller
         ->make(true);
     }
     
+}
+
+public function getPaymentsOutImpayed(Request $request)
+{
+    if ($request->ajax()) {
+        $paymentsOutImpayed = PaymentStatus::where('montant_restant', '>', 30)
+            ->whereHas('bonSortie', function ($query) {
+                $query->where('sortie', 'Oui');
+            })
+            ->get()
+            ->groupBy('name_client')
+            ->map(function ($group) {
+                return [
+                    'name_client' => $group->first()->name_client,
+                    'montant_restant' => $group->sum('montant_restant')
+                ];
+            })->values(); // Ensure correct JSON format
+
+        return DataTables::of($paymentsOutImpayed)->make(true);
+    }
 }
 
 }

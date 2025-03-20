@@ -55,4 +55,9 @@ class PaymentStatus extends Model
     return $this->belongsTo(BonLivraison::class, 'no_bl', 'no_bl');
 }
 
+
+public function bonSortie()
+{
+    return $this->hasOne(BonSortie::class, 'no_bl', 'no_bl');
+}
 }
