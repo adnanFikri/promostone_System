@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 // use Illuminate\Routing\Controller;
@@ -263,5 +264,26 @@ class ProductController extends Controller
         return response()->json(['message' => 'Price updated successfully']);
     }
 
+    public function stockStatus()
+{
+    $stockStatus = DB::table('products as p')
+        ->leftJoin('achats as a', 'p.name', '=', 'a.produit')
+        ->leftJoin('sales as s', 'p.name', '=', 's.produit')
+        ->select(
+            'p.product_code',
+            'p.name as produit',
+            DB::raw('500 as initial_stock'), // Static initial stock
+            DB::raw('COALESCE(SUM(a.qte), 0) as stock_in'), // Sum of purchases
+            DB::raw('COALESCE(SUM(s.qte), 0) as stock_out'), // Sum of sales
+            'p.quantity as current_stock' // Actual stock from products table
+        )
+        ->groupBy('p.product_code', 'p.name', 'p.quantity')
+        ->orderByDesc('stock_out')
+        ->get();
+
+        dd( $stockStatus);
+
+    return view('stock.index', compact('stockStatus'));
+}
     
 }

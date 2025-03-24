@@ -201,7 +201,7 @@ class DashboardController extends Controller
 // ====================================================================
 
     // 000000000000000000000000000000000000000000000000
-    // 000000000000 {START BON SORITE PART 000000000000
+    // 000000000000 {START BON SORITE TODAY PART 000000000000
     // 000000000000000000000000000000000000000000000000
 
         // Get Bons from BonSortie with 'Oui' in sortie and today's date
@@ -233,7 +233,7 @@ class DashboardController extends Controller
 
 
     // ~00000000000000000000000000000000000000000000000
-    // ~000000000000 {END BON SORITE PART 0000000000000
+    // ~000000000000 {END BON SORITE TODAY PART 0000000000000
     // ~00000000000000000000000000000000000000000000000
 // ====================================================================
 // ===================================================================
@@ -275,7 +275,7 @@ class DashboardController extends Controller
             'payment_statuses.no_bl',       
             'payment_statuses.code_client',
             'payment_statuses.name_client',
-            'payment_statuses.date_bl', 
+            DB::raw("DATE_FORMAT(payment_statuses.date_bl, '%d-%m-%Y') as date_bl"),
             'payment_statuses.changeCount',  
             'payment_statuses.montant_total',
             'payment_statuses.montant_payed',
@@ -324,15 +324,25 @@ public function getPaymentsOutImpayed(Request $request)
             ->whereHas('bonSortie', function ($query) {
                 $query->where('sortie', 'Oui');
             })
+            ->with('bonSortie')
             ->get()
             ->groupBy('name_client')
             ->map(function ($group) {
+                $latestDateSortie = $group->max(fn($payment) => optional($payment->bonSortie)->date_sortie);
+    
                 return [
                     'name_client' => $group->first()->name_client,
+                    'date' => $group->first()->date_bl,
+                    'date_sortie' => $latestDateSortie, // Send raw date (without formatting)
+                    'date_sortie_formatted' => $latestDateSortie 
+                        ? \Carbon\Carbon::parse($latestDateSortie)->format('d-m-Y H:i:s') 
+                        : null, 
                     'montant_restant' => $group->sum('montant_restant')
                 ];
-            })->values(); // Ensure correct JSON format
-
+            })
+            ->sortByDesc('date_sortie') // Sort before formatting
+            ->values(); 
+    
         return DataTables::of($paymentsOutImpayed)->make(true);
     }
 }

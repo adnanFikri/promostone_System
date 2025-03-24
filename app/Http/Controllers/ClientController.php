@@ -360,4 +360,15 @@ class ClientController extends Controller
 
         return response()->json(['message' => 'Type updated successfully!']); // Return success message as JSON
     }
+
+    public function getSoldeRestant($code_client)
+    {
+        $client = Client::where('code_client', $code_client)->first();
+
+        $soldeRestant = $client && $client->solde_restant 
+            ? json_decode($client->solde_restant, true) 
+            : [];
+
+        return response()->json($soldeRestant);
+    }
 }

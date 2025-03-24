@@ -2,7 +2,6 @@
 
 @section('content')
 
-
 @can('create users')
     
     <div class="grid grid-cols-8 gap-4 mx-4 mt-6 bg-gray-00 p-2 rounded-lg border-b-8 border-gray-300">
@@ -56,6 +55,7 @@
                             <tr>
                                 <th class="border border-gray-50 p-2 text-left font-semibold uppercase">Client</th>
                                 <th class="border border-gray-50 p-2 text-left font-semibold uppercase">Montant Rest</th>
+                                <th class="border border-gray-50 p-2 text-left font-semibold uppercase">date Sortie</th>
                             </tr>
                         </thead>
                     </table>
@@ -67,7 +67,7 @@
             <div class="col-span-2 ">
                 <div class="mt-6 overflow-x-auto bg-white p-4 shadow-md rounded-lg">
                 <a href="{{ route('journal.caisse') }}">
-                    <h3 class="text-lg font-semibold mb-2 text-gray-800 uppercase border-l-4 border-green-500 pl-3">Récap de Journée {{ $dateFrom }} </h3>
+                    <h3 class="text-lg font-semibold mb-2 text-gray-800 uppercase border-l-4 border-green-500 pl-3">Récap de Journée {{ \Carbon\Carbon::parse($dateFrom)->format('d-m-Y') }} </h3>
                 </a>
                 <table class="min-w-full border border-gray-300 rounded-lg shadow-md text-sm">
                     <thead class="bg-gray-600 text-gray-100">
@@ -203,7 +203,7 @@
                 <thead>
                     <tr class="bg-gray-100">
                         <th class="border border-gray-300 px-4 py-2 text-left">NB</th>
-                        <th class="border border-gray-300 px-4 py-2 text-left">Commence</th>
+                        <th class="border border-gray-300 px-4 py-2 text-left">Commencé</th>
                         <th class="border border-gray-300 px-4 py-2 text-left">Produit</th>
                         <th class="border border-gray-300 px-4 py-2 text-left">Nom Client</th>
                         <th class="border border-gray-300 px-4 py-2 text-left">Coupe</th>
@@ -213,7 +213,7 @@
                     @foreach($bonsCoupe as $bon)
                         <tr class="hover:bg-gray-50">
                             <td class="border border-gray-300 px-4 py-2">{{ $bon['no_bl'] }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $bon['dateCommence'] }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($bon['dateCommence'])->format('d-m-Y H:i:s') }} </td>
                             <td class="border border-gray-300 px-4 py-2">{{ $bon['produit'] }}</td>
                             <td class="border border-gray-300 px-4 py-2">{{ $bon['nom_client'] }}</td>
                             <td class="border border-gray-300 px-4 py-2 text-orange-500 font-semibold">{{ $bon['coupe'] }}</td>
@@ -281,7 +281,7 @@
                     @foreach($bonsSortie as $bon)
                         <tr class="hover:bg-gray-50">
                             <td class="border border-gray-300 px-4 py-2">{{ $bon['no_bl'] }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $bon['dateSortie'] }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($bon['dateSortie'])->format('d-m-Y H:i:s') }}</td>
                             <td class="border border-gray-300 px-4 py-2">{{ $bon['produit'] }}</td>
                             <td class="border border-gray-300 px-4 py-2">{{ $bon['nom_client'] }}</td>
                             <td class="border border-gray-300 px-4 py-2 text-blue-500 font-semibold">{{ $bon['sortie'] }}</td>
@@ -303,7 +303,7 @@
             </a>
             @if($lastSaleCheck)
                 <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4 inline-block " role="alert">
-                    <b>Dernière modif, BL:</b> {{ $lastSaleCheck->no_bl }} => {{ $lastSaleCheck->created_at }}, par <span class="font-bold">{{ $lastSaleCheck->user_name }}</span>
+                    <b>Dernière modif, BL:</b> {{ $lastSaleCheck->no_bl }} => {{ $lastSaleCheck->created_at->format('d-m-Y H:i:s') }}, par <span class="font-bold">{{ $lastSaleCheck->user_name }}</span>
                 </div>
             @endif
         </div>
@@ -442,9 +442,16 @@
                 { data: 'montant_restant', name: 'montant_restant', render: function(data, type, row) {
                     return `<a href="#" class="text-red-600 font-bold">${data}</a>`;
                 }},
+                { 
+                    data: 'date_sortie', name: 'date_sortie', 
+                    render: function(data, type, row) {
+                        return row.date_sortie_formatted ? row.date_sortie_formatted : ''; 
+                    }
+                }
             ],
+            order: [[2, 'desc']], // Sort by `date_sortie` (raw value) in descending order
             language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/French.json' // If you want French translation
+                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/French.json'
             }
         });
     });
