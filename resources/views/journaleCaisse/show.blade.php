@@ -142,8 +142,8 @@
                                             <td class="border-b border-gray-300 p-2 bg-gray-200 text-left align-middle font-semibold">Distristone / Caisse espèce <span style="color: transparent;">...</span>: <span class="text-green-600"> {{number_format($reglementsDistristoneMontant ?? 0, 2)}} </span> </td>
                                         </tr>
                                         <tr>
-                                            <td class="border- border-gray-300 p-2 bg-gray-200 text-left align-middle font-semibold">Promostone / Caisse espèce <span style="color: transparent;">.</span> : <span class="text-green-600"> {{number_format($totalByType['Espèce'] - $reglementsDistristoneMontant ?? 0, 2)}} </span></td>
-                                        </tr>
+                                            <td class="border- border-gray-300 p-2 bg-gray-200 text-left align-middle font-semibold">Promostone / Caisse espèce <span style="color: transparent;">.</span> : <span class="text-green-600">  {{ number_format(($totalByType['Espèce'] ?? 0) - ($reglementsDistristoneMontant ?? 0), 2) }} </span></td>
+                                        </tr>                                                                                                                                                                                               
                                     </tr>
                                 </table>
                             </td>

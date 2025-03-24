@@ -434,13 +434,13 @@
                     confirmButtonColor: "#d33",
                     cancelButtonColor: "#3085d6",
                     preConfirm: (password) => {
-                        if (password !== "pr222") {
+                        if (password !== "Mega7159") {
                             Swal.showValidationMessage("Mot de passe incorrect !");
                         }
                         return password;
                     }
                 }).then((result) => {
-                    if (result.isConfirmed && result.value === "pr222") {
+                    if (result.isConfirmed && result.value === "Mega7159") {
                         $.ajax({
                             url: '/bon-livraison/' + no_bl,  // Adjust the route as needed
                             type: 'DELETE',
