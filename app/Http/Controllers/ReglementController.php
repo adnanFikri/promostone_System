@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BonSortie;
 use App\Models\Sale;
 use App\Models\Client;
 use App\Models\BonCoupe;
+use App\Models\BonSortie;
 use App\Models\Reglement;
 use App\Models\BonLivraison;
 use Illuminate\Http\Request;
 
 use App\Models\PaymentStatus;
 use function Illuminate\Log\log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -45,14 +46,16 @@ class ReglementController extends Controller
                 'clients.name as name_client',
                 'reglements.montant',
                 'reglements.mode',
-                'reglements.date',
+                DB::raw("DATE_FORMAT(reglements.date, '%d-%m-%Y %H:%i:%s') as date"),
                 'reglements.type_pay',
                 'reglements.reference_chq', 
-                'reglements.date_chq',
+                DB::raw("DATE_FORMAT(reglements.date_chq, '%d-%m-%Y') as date_chq"),
                 'reglements.user-name',
                 'reglements.bls_count',
                 'reglements.montant_total',
                 'reglements.bls_list',
+                DB::raw("DATE_FORMAT(reglements.date_encaissement, '%d-%m-%Y') as date_encaissement"),
+                'reglements.type_bank', 
             )
             ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client')->distinct() // LEFT JOIN with clients table
             ->where('reglements.montant', '>', 0)
@@ -60,19 +63,36 @@ class ReglementController extends Controller
 
             return DataTables::of($data)
             ->addColumn('actions', function ($row) {
-                $btn = ''; // Initialize the variable to prevent "Undefined variable" error
-                if ($row->type_pay === 'Chèque') {
-                    $btn .= '<button style="float:left;" class="btn btn-primary btn-sm view-cheque float-left" data-id="' . $row->id . '" data-ref="' . $row->reference_chq . '" data-date="' . $row->date_chq . '">
-                        <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
-                        </svg>
+                // $btn = ''; // Initialize the variable to prevent "Undefined variable" error
 
-                    </button>';
+                $btn = '<div class="flex space-x-2">';
+                
+                if ($row->type_pay === 'Chèque') {
+                    $btn .= '<button title="Voir les détails du chèque" style="float:left;" class="btn btn-primary btn-sm view-cheque float-left"
+                        data-id="' . $row->id . '" 
+                        data-ref="' . $row->reference_chq . '" 
+                        data-date="' . $row->date_chq . '" 
+                        data-date_encaissement="' . $row->date_encaissement . '" 
+                        data-type_bank="' . $row->type_bank . '">
+                                <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                                </svg>
+
+                            </button>';
+
+                    $btn .= '<button title="Encaisser le chèque" style="float:left;" class="btn btn-primary btn-sm encaisse-cheque" 
+                                data-id="' . $row->id . '" 
+                                data-ref="' . $row->reference_chq . '" 
+                                data-date="' . $row->date_chq . '">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H5m12 0a1 1 0 0 1 1 1v2.6M17 8l-4-4M5 8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.6M5 8l4-4 4 4m6 4h-4a2 2 0 1 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z"/>
+                                    </svg>
+                            </button>';
                 }
                 $deleteUrl = route('reglements.destroy', $row->id);
                 if (auth()->user()->can('delete reglements')) {
                     $btn .= '
-                                <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Etes-vous sûr de vouloir supprimer ce règlement?\');">
+                                <form title="Supprimer le règlement" action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Etes-vous sûr de vouloir supprimer ce règlement?\');">
                                     ' . csrf_field() . method_field('DELETE') . '
                                     <button type="submit" class="text-red-500 hover:underline">
                                         <svg class="w-6 h-6 text-red-400 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -83,7 +103,7 @@ class ReglementController extends Controller
                 }
 
                 if ($row->bls_count > 0) {
-                    $btn .= '<button style="float:left;" class="btn btn-info btn-sm view-multi-reglement" 
+                    $btn .= '<button title="les détails du Règlement Multi " style="float:left;" class="btn btn-info btn-sm view-multi-reglement" 
                                 data-bls-count="' . $row->bls_count . '" 
                                 data-montant-total="' . $row->montant_total . '" 
                                 data-bls-list=\'' . json_encode($row->bls_list) . '\'>
@@ -94,6 +114,7 @@ class ReglementController extends Controller
                             </button>';
                 }
                 
+    $btn .= '</div>'; // Fermeture du conteneur flex    
             
                 return $btn;
             })
@@ -595,5 +616,23 @@ class ReglementController extends Controller
         ], 400);
     }
 }
+
+
+public function encaisserCheque(Request $request, $id)
+{
+    $request->validate([
+        'date_encaissement' => 'required',
+        'type_bank' => 'required|string|max:255',
+    ]);
+
+    $reglement = Reglement::findOrFail($id);
+    $reglement->date_encaissement = $request->date_encaissement;
+    $reglement->type_bank = $request->type_bank;
+    // $reglement->status = 'encaissé'; // Optionally update status
+    $reglement->save();
+
+    return response()->json(['message' => 'Chèque encaissé avec succès!']);
+}
+
 
 }

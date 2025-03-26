@@ -198,7 +198,7 @@ Route::get('achat/get-all-bls', [AchatreglementController::class, 'getAllBLs'])-
 
 Route::get('achat/avance/create/{no_bl}/{code_client}/{total_amount}', [AchatreglementController::class, 'avance'])->name('achat.avance.create');
 
-
+Route::post('/encaisser-cheque/{id}', [ReglementController::class, 'encaisserCheque'])->name('encaisser.cheque');
 
 
 

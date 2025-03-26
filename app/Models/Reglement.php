@@ -27,6 +27,8 @@ class Reglement extends Model
         'bls_count',
         'montant_total',
         'bls_list',
+        'date_encaissement',
+        'type_bank'
     ];
 
     // Defining the relationship with the Client model (assuming a Client model exists)

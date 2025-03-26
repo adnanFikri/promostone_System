@@ -114,6 +114,7 @@
         </div>
     </div>
 
+    
     <div id="chequeModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-500 bg-opacity-75">
         <div class="bg-white p-6 rounded-lg max-w-lg">
             <div class="flex justify-between items-center">
@@ -126,7 +127,9 @@
             </div>
             <div class="mt-4">
                 <p><strong>Reference:</strong> <span id="cheque-ref"></span></p>
-                <p><strong>Date:</strong> <span id="cheque-date"></span></p>
+                <p><strong>Date d'échéance:</strong> <span id="cheque-date"></span></p>
+                <p><strong>Date d'encaissement:</strong> <span id="cheque-date-encaissement"></span></p>
+                <p><strong>Type de banque:</strong> <span id="cheque-type-bank"></span></p>
             </div>
         </div>
     </div>
@@ -153,6 +156,36 @@
             </div>
         </div>
     
+
+        <!-- Modal -->
+        <div id="chequeModalEncaisse" class="hidden fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center">
+            <div class="bg-white p-6 rounded shadow-lg w-96">
+                <h2 class="text-xl font-semibold mb-4">Encaisser le Chèque</h2>
+                
+                <input type="hidden" id="cheque_id">
+                
+                <div class="mb-4">
+                    <label for="encaissement_date" class="block text-sm font-medium">Date d'encaissement</label>
+                    <input type="date" id="encaissement_date" class="w-full p-2 border rounded">
+                </div>
+
+                <div class="mb-4">
+                    <label for="type_bank" class="block text-sm font-medium">Banque</label>
+                    <select id="type_bank" class="w-full p-2 border rounded">
+                        <option value="">Sélectionnez une banque</option>
+                        <option value="BMCE Bank">BMCE Bank</option>
+                        <option value="Al Chaabi Bank">Al Chaabi Bank</option>
+                        <option value="CIH Bank">CIH Bank</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end">
+                    <button id="closeModal" class="px-4 py-2 bg-gray-500 text-white rounded mr-2">Annuler</button>
+                    <button id="submitEncaissement" class="px-4 py-2 bg-blue-600 text-white rounded">Valider</button>
+                </div>
+            </div>
+        </div>
+
     
     
     @endcan
@@ -194,7 +227,15 @@ $(document).ready(function() {
             },
             { data: 'date', name: 'date' },
             { data: 'type_pay', name: 'type_pay' },
-            { data: 'date_chq', name: 'date_chq' },
+            { data: 'date_chq', name: 'date_chq' ,
+                render: function(data, type, row) {
+                    if (row.date_encaissement) {
+                        // console.log(row.montant_total);
+                        return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
+                    }
+                    return data;
+                }
+            },
             { data: 'user-name', name: 'user-name' },
             {
                 data: 'actions',
@@ -216,17 +257,26 @@ $(document).ready(function() {
 
 });
 
+
+
     $(document).on('click', '.view-cheque', function () {
         const ref = $(this).data('ref');
         const date = $(this).data('date');
+        const dateEncaissement = $(this).data('date_encaissement');
+        const typeBank = $(this).data('type_bank');
+
         $('#cheque-ref').text(ref || 'N/A');
         $('#cheque-date').text(date || 'N/A');
+        $('#cheque-date-encaissement').text(dateEncaissement || 'N/A');
+        $('#cheque-type-bank').text(typeBank || 'N/A');
+
         $('#chequeModal').removeClass('hidden'); // Show modal
     });
 
     function closeChequeModal() {
         $('#chequeModal').addClass('hidden'); // Hide modal
     }
+
 
     $(document).on('click', '.view-multi-reglement', function () {
         const blsCount = $(this).data('bls-count');
@@ -249,6 +299,49 @@ $(document).ready(function() {
     function closeMultiReglementModal() {
         $('#multiReglementModal').addClass('hidden');
     }
+
+
+
+
+    $(document).ready(function () {
+        // Open Modal When Clicking the Button
+        $(document).on('click', '.encaisse-cheque', function () {
+            let chequeId = $(this).data('id');
+            $('#cheque_id').val(chequeId);
+            $('#chequeModalEncaisse').removeClass('hidden');
+        });
+
+        // Close Modal
+        $('#closeModal').click(function () {
+            $('#chequeModalEncaisse').addClass('hidden');
+        });
+
+        // Submit Encashment Data
+        $('#submitEncaissement').click(function () {
+            let chequeId = $('#cheque_id').val();
+            let encaissementDate = $('#encaissement_date').val();
+            let typeBank = $('#type_bank').val();
+
+            $.ajax({
+                url: '/encaisser-cheque/' + chequeId,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    date_encaissement: encaissementDate,
+                    type_bank: typeBank
+                },
+                success: function (response) {
+                    alert('Chèque encaissé avec succès!');
+                    $('#chequeModalEncaisse').addClass('hidden');
+                    location.reload(); // Refresh DataTable
+                },
+                error: function () {
+                    alert('Erreur lors de l\'encaissement du chèque.');
+                }
+            });
+        });
+    });
+
 
 </script>
 @endsection
