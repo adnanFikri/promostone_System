@@ -98,6 +98,7 @@ class DashboardController extends Controller
                 $date24hAgo,
                 Carbon::parse($dateTo)->endOfDay()
             ])
+            ->whereNull('reglements.date_encaissement')
             ->get();
 
         // Fetch AchatReglements with date_chq within 48h before today or today
