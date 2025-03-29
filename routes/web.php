@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BonCoupeController;
 use App\Http\Controllers\BonSortieController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReglementController;
 use App\Http\Controllers\SaleCheckController;
 use App\Http\Controllers\admin\RoleController;
@@ -19,8 +20,8 @@ use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\JournaleCaisseController;
 use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\Achat\AchatStatusController;
-use App\Http\Controllers\Achat\AchatreglementController;
 use App\Http\Controllers\Achat\BonCommandeController;
+use App\Http\Controllers\Achat\AchatreglementController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -204,9 +205,6 @@ Route::post('/encaisser-cheque/{id}', [ReglementController::class, 'encaisserChe
 
 Route::view('/logn','auth.loginn');
 
-
-
-
 Route::get('/maintenanceNow', function () {
     return view('maintenance');
 });
@@ -214,20 +212,23 @@ Route::get('/maintenanceNow', function () {
 
 
 
-
+// -=-=-= 00 journal-caisse ROUTES 00 -=-=-=-
 Route::get('/journal-caisse', [JournaleCaisseController::class, 'journalCaisse'])->name('journal.caisse');
 Route::post('/journal-caisse/filter', [JournaleCaisseController::class, 'filterJournalCaisse'])->name('journal.caisse.filter');
 
 
-
+// -=-=-= 00 dashboard ROUTES 00 -=-=-=-
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/dashboard/payment-status-data', [DashboardController::class, 'paymentStatusData'])->name('dashboard.paymentStatusData');
 Route::get('/payments-out-impayed', [DashboardController::class, 'getPaymentsOutImpayed'])->name('payments.data');
 
 
 
-
-
+// -=-=-= 00 banks ROUTES 00 -=-=-=-
+Route::get('/banks', [BankController::class, 'index']);
+Route::post('/banks', [BankController::class, 'store']);
+Route::put('/banks/{bank}', [BankController::class, 'update']);
+Route::delete('/banks/{bank}', [BankController::class, 'destroy']);
 
 
 

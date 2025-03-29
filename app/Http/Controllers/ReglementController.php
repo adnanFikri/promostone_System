@@ -66,48 +66,79 @@ class ReglementController extends Controller
                 // $btn = ''; // Initialize the variable to prevent "Undefined variable" error
 
                 $btn = '<div class="flex space-x-2">';
+
+                $colorEncaissement = $row->date_encaissement ? 'text-green-600 hover:text-green-300' : 'text-gray-600 hover:text-gray-400';
                 
-                if ($row->type_pay === 'Chèque') {
-                    $btn .= '<button title="Voir les détails du chèque" style="float:left;" class="btn btn-primary btn-sm view-cheque float-left"
-                        data-id="' . $row->id . '" 
-                        data-ref="' . $row->reference_chq . '" 
-                        data-date="' . $row->date_chq . '" 
-                        data-date_encaissement="' . $row->date_encaissement . '" 
-                        data-type_bank="' . $row->type_bank . '">
-                                <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
-                                </svg>
+                if ($row->type_pay === 'Chèque' ) {
 
-                            </button>';
-
-                    $btn .= '<button title="Encaisser le chèque" style="float:left;" class="btn btn-primary btn-sm encaisse-cheque" 
+                    $btn .= '
+                            <button title="Voir les détails du chèque" style="float:left;" class="btn btn-primary btn-sm view-cheque float-left"
                                 data-id="' . $row->id . '" 
                                 data-ref="' . $row->reference_chq . '" 
-                                data-date="' . $row->date_chq . '">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H5m12 0a1 1 0 0 1 1 1v2.6M17 8l-4-4M5 8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.6M5 8l4-4 4 4m6 4h-4a2 2 0 1 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z"/>
-                                    </svg>
+                                data-date="' . $row->date_chq . '" 
+                                data-date_encaissement="' . $row->date_encaissement . '" 
+                                data-type_bank="' . $row->type_bank . '"
+                            >
+                                <svg class="w-6 h-6 text-blue-800 hover:text-blue-400 dark:text-white " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                                </svg>
                             </button>';
+
+                            if (auth()->user()->hasRole('Admin') || auth()->user()->hasRole('SuperAdmin')) {
+                                $btn .= '
+                                    <button title="Encaisser le chèque" style="float:left;" class="btn btn-primary btn-sm encaisse-cheque" 
+                                        data-id="' . $row->id . '" 
+                                        >
+                                            <svg class="w-6 h-6 text-gray-800 dark:text-white '. $colorEncaissement.'" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H5m12 0a1 1 0 0 1 1 1v2.6M17 8l-4-4M5 8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.6M5 8l4-4 4 4m6 4h-4a2 2 0 1 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z"/>
+                                            </svg>
+                                    </button>';
+                            }
+                            
+                }else if($row->type_pay === 'Virement'){
+
+                    $btn .= '
+                            <button title="Voir les détails du virement" style="float:left;" class="btn btn-primary btn-sm view-virment float-left"
+                                data-id="' . $row->id . '" 
+                                data-date_encaissement="' . $row->date_encaissement . '" 
+                                data-type_bank="' . $row->type_bank . '"
+                            >
+                                <svg class="w-6 h-6 text-blue-800 hover:text-blue-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>';
+                    
+                    if (auth()->user()->hasRole('Admin') || auth()->user()->hasRole('SuperAdmin')) {
+                        $btn .= '
+                                <button title="Encaisser le chèque" style="float:left;" class="btn btn-primary btn-sm encaisse-cheque" 
+                                    data-id="' . $row->id . '" 
+                                    >
+                                        <svg class="w-6 h-6 dark:text-white '. $colorEncaissement.'" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H5m12 0a1 1 0 0 1 1 1v2.6M17 8l-4-4M5 8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.6M5 8l4-4 4 4m6 4h-4a2 2 0 1 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z"/>
+                                        </svg>
+                                </button>';
+                    }
                 }
                 $deleteUrl = route('reglements.destroy', $row->id);
                 if (auth()->user()->can('delete reglements')) {
                     $btn .= '
-                                <form title="Supprimer le règlement" action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Etes-vous sûr de vouloir supprimer ce règlement?\');">
-                                    ' . csrf_field() . method_field('DELETE') . '
-                                    <button type="submit" class="text-red-500 hover:underline">
-                                        <svg class="w-6 h-6 text-red-400 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
-                                        </svg>
-                                    </button>
-                                </form>';
+                            <form title="Supprimer le règlement" action="' . $deleteUrl . '" method="POST" style="display: inline-block;" onsubmit="return confirm(\'Etes-vous sûr de vouloir supprimer ce règlement?\');">
+                                ' . csrf_field() . method_field('DELETE') . '
+                                <button type="submit" class="text-red-500 hover:text-red-300 hover:underline">
+                                    <svg class="w-6 h-6 text-red-400 hover:text-red-300 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </form>';
                 }
 
                 if ($row->bls_count > 0) {
-                    $btn .= '<button title="les détails du Règlement Multi " style="float:left;" class="btn btn-info btn-sm view-multi-reglement" 
+                    $btn .= '
+                            <button title="les détails du Règlement Multi " style="float:left;" class="btn btn-info btn-sm view-multi-reglement" 
                                 data-bls-count="' . $row->bls_count . '" 
                                 data-montant-total="' . $row->montant_total . '" 
                                 data-bls-list=\'' . json_encode($row->bls_list) . '\'>
-                                <svg class="w-6 h-6 text-green-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-green-600 hover:text-green-300 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                                 </svg>
 

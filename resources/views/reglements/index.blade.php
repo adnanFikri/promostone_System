@@ -75,8 +75,64 @@
 
 @can("view reglements")
     <div class="py-5">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="max-w-12xl mx-auto sm:px-6 lg:px-8 overflow-x-auto">
+            <button onclick="fetchBanks()" class="bg-blue-600 text-white px-4 py-2 rounded mb-2">Gérer les Banques</button>
+
+            <div class="bg-white dark:bg-gray-800 overflow-x-auto shadow-sm sm:rounded-lg">
+
+                <!-- Modal -->
+                <div id="bankModal" class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
+                    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-gray-800">Liste des Banques</h2>
+                            <button onclick="closeBankModal()" class="text-gray-600 hover:text-gray-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 9l4-4a1 1 0 1 1 1.414 1.414L11.414 10l4 4a1 1 0 1 1-1.414 1.414l-4-4-4 4a1 1 0 1 1-1.414-1.414l4-4L5.293 5.293A1 1 0 1 1 6.707 3.88L10 7.17z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="bankList" class="space-y-3 max-h-[60vh] overflow-y-auto">
+                            <!-- Banks will be listed here -->
+                        </div>
+
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="openBankForm()" class="bg-green-500 text-white mx-1 px-4 py-2 rounded-md hover:bg-green-600 transition">Ajouter</button>
+                            <button onclick="closeBankModal()" class="bg-gray-500 text-white mx-1 px-4 py-2 rounded-md hover:bg-gray-600 transition">
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create/Edit Bank Modal -->
+                <div id="bankFormModal" class="hidden fixed z-50 inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                    <div class="bg-white p-6 rounded shadow-lg w-96">
+                        <h2 class="text-xl font-semibold mb-4">Ajouter/Modifier une Banque</h2>
+                        
+                        <input type="hidden" id="bank_id">
+
+                        <label>Banque:</label>
+                        <input type="text" id="bank_name" class="w-full p-2 border rounded">
+
+                        <label>Agence:</label>
+                        <input type="text" id="bank_agency" class="w-full p-2 border rounded">
+
+                        <label>RIB:</label>
+                        <input type="text" id="bank_rib" class="w-full p-2 border rounded">
+
+                        <label>Titulaire du compte:</label>
+                        {{-- <input type="text" id="bank_holder" class="w-full p-2 border rounded"> --}}
+                        <select id="bank_holder" class="w-full p-2 border rounded">
+                            <option value="PROMOSTONE">PROMOSTONE</option>
+                            <option value="DISTRISTONE">DISTRISTONE</option>
+                        </select>
+
+                        <button onclick="saveBank()" class="bg-blue-600 text-white px-4 py-2 rounded mt-2">Enregistrer</button>
+                        <button onclick="closeBankForm()" class="bg-gray-500 text-white px-4 py-2 rounded mt-2">Annuler</button>
+                    </div>
+                </div>
+
 
                 @can("create reglements")
                     <a href="{{ route('reglements.create') }}" class="btnA">
@@ -86,10 +142,42 @@
                     </a>
                 @endcan
                 
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <div class="p-4 text-gray-900 dark:text-gray-100 overflow-x-auo">
                     <h2 class="font-serif uppercase underline text-center text-gray-600  mb-12 text-2xl font-bold">Reglements Table</h2>
 
-                    <table id="reglements-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
+                    {{-- <!-- Filters -->
+                    <div class="flex justify-between items-center mb-6 bg-gray-00 p-4 rounded-lg ">
+                        <!-- Date Range Filter -->
+                        <div class="flex flex-col">
+                            <label for="date_range" class="text-sm font-medium text-gray-600">Date Range</label>
+                            <div class="flex gap-4">
+                                <input type="date" id="date_from" class="border rounded p-2 w-48">
+                                <input type="date" id="date_to" class="border rounded p-2 w-48">
+                            </div>
+                        </div>
+            
+                        <!-- Payment Mode Filter -->
+                        <div class="flex flex-col">
+                            <label for="payment_mode" class="text-sm font-medium text-gray-600">Payment Mode</label>
+                            <select id="payment_mode" class="border rounded p-2 w-48">
+                                <option value="">All</option>
+                                <option value="Espece">Espece</option>
+                                <option value="Virement">Virement</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+            
+                        <!-- Bank Account Filter -->
+                        <div class="flex flex-col">
+                            <label for="bank_account" class="text-sm font-medium text-gray-600">Bank Account</label>
+                            <select id="bank_account" class="border rounded p-2 w-48">
+                                <option value="">All</option>
+                                <!-- Options should be populated dynamically -->
+                            </select>
+                        </div>
+                    </div> --}}
+
+                    <table id="reglements-table" class="overflow-x-auto min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                             <tr>
                                 {{-- <th scope="col" class="px-6 py-3">ID</th> --}}
@@ -102,6 +190,7 @@
                                 <th scope="col" class="px-6 py-3">Mode Paiement</th>
                                 <th scope="col" class="px-6 py-3">échéance</th>
                                 <th scope="col" class="px-6 py-3">Créé par</th>
+                                <th scope="col" class="px-6 py-3">Encaissement</th>
                                 <th scope="col" class="px-6 py-3">Action</th>
                             </tr>
                         </thead>
@@ -114,25 +203,40 @@
         </div>
     </div>
 
-    
-    <div id="chequeModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-500 bg-opacity-75">
-        <div class="bg-white p-6 rounded-lg max-w-lg">
-            <div class="flex justify-between items-center">
-                <h5 class="text-xl font-semibold mr-6">Cheque Details</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700" onclick="closeChequeModal()">
+
+    <div id="chequeModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50 transition-opacity">
+        <div class="bg-white p-6 rounded-xl max-w-lg w-full shadow-lg">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b pb-3">
+                <h5 class="text-2xl font-bold text-gray-800">Détails du Paiement</h5>
+                <button type="button" class="text-gray-500 hover:text-gray-700 transition" onclick="closeChequeModal()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
-            <div class="mt-4">
-                <p><strong>Reference:</strong> <span id="cheque-ref"></span></p>
-                <p><strong>Date d'échéance:</strong> <span id="cheque-date"></span></p>
-                <p><strong>Date d'encaissement:</strong> <span id="cheque-date-encaissement"></span></p>
-                <p><strong>Type de banque:</strong> <span id="cheque-type-bank"></span></p>
+    
+            <!-- Modal Body -->
+            <div class="mt-4 space-y-3 text-gray-700">
+                <div class="cheque-field">
+                    <p class="font-semibold">Référence: <span class="font-normal" id="cheque-ref"></span></p>
+                </div>
+                <div class="cheque-field">
+                    <p class="font-semibold">Date d'échéance: <span class="font-normal" id="cheque-date"></span></p>
+                </div>
+                <p class="font-semibold">Date d'encaissement: <span class="font-normal" id="cheque-date-encaissement"></span></p>
+                <p class="font-semibold">Type de banque: <span class="font-normal" id="cheque-type-bank"></span></p>
+            </div>
+    
+            <!-- Footer -->
+            <div class="mt-6 flex justify-end">
+                <button class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition" onclick="closeChequeModal()">
+                    Fermer
+                </button>
             </div>
         </div>
     </div>
+    
     
 
         <div id="multiReglementModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-500 bg-opacity-75">
@@ -172,10 +276,7 @@
                 <div class="mb-4">
                     <label for="type_bank" class="block text-sm font-medium">Banque</label>
                     <select id="type_bank" class="w-full p-2 border rounded">
-                        <option value="">Sélectionnez une banque</option>
-                        <option value="BMCE Bank">BMCE Bank</option>
-                        <option value="Al Chaabi Bank">Al Chaabi Bank</option>
-                        <option value="CIH Bank">CIH Bank</option>
+                        <option value="" hidden>Sélectionnez une banque</option>
                     </select>
                 </div>
 
@@ -191,6 +292,7 @@
     @endcan
 
 <script>
+
 $(document).ready(function() {
     $('#reglements-table').DataTable({
         processing: true,
@@ -202,7 +304,7 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     if (row.bls_count > 0) {
                         // console.log(row.montant_total);
-                        console.log(row.bls_list);
+                        // console.log(row.bls_list);
                         return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
                         
                     }
@@ -229,7 +331,7 @@ $(document).ready(function() {
             { data: 'type_pay', name: 'type_pay' },
             { data: 'date_chq', name: 'date_chq' ,
                 render: function(data, type, row) {
-                    if (row.date_encaissement) {
+                    if (row.date_encaissement && row.date_chq) {
                         // console.log(row.montant_total);
                         return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
                     }
@@ -237,6 +339,7 @@ $(document).ready(function() {
                 }
             },
             { data: 'user-name', name: 'user-name' },
+            { data: 'date_encaissement', name: 'date_encaissement' },
             {
                 data: 'actions',
                 name: 'actions',
@@ -257,18 +360,23 @@ $(document).ready(function() {
 
 });
 
+    $(document).on('click', '.view-cheque, .view-virment', function () {
+        const isCheque = $(this).hasClass('view-cheque'); // Check if it's a cheque
+        const ref = $(this).data('ref') || 'N/A';
+        const date = $(this).data('date') || 'N/A';
+        const dateEncaissement = $(this).data('date_encaissement') || 'Pas Encore';
+        const typeBank = $(this).data('type_bank') || 'Pas Encore';
 
+        // Show cheque-specific fields if it's a cheque, otherwise hide them
+        if (isCheque) {
+            $('#cheque-ref').text(ref).closest('.cheque-field').show();
+            $('#cheque-date').text(date).closest('.cheque-field').show();
+        } else {
+            $('.cheque-field').hide(); // Hide cheque fields for virement
+        }
 
-    $(document).on('click', '.view-cheque', function () {
-        const ref = $(this).data('ref');
-        const date = $(this).data('date');
-        const dateEncaissement = $(this).data('date_encaissement');
-        const typeBank = $(this).data('type_bank');
-
-        $('#cheque-ref').text(ref || 'N/A');
-        $('#cheque-date').text(date || 'N/A');
-        $('#cheque-date-encaissement').text(dateEncaissement || 'N/A');
-        $('#cheque-type-bank').text(typeBank || 'N/A');
+        $('#cheque-date-encaissement').text(dateEncaissement);
+        $('#cheque-type-bank').text(typeBank);
 
         $('#chequeModal').removeClass('hidden'); // Show modal
     });
@@ -276,6 +384,7 @@ $(document).ready(function() {
     function closeChequeModal() {
         $('#chequeModal').addClass('hidden'); // Hide modal
     }
+
 
 
     $(document).on('click', '.view-multi-reglement', function () {
@@ -300,7 +409,36 @@ $(document).ready(function() {
         $('#multiReglementModal').addClass('hidden');
     }
 
+// ____________________________________________________________________________
+//=-0=-0=-0 get banks option to select bank for enciassement part 0=-0=-0=-0
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/banks')
+            .then(response => response.json())
+            .then(data => {
+                const selectBank = document.getElementById('type_bank');
+                let bankSelect = $('#bank_account');
+                console.log(bankSelect);
+                
 
+                // Add bank options first
+                data.forEach(bank => {
+                    let option = document.createElement('option');
+                    option.value = bank.name + " - " + bank.titulaire;
+                    option.textContent = bank.name + " (" + bank.titulaire + ")";
+                    selectBank.appendChild(option);
+                    bankSelect.appendChild(option);
+                });
+
+                
+
+                // Add "TIRER EN CASH" option at the end
+                let cashOption = document.createElement('option');
+                cashOption.value = "TIRER EN CASH";
+                cashOption.textContent = "TIRER EN CASH";
+                selectBank.appendChild(cashOption);
+            })
+            .catch(error => console.error('Error loading banks:', error));
+    });
 
 
     $(document).ready(function () {
@@ -342,6 +480,141 @@ $(document).ready(function() {
         });
     });
 
+
+
+
+// GESTION DE BANK GESTION DE BANK GESTION DE BANK GESTION DE BANK GESTION DE BANK GESTION DE BANK GESTION DE BANK GESTION DE BANK GESTION DE BANK GESTION DE BANK 
+    function fetchBanks() {
+        fetch('/banks')
+            .then(response => response.json())
+            .then(data => {
+                let list = document.getElementById('bankList');
+                list.innerHTML = '';
+                data.forEach(bank => {
+                    list.innerHTML += `
+                        <div class="flex justify-between items-center bg-white shadow-md rounded-lg p-4 border">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">${bank.name}</h3>
+                                <p class="text-gray-600 text-md">Agence: <span class="font-bold">${bank.agence}</span></p>
+                                <p class="text-gray-600 text-md">RIB: <span class="font-bold">${bank.rib}</span></p>
+                                <p class="text-gray-600 text-md">Titulaire: <span class="font-bold">${bank.titulaire}</span></p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="editBank(${bank.id}, '${bank.name}', '${bank.agence}', '${bank.rib}', '${bank.titulaire}')" 
+                                    class="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M12.293 2.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.293.217l-3 1a1 1 0 0 1-1.217-1.217l1-3a1 1 0 0 1 .217-.293l9-9a1 1 0 0 1 0-1.414l-4-4a1 1 0 0 1 0-1.414zM13 3L16 6l-8 8-2 1 1-2 8-8z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                                <button onclick="deleteBank(${bank.id})" 
+                                    class="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 transition flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M9 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h3a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2h3V2zm2 6a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm-4 0a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm8 0a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>`;
+                });
+
+                document.getElementById('bankModal').classList.remove('hidden');
+            });
+    }
+
+    function openBankForm() {
+        document.getElementById('bankFormModal').classList.remove('hidden');
+    }
+
+    function closeBankModal() {
+        document.getElementById('bankModal').classList.add('hidden');
+    }
+
+    function closeBankForm() {
+        document.getElementById('bankFormModal').classList.add('hidden');
+        document.getElementById('bank_id').value = '';
+        document.getElementById('bank_name').value = '';
+        document.getElementById('bank_agency').value = '';
+        document.getElementById('bank_rib').value = '';
+        document.getElementById('bank_holder').value = '';
+    }
+
+    function saveBank() {
+        let id = document.getElementById('bank_id').value;
+        let name = document.getElementById('bank_name').value;
+        let agence = document.getElementById('bank_agency').value;
+        let rib = document.getElementById('bank_rib').value;
+        let titulaire = document.getElementById('bank_holder').value;
+
+        let url = id ? `/banks/${id}` : '/banks';
+        let method = id ? 'PUT' : 'POST';
+
+        
+        fetch(url, {
+            method: method,
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Include CSRF token
+            },
+            body: JSON.stringify({ name, agence, rib, titulaire }),
+            
+        })
+        .then(response => response.json())
+        .then(() => {
+            closeBankForm();
+            fetchBanks();
+        });
+        document.getElementById('bank_id').value = '';
+        document.getElementById('bank_name').value = '';
+        document.getElementById('bank_agency').value = '';
+        document.getElementById('bank_rib').value = '';
+        document.getElementById('bank_holder').value = '';
+    }
+
+    function editBank(id, name, agence, rib, titulaire) {
+        document.getElementById('bank_id').value = id;
+        document.getElementById('bank_name').value = name;
+        document.getElementById('bank_agency').value = agence;
+        document.getElementById('bank_rib').value = rib;
+        document.getElementById('bank_holder').value = titulaire;
+
+        openBankForm();
+    }
+
+    function deleteBank(id) {
+        Swal.fire({
+            title: "Êtes-vous sûr?",
+            text: "Cette action est irréversible!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Oui, supprimer!",
+            cancelButtonText: "Annuler"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/banks/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la suppression');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    Swal.fire("Supprimé!", "La banque a été supprimée avec succès.", "success");
+                    fetchBanks(); // Refresh the bank list
+                })
+                .catch(error => {
+                    Swal.fire("Erreur!", "Un problème est survenu.", "error");
+                    console.error('Error:', error);
+                });
+            }
+        });
+    }
 
 </script>
 @endsection
