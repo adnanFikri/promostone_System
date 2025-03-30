@@ -75,7 +75,7 @@
 
 @can("view reglements")
     <div class="py-5">
-        <div class="max-w-12xl mx-auto sm:px-6 lg:px-8 overflow-x-auto">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-x-auto">
             <button onclick="fetchBanks()" class="bg-blue-600 text-white px-4 py-2 rounded mb-2">Gérer les Banques</button>
 
             <div class="bg-white dark:bg-gray-800 overflow-x-auto shadow-sm sm:rounded-lg">
@@ -145,37 +145,38 @@
                 <div class="p-4 text-gray-900 dark:text-gray-100 overflow-x-auo">
                     <h2 class="font-serif uppercase underline text-center text-gray-600  mb-12 text-2xl font-bold">Reglements Table</h2>
 
-                    {{-- <!-- Filters -->
+                    <!-- Filters -->
                     <div class="flex justify-between items-center mb-6 bg-gray-00 p-4 rounded-lg ">
                         <!-- Date Range Filter -->
                         <div class="flex flex-col">
-                            <label for="date_range" class="text-sm font-medium text-gray-600">Date Range</label>
+                            <label for="date_range" class="text-sm font-medium text-gray-600">Plage de dates</label>
                             <div class="flex gap-4">
-                                <input type="date" id="date_from" class="border rounded p-2 w-48">
-                                <input type="date" id="date_to" class="border rounded p-2 w-48">
+                                <input type="date" id="date_from" class="border rounded p-2 w-30">
+                                <input type="date" id="date_to" class="border rounded p-2 w-30">
                             </div>
                         </div>
             
                         <!-- Payment Mode Filter -->
                         <div class="flex flex-col">
-                            <label for="payment_mode" class="text-sm font-medium text-gray-600">Payment Mode</label>
+                            <label for="payment_mode" class="text-sm font-medium text-gray-600">Mode de paiement</label>
                             <select id="payment_mode" class="border rounded p-2 w-48">
                                 <option value="">All</option>
-                                <option value="Espece">Espece</option>
+                                <option value="Espèce ">Espèce </option>
+                                <option value="Chèque">Chèque</option>
                                 <option value="Virement">Virement</option>
-                                <option value="Cheque">Cheque</option>
+                                <option value="ChequeVirement">Chèque & Virement</option>
                             </select>
                         </div>
             
                         <!-- Bank Account Filter -->
                         <div class="flex flex-col">
-                            <label for="bank_account" class="text-sm font-medium text-gray-600">Bank Account</label>
+                            <label for="bank_account" class="text-sm font-medium text-gray-600">Compte bancaire</label>
                             <select id="bank_account" class="border rounded p-2 w-48">
                                 <option value="">All</option>
                                 <!-- Options should be populated dynamically -->
                             </select>
                         </div>
-                    </div> --}}
+                    </div>
 
                     <table id="reglements-table" class="overflow-x-auto min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-left text-sm text-gray-500 dark:text-gray-400 border">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
@@ -294,10 +295,18 @@
 <script>
 
 $(document).ready(function() {
-    $('#reglements-table').DataTable({
+    let table = $('#reglements-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '{{ route('reglements.index') }}',
+        ajax: {
+            url: '{{ route('reglements.index') }}',
+            data: function(d) {
+                d.date_from = $('#date_from').val();
+                d.date_to = $('#date_to').val();
+                d.payment_mode = $('#payment_mode').val();
+                d.bank_account = $('#bank_account').val();
+            }
+        },
         columns: [
             // { data: 'id', name: 'id' },
             { data: 'no_bl', name: 'no_bl',
@@ -358,6 +367,13 @@ $(document).ready(function() {
         }
     });
 
+    // Reload table on filter change
+    $('#date_from, #date_to, #payment_mode, #bank_account').on('change', function() {
+        console.log( $('#payment_mode').val());
+        
+        table.ajax.reload();
+    });
+
 });
 
     $(document).on('click', '.view-cheque, .view-virment', function () {
@@ -416,9 +432,11 @@ $(document).ready(function() {
             .then(response => response.json())
             .then(data => {
                 const selectBank = document.getElementById('type_bank');
-                let bankSelect = $('#bank_account');
-                console.log(bankSelect);
-                
+                const selectBankFilter = document.getElementById('bank_account'); // Filter Select
+
+                // Clear existing options (except "All")
+                selectBankFilter.innerHTML = '<option value="">All</option>';
+                // selectBankEncaisse.innerHTML = '';
 
                 // Add bank options first
                 data.forEach(bank => {
@@ -426,7 +444,11 @@ $(document).ready(function() {
                     option.value = bank.name + " - " + bank.titulaire;
                     option.textContent = bank.name + " (" + bank.titulaire + ")";
                     selectBank.appendChild(option);
-                    bankSelect.appendChild(option);
+
+                    let option2 = document.createElement('option');
+                    option2.value = bank.name + " - " + bank.titulaire;
+                    option2.textContent = bank.name + " (" + bank.titulaire + ")";
+                    selectBankFilter.appendChild(option2); // Append to filter select
                 });
 
                 
@@ -436,6 +458,11 @@ $(document).ready(function() {
                 cashOption.value = "TIRER EN CASH";
                 cashOption.textContent = "TIRER EN CASH";
                 selectBank.appendChild(cashOption);
+
+                let cashOption2 = document.createElement('option');
+                cashOption2.value = "TIRER EN CASH";
+                cashOption2.textContent = "TIRER EN CASH";
+                selectBankFilter.appendChild(cashOption2);
             })
             .catch(error => console.error('Error loading banks:', error));
     });

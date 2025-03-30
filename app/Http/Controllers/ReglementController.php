@@ -58,10 +58,36 @@ class ReglementController extends Controller
                 'reglements.type_bank', 
             )
             ->leftJoin('clients', 'clients.code_client', '=', 'reglements.code_client')->distinct() // LEFT JOIN with clients table
-            ->where('reglements.montant', '>', 0)
-            ->get();
+            ->where('reglements.montant', '>', 0);
+            // ->get();
+
+            // Apply date range filter
+            if ($request->filled('date_from') && $request->filled('date_to')) {
+                $data->whereBetween('reglements.date', [$request->date_from, $request->date_to]);
+            } elseif ($request->filled('date_from')) {
+                $data->whereDate('reglements.date', '>=', $request->date_from);
+            } elseif ($request->filled('date_to')) {
+                $data->whereDate('reglements.date', '<=', $request->date_to);
+            }
+
+            // Apply payment_mode filter
+            if ($request->filled('payment_mode')) {
+                if ($request->payment_mode === 'ChequeVirement') {
+                    $data->whereIn('reglements.type_pay', ['Chèque', 'Virement']);
+                } else {
+                    $data->where('reglements.type_pay', $request->payment_mode);
+                }
+            }
+
+            // Apply bank_account filter
+            if ($request->filled('bank_account')) {
+                $data->where('reglements.type_bank', $request->bank_account);
+            }
 
             return DataTables::of($data)
+            ->filterColumn('name_client', function($query, $keyword) {
+                $query->where('clients.name', 'LIKE', "%$keyword%");
+            })
             ->addColumn('actions', function ($row) {
                 // $btn = ''; // Initialize the variable to prevent "Undefined variable" error
 
@@ -94,7 +120,6 @@ class ReglementController extends Controller
                                             </svg>
                                     </button>';
                             }
-                            
                 }else if($row->type_pay === 'Virement'){
 
                     $btn .= '

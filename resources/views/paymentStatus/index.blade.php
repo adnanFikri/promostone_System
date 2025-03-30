@@ -657,7 +657,8 @@
             </div>
         </div>
     </div>
-    <script>
+
+<script>
         
 // 00000000000000000000000000000000000000000000000000000000
     document.addEventListener('DOMContentLoaded', () => {
@@ -783,7 +784,7 @@
     });
 
     
-    </script>
+</script>
     
     
 <script>
