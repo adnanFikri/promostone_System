@@ -294,6 +294,87 @@
 
 <script>
 
+// $(document).ready(function() {
+//     let table = $('#reglements-table').DataTable({
+//         processing: true,
+//         serverSide: true,
+//         ajax: {
+//             url: '{{ route('reglements.index') }}',
+//             data: function(d) {
+//                 d.date_from = $('#date_from').val();
+//                 d.date_to = $('#date_to').val();
+//                 d.payment_mode = $('#payment_mode').val();
+//                 d.bank_account = $('#bank_account').val();
+//             }
+//         },
+//         columns: [
+//             // { data: 'id', name: 'id' },
+//             { data: 'no_bl', name: 'no_bl',
+//                 render: function(data, type, row) {
+//                     if (row.bls_count > 0) {
+//                         // console.log(row.montant_total);
+//                         // console.log(row.bls_list);
+//                         return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
+                        
+//                     }
+//                     return data;
+//                 }
+//              },
+//             { data: 'code_client', name: 'code_client' },
+//             { data: 'name_client', name: 'name_client' },
+//             { data: 'montant', name: 'montant' },
+//             { 
+//                 data: 'mode', 
+//                 name: 'mode',
+//                 render: function(data, type, row) {
+//                     if (type === 'display' || type === 'filter') {
+//                         if (!data) return ''; // Handle null or undefined values
+//                         let modeUpper = data.toUpperCase();
+//                         let color = (modeUpper === 'AVANCE') ? 'green' : 'blue';
+//                         return `<span style="color:${color}; font-weight: bold;">${modeUpper}</span>`;
+//                     }
+//                     return data;
+//                 }
+//             },
+//             { data: 'date', name: 'date' },
+//             { data: 'type_pay', name: 'type_pay' },
+//             { data: 'date_chq', name: 'date_chq' ,
+//                 render: function(data, type, row) {
+//                     if (row.date_encaissement && row.date_chq) {
+//                         // console.log(row.montant_total);
+//                         return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
+//                     }
+//                     return data;
+//                 }
+//             },
+//             { data: 'user-name', name: 'user-name' },
+//             { data: 'date_encaissement', name: 'date_encaissement' },
+//             {
+//                 data: 'actions',
+//                 name: 'actions',
+//                 orderable: false,
+//                 searchable: false
+//             }
+//         ],
+//         responsive: true,
+//         lengthMenu: [10, 5, 15, 25, 50],
+//         order: [[0, 'desc']],
+//         language: {
+//             paginate: {
+//                 previous: "&laquo;",
+//                 next: "&raquo;"
+//             }
+//         }
+//     });
+
+//     // Reload table on filter change
+//     $('#date_from, #date_to, #payment_mode, #bank_account').on('change', function() {
+//         console.log( $('#payment_mode').val());
+        
+//         table.ajax.reload();
+//     });
+
+// });
 $(document).ready(function() {
     let table = $('#reglements-table').DataTable({
         processing: true,
@@ -307,57 +388,41 @@ $(document).ready(function() {
                 d.bank_account = $('#bank_account').val();
             }
         },
+        dom: '<"row"<"col-md-4"l><"col-md-4"f><"col-md-4 text-end"B>>rtip',
+        buttons: [
+            // {
+            //     extend: 'pdfHtml5',
+            //     text: 'Export PDF',
+            //     className: 'btn btn-danger',
+            //     orientation: 'landscape',
+            //     pageSize: 'A4',
+            //     title: 'Liste des règlements',
+            //     exportOptions: {
+            //         columns: ':visible:not(:last-child)' // Exclude last column (Actions)
+            //     }
+            // }
+        ]
+        ,
         columns: [
-            // { data: 'id', name: 'id' },
-            { data: 'no_bl', name: 'no_bl',
-                render: function(data, type, row) {
-                    if (row.bls_count > 0) {
-                        // console.log(row.montant_total);
-                        // console.log(row.bls_list);
-                        return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
-                        
-                    }
-                    return data;
-                }
-             },
+            { data: 'no_bl', name: 'no_bl' },
             { data: 'code_client', name: 'code_client' },
             { data: 'name_client', name: 'name_client' },
             { data: 'montant', name: 'montant' },
-            { 
-                data: 'mode', 
-                name: 'mode',
-                render: function(data, type, row) {
-                    if (type === 'display' || type === 'filter') {
-                        if (!data) return ''; // Handle null or undefined values
-                        let modeUpper = data.toUpperCase();
-                        let color = (modeUpper === 'AVANCE') ? 'green' : 'blue';
-                        return `<span style="color:${color}; font-weight: bold;">${modeUpper}</span>`;
-                    }
-                    return data;
-                }
-            },
+            { data: 'mode', name: 'mode' },
             { data: 'date', name: 'date' },
             { data: 'type_pay', name: 'type_pay' },
-            { data: 'date_chq', name: 'date_chq' ,
-                render: function(data, type, row) {
-                    if (row.date_encaissement && row.date_chq) {
-                        // console.log(row.montant_total);
-                        return `<span class="bg-green-200" font-weight: bold;">${data}</span>`;
-                    }
-                    return data;
-                }
-            },
+            { data: 'date_chq', name: 'date_chq' },
             { data: 'user-name', name: 'user-name' },
             { data: 'date_encaissement', name: 'date_encaissement' },
-            {
-                data: 'actions',
-                name: 'actions',
-                orderable: false,
-                searchable: false
+            { 
+                data: 'actions', 
+                name: 'actions', 
+                orderable: false, 
+                searchable: false 
             }
         ],
         responsive: true,
-        lengthMenu: [10, 5, 15, 25, 50],
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
         order: [[0, 'desc']],
         language: {
             paginate: {
@@ -369,12 +434,11 @@ $(document).ready(function() {
 
     // Reload table on filter change
     $('#date_from, #date_to, #payment_mode, #bank_account').on('change', function() {
-        console.log( $('#payment_mode').val());
-        
         table.ajax.reload();
     });
-
 });
+
+
 
     $(document).on('click', '.view-cheque, .view-virment', function () {
         const isCheque = $(this).hasClass('view-cheque'); // Check if it's a cheque
